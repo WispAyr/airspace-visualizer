@@ -293,7 +293,7 @@
             <div class="config-section">
                 <h4>dumpvdl2 Configuration</h4>
                 <label>VDL2 Server URL:</label>
-                <input type="text" id="vdl2Url" class="config-input" value="http://localhost:8081" placeholder="http://localhost:8081">
+                <input type="text" id="vdl2Url" class="config-input" value="http://10.0.0.20:8081" placeholder="http://10.0.0.20:8081">
                 <br><br>
                 <label>VDL2 Update Rate (seconds):</label>
                 <input type="number" id="vdl2UpdateRate" class="config-input" value="1" min="0.5" max="10" step="0.5">
@@ -304,16 +304,26 @@
             </div>
 
             <div class="config-section">
+                <h4>Regional Configuration</h4>
+                <label>Region:</label>
+                <select id="regionSelect" class="config-input">
+                    <option value="">Loading regions...</option>
+                </select>
+                <button id="loadRegionBtn" class="connect-btn" style="margin-top: 5px;">Load Region</button>
+            </div>
+
+            <div class="config-section">
                 <h4>Geographic Data Source</h4>
                 <label>Data Source:</label>
                 <select id="geoDataSource" class="config-input">
                     <option value="osm">OpenStreetMap (Global)</option>
-                    <option value="local">Local Server</option>
+                    <option value="local" selected>Local Server (C15_COAST)</option>
                     <option value="none">No Geographic Data</option>
                 </select>
                 <div class="geo-status">
                     <div>Features Loaded: <span id="geoFeatureCount">0</span></div>
-                    <div>Data Source: <span id="geoDataSourceStatus">None</span></div>
+                    <div>Data Source: <span id="geoDataSourceStatus">local</span></div>
+                    <div>Current Region: <span id="currentRegion">Prestwick Region</span></div>
                 </div>
                 <button id="refreshGeoBtn" class="connect-btn" style="margin-top: 5px;">Refresh Geographic Data</button>
             </div>
@@ -325,7 +335,7 @@
                     <label for="showTrails">🛤️ Show Trails</label>
                 </div>
                 <div class="checkbox">
-                    <input type="checkbox" id="showCoastline">
+                    <input type="checkbox" id="showCoastline" checked>
                     <label for="showCoastline">🏖️ Show Geographic Features</label>
                 </div>
                 <div class="checkbox">
@@ -345,9 +355,9 @@
             <div class="config-section">
                 <h4>Radar Center Coordinates</h4>
                 <label>Latitude:</label>
-                <input type="number" id="centerLat" class="config-input" value="31.3228" step="0.0001">
+                <input type="number" id="centerLat" class="config-input" value="55.5094" step="0.0001">
                 <label>Longitude:</label>
-                <input type="number" id="centerLon" class="config-input" value="-86.0792" step="0.0001">
+                <input type="number" id="centerLon" class="config-input" value="-4.5967" step="0.0001">
                 <button id="setCenterBtn" class="connect-btn" style="margin-top: 10px;">Set Radar Center</button>
             </div>
 
@@ -431,16 +441,18 @@
         let vdl2UpdateInterval = null;
         let coastlineData = null;
         let geoFeatures = [];
+        let availableRegions = {};
+        let currentRegion = 'PRESTWICK';
 
-        // Radar configuration
-        let radarCenterLat = 31.3228;
-        let radarCenterLon = -86.0792;
+        // Radar configuration - Default to Prestwick Airport
+        let radarCenterLat = 55.5094;
+        let radarCenterLon = -4.5967;
         let RADAR_RANGE_NM = 100;
 
         // Display options
         let showTrails = true;
         let showACARSIndicators = true;
-        let showCoastline = false;
+        let showCoastline = true;
         let trailLength = 100;
 
         let aircraftDetailsBox;
@@ -448,6 +460,7 @@
         // Initialize
         window.onload = function() {
             init();
+            loadAvailableRegions();
         };
 
         function init() {
@@ -479,6 +492,12 @@
 
             document.getElementById('centerCoords').textContent = 
                 `${radarCenterLat.toFixed(4)}, ${radarCenterLon.toFixed(4)}`;
+            document.getElementById('currentRegion').textContent = 'Prestwick Region';
+            
+            // Load coastline data if enabled
+            if (showCoastline) {
+                fetchGeographicData();
+            }
         }
 
         function setupControls() {
@@ -554,6 +573,11 @@
                     updateRadar();
                 }
             });
+
+            document.getElementById('loadRegionBtn').addEventListener('click', function() {
+                const regionCode = document.getElementById('regionSelect').value;
+                loadRegion(regionCode);
+            });
         }
 
         // Geographic Data Functions
@@ -567,9 +591,9 @@
                     case 'osm':
                         await fetchOpenStreetMapData();
                         break;
-//                    case 'local':
-//                        await fetchLocalCoastlineData();
-//                        break;
+                    case 'local':
+                        await fetchLocalCoastlineData();
+                        break;
                     case 'none':
                         geoFeatures = [];
                         break;
@@ -670,12 +694,131 @@
             return coords;
         }
 
+        // Regional Data Functions
+        async function loadAvailableRegions() {
+            // Always populate with Prestwick first
+            populateRegionSelect();
+            
+            try {
+                // Always use localhost for regions API (local visualizer_bridge service)
+                const baseUrl = 'http://localhost:8080';
+                
+                const response = await fetch(`${baseUrl}/api/regions`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    availableRegions = data.regions;
+                    populateRegionSelect();  // Repopulate with API data
+                    addLogEntry(`Loaded ${Object.keys(availableRegions).length} additional regions from server`);
+                } else {
+                    throw new Error(data.error || 'Failed to load regions');
+                }
+            } catch (error) {
+                console.error('Failed to load regions from server:', error);
+                addLogEntry('Using hardcoded regional configuration');
+            }
+            
+            // Auto-load Prestwick region
+            loadRegion('PRESTWICK');
+        }
+        
+        function populateRegionSelect() {
+            const regionSelect = document.getElementById('regionSelect');
+            regionSelect.innerHTML = '';
+            
+            // Add hardcoded Prestwick option as default
+            const prestwickOption = document.createElement('option');
+            prestwickOption.value = 'PRESTWICK';
+            prestwickOption.textContent = 'Prestwick Region, Scotland';
+            prestwickOption.selected = true;
+            regionSelect.appendChild(prestwickOption);
+            
+            // Add Gulf Coast as fallback
+            const gulfOption = document.createElement('option');
+            gulfOption.value = '';
+            gulfOption.textContent = 'Gulf Coast (Fallback)';
+            regionSelect.appendChild(gulfOption);
+            
+            // Add any loaded regions
+            for (const [code, info] of Object.entries(availableRegions)) {
+                if (code !== 'PRESTWICK') {  // Don't duplicate Prestwick
+                    const option = document.createElement('option');
+                    option.value = code;
+                    option.textContent = `${info.name}, ${info.country}`;
+                    regionSelect.appendChild(option);
+                }
+            }
+        }
+        
+        async function loadRegion(regionCode) {
+            if (!regionCode) {
+                // Reset to default Gulf Coast
+                radarCenterLat = 31.3228;
+                radarCenterLon = -86.0792;
+                currentRegion = null;
+                document.getElementById('currentRegion').textContent = 'Gulf Coast';
+                addLogEntry('Reset to Gulf Coast region');
+                return;
+            }
+            
+            // Handle Prestwick specifically
+            if (regionCode === 'PRESTWICK') {
+                radarCenterLat = 55.5094;
+                radarCenterLon = -4.5967;
+                currentRegion = 'PRESTWICK';
+                
+                // Update UI
+                document.getElementById('centerLat').value = radarCenterLat;
+                document.getElementById('centerLon').value = radarCenterLon;
+                document.getElementById('centerCoords').textContent = 
+                    `${radarCenterLat.toFixed(4)}, ${radarCenterLon.toFixed(4)}`;
+                document.getElementById('currentRegion').textContent = 'Prestwick Region';
+                
+                addLogEntry('Loaded region: Prestwick Region, Scotland');
+                
+                // Refresh geographic data if enabled
+                if (showCoastline) {
+                    fetchGeographicData();
+                }
+                
+                updateRadar();
+                return;
+            }
+            
+            // Handle other regions from API
+            if (availableRegions[regionCode]) {
+                const regionInfo = availableRegions[regionCode];
+                radarCenterLat = regionInfo.center.lat;
+                radarCenterLon = regionInfo.center.lon;
+                currentRegion = regionCode;
+                
+                // Update UI
+                document.getElementById('centerLat').value = radarCenterLat;
+                document.getElementById('centerLon').value = radarCenterLon;
+                document.getElementById('centerCoords').textContent = 
+                    `${radarCenterLat.toFixed(4)}, ${radarCenterLon.toFixed(4)}`;
+                document.getElementById('currentRegion').textContent = regionInfo.name;
+                
+                addLogEntry(`Loaded region: ${regionInfo.name}, ${regionInfo.country}`);
+                
+                // Refresh geographic data if enabled
+                if (showCoastline) {
+                    fetchGeographicData();
+                }
+                
+                updateRadar();
+            }
+        }
+
         async function fetchLocalCoastlineData() {
             try {
-                const dump1090Url = document.getElementById('dump1090Url').value;
-                const baseUrl = dump1090Url.replace('/tmp/aircraft.json', '');
+                // Always use localhost for coastline data (local visualizer_bridge service)
+                const baseUrl = 'http://localhost:8080';
                 
-                const url = `${baseUrl}/api/coastline?lat=${radarCenterLat}&lon=${radarCenterLon}&range=${RADAR_RANGE_NM}`;
+                let url = `${baseUrl}/api/coastline?lat=${radarCenterLat}&lon=${radarCenterLon}&range=${RADAR_RANGE_NM}`;
+                if (currentRegion) {
+                    url += `&region=${currentRegion}`;
+                }
                 
                 const response = await fetch(url);
                 const data = await response.json();
@@ -716,7 +859,10 @@
                 const dump1090Url = document.getElementById('dump1090Url').value;
                 const updateRate = parseFloat(document.getElementById('updateRate').value) * 1000;
                 
-                fetch(dump1090Url + '/tmp/aircraft.json')
+                // Use the URL directly if it already contains the full path, otherwise append the path
+                const testUrl = dump1090Url.includes('aircraft.json') ? dump1090Url : dump1090Url + '/tmp/aircraft.json';
+                
+                fetch(testUrl)
                     .then(response => response.json())
                     .then(data => {
                         isConnected = true;
@@ -799,16 +945,33 @@
         function fetchAircraftData() {
             const dump1090Url = document.getElementById('dump1090Url').value;
             
-            fetch(dump1090Url + '/tmp/aircraft.json')
-                .then(response => response.json())
+            // Use the URL directly if it already contains the full path, otherwise append the path
+            const fetchUrl = dump1090Url.includes('aircraft.json') ? dump1090Url : dump1090Url + '/tmp/aircraft.json';
+            
+            fetch(fetchUrl, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data && data.aircraft) {
                         updateAircraftDataAndTrails(data.aircraft);
+                        console.log(`Fetched ${data.aircraft.length} aircraft from ${fetchUrl}`);
+                    } else {
+                        console.log('No aircraft data received');
                     }
                 })
                 .catch(error => {
                     console.error('Data fetch error:', error);
-                    addLogEntry('Data fetch error - check dump1090 connection');
+                    addLogEntry(`Data fetch error: ${error.message} - check dump1090 connection`);
                 });
         }
 
@@ -996,7 +1159,8 @@
 
         function drawFeatureType(type, features, centerX, centerY, maxRadius) {
             const styles = {
-                coast: { color: '#4a8a4a', size: 5, label: 'COAST' },
+                coast: { color: '#4a8a4a', size: 2, label: 'COAST' },
+                coastline: { color: '#4a8a4a', size: 2, label: 'COASTLINE' },
                 river: { color: '#4a6a8a', size: 4, label: 'RIVER' },
                 lake: { color: '#6a8aaa', size: 6, label: 'LAKE' },
                 airport: { color: '#aa4a6a', size: 8, label: 'AIRPORT' },
@@ -1024,45 +1188,62 @@
                         ctx.moveTo(x, y-style.size);
                         ctx.lineTo(x, y+style.size);
                         ctx.stroke();
+                        
+                        // Add label for airports
+                        if (feature.name) {
+                            ctx.fillStyle = style.color;
+                            ctx.font = '10px Courier New';
+                            ctx.fillText(feature.name, x + style.size + 2, y - 2);
+                        }
                     } else if (type === 'city') {
                         // Draw city symbol (square)
                         ctx.fillRect(x-style.size/2, y-style.size/2, style.size, style.size);
                         ctx.strokeRect(x-style.size/2, y-style.size/2, style.size, style.size);
+                        
+                        // Add label for cities
+                        if (feature.name) {
+                            ctx.fillStyle = style.color;
+                            ctx.font = '10px Courier New';
+                            ctx.fillText(feature.name, x + style.size + 2, y - 2);
+                        }
+                    } else if (type === 'coastline' || type === 'coast') {
+                        // Don't draw individual points for coastline - will be drawn as connected lines below
                     } else {
-                        // Draw circle for other features
+                        // Draw circle for other features (rivers, lakes, etc.)
                         ctx.beginPath();
                         ctx.arc(x, y, style.size, 0, 2 * Math.PI);
                         ctx.fill();
                         ctx.stroke();
-                    }
-                    
-                    // Add label if feature has a name
-                    if (feature.name) {
-                        ctx.fillStyle = style.color;
-                        ctx.font = '10px Courier New';
-                        ctx.fillText(feature.name, x + style.size + 2, y - 2);
+                        
+                        // Add label for other features
+                        if (feature.name) {
+                            ctx.fillStyle = style.color;
+                            ctx.font = '10px Courier New';
+                            ctx.fillText(feature.name, x + style.size + 2, y - 2);
+                        }
                     }
                 }
             });
 
-            // Connect coastline points
-            if (type === 'coast' && features.length > 1) {
-                ctx.strokeStyle = style.color;
-                ctx.lineWidth = 2;
-                ctx.setLineDash([5, 3]);
-                ctx.beginPath();
+            // Draw coastline points as individual small dots (like real radar)
+            if ((type === 'coast' || type === 'coastline') && features.length > 0) {
+                ctx.fillStyle = style.color;
+                ctx.globalAlpha = 0.6;
                 
-                const sortedFeatures = features.sort((a, b) => a.lon - b.lon);
-                sortedFeatures.forEach((feature, i) => {
+                features.forEach(feature => {
                     const screenPos = getScreenPosition(feature.lat, feature.lon, centerX, centerY, maxRadius);
-                    if (i === 0) {
-                        ctx.moveTo(screenPos.x, screenPos.y);
-                    } else {
-                        ctx.lineTo(screenPos.x, screenPos.y);
+                    const x = screenPos.x;
+                    const y = screenPos.y;
+                    
+                    if (x > 0 && y > 0 && x < canvas.width && y < canvas.height) {
+                        // Draw small dot for coastline point
+                        ctx.beginPath();
+                        ctx.arc(x, y, 0.5, 0, 2 * Math.PI);
+                        ctx.fill();
                     }
                 });
-                ctx.stroke();
-                ctx.setLineDash([]);
+                
+                ctx.globalAlpha = 1.0;
             }
         }
 
@@ -1327,7 +1508,7 @@
              log.innerHTML += `<div class="log-entry">🧠 You: ${input}</div>`;
 
             try {
-                const res = await fetch(`http://localhost:11435/ask?q=${encodeURIComponent(input)}`);
+                const res = await fetch(`http://localhost:11435/ask?q=${encodeURIComponent(input)}&threshold=0.3`);
                 const data = await res.json();
 
                 if (data.results && Array.isArray(data.results)) {

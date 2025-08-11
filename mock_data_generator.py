@@ -10,13 +10,27 @@ import random
 import math
 import threading
 import os
+import sys
 
-# Gulf Coast area coordinates for realistic aircraft positions
-GULF_COAST_CENTER = {"lat": 30.5, "lon": -87.5}
+# Add the current directory to Python path to import regional_data
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+try:
+    from regional_data import regional_manager
+    REGIONAL_SUPPORT = True
+except ImportError:
+    REGIONAL_SUPPORT = False
+    print("Warning: Regional data support not available")
+
+# Configuration - can be overridden by command line arguments
+REGION_CODE = os.getenv('REGION_CODE', None)  # Set to 'PRESTWICK' for Prestwick region
+
+# Default Gulf Coast area coordinates for realistic aircraft positions
+DEFAULT_CENTER = {"lat": 30.5, "lon": -87.5}
 RANGE_DEGREES = 2.0  # Approximately 120 nautical miles
 
-# Common aircraft types and their typical cruise speeds/altitudes
-AIRCRAFT_TYPES = [
+# Default aircraft types and airlines (fallback if no regional data)
+DEFAULT_AIRCRAFT_TYPES = [
     {"type": "A320", "speed_range": (400, 480), "alt_range": (30000, 39000)},
     {"type": "B737", "speed_range": (420, 500), "alt_range": (31000, 39000)},
     {"type": "E175", "speed_range": (380, 450), "alt_range": (30000, 37000)},
@@ -25,8 +39,7 @@ AIRCRAFT_TYPES = [
     {"type": "B738", "speed_range": (420, 500), "alt_range": (31000, 39000)},
 ]
 
-# Airlines and their typical flight number patterns
-AIRLINES = [
+DEFAULT_AIRLINES = [
     {"name": "DAL", "prefix": "DAL", "range": (1, 9999)},
     {"name": "AAL", "prefix": "AAL", "range": (1, 9999)},
     {"name": "UAL", "prefix": "UAL", "range": (1, 9999)},
@@ -34,8 +47,7 @@ AIRLINES = [
     {"name": "JBU", "prefix": "JBU", "range": (1, 999)},
 ]
 
-# Sample ACARS message texts
-ACARS_MESSAGES = [
+DEFAULT_ACARS_MESSAGES = [
     "ENGINE DATA OK",
     "FUEL STATUS: 12500 LBS",
     "WEATHER REQUEST: KATL",
@@ -48,15 +60,77 @@ ACARS_MESSAGES = [
     "TURBULENCE REPORT: LIGHT CHOP",
 ]
 
+# Global variables for current region configuration
+CURRENT_CENTER = DEFAULT_CENTER
+AIRCRAFT_TYPES = DEFAULT_AIRCRAFT_TYPES
+AIRLINES = DEFAULT_AIRLINES
+ACARS_MESSAGES = DEFAULT_ACARS_MESSAGES
+
+def initialize_region(region_code=None):
+    """Initialize regional data configuration"""
+    global CURRENT_CENTER, AIRCRAFT_TYPES, AIRLINES, ACARS_MESSAGES
+    
+    if not region_code or not REGIONAL_SUPPORT:
+        print(f"Using default Gulf Coast configuration")
+        return
+        
+    try:
+        # Load regional data
+        region_data = regional_manager.load_region(region_code)
+        if not region_data:
+            print(f"Region {region_code} not found, using default configuration")
+            return
+            
+        # Update center coordinates
+        center = region_data['region']['center']
+        CURRENT_CENTER = {"lat": center['lat'], "lon": center['lon']}
+        
+        # Update aircraft types
+        regional_aircraft = region_data.get('aircraft_types', [])
+        if regional_aircraft:
+            AIRCRAFT_TYPES = []
+            for ac in regional_aircraft:
+                AIRCRAFT_TYPES.append({
+                    "type": ac['type'],
+                    "speed_range": tuple(ac['speed_range']),
+                    "alt_range": tuple(ac['alt_range'])
+                })
+        
+        # Update airlines
+        regional_airlines = region_data.get('airlines', [])
+        if regional_airlines:
+            AIRLINES = []
+            for airline in regional_airlines:
+                AIRLINES.append({
+                    "name": airline['name'],
+                    "prefix": airline['prefix'],
+                    "range": tuple(airline['range'])
+                })
+        
+        # Update ACARS messages
+        regional_messages = region_data.get('acars_messages', [])
+        if regional_messages:
+            ACARS_MESSAGES = regional_messages
+            
+        print(f"✅ Loaded regional configuration for {region_data['region']['name']}")
+        print(f"   Center: {CURRENT_CENTER['lat']:.4f}, {CURRENT_CENTER['lon']:.4f}")
+        print(f"   Aircraft types: {len(AIRCRAFT_TYPES)}")
+        print(f"   Airlines: {len(AIRLINES)}")
+        print(f"   ACARS messages: {len(ACARS_MESSAGES)}")
+        
+    except Exception as e:
+        print(f"Error loading region {region_code}: {e}")
+        print("Using default configuration")
+
 class MockAircraft:
     def __init__(self):
         self.hex = format(random.randint(0x100000, 0xFFFFFF), '06X')
         self.flight = self.generate_flight_number()
         self.aircraft_type = random.choice(AIRCRAFT_TYPES)
         
-        # Start position in Gulf Coast area
-        self.lat = GULF_COAST_CENTER["lat"] + random.uniform(-RANGE_DEGREES, RANGE_DEGREES)
-        self.lon = GULF_COAST_CENTER["lon"] + random.uniform(-RANGE_DEGREES, RANGE_DEGREES)
+        # Start position in current region area
+        self.lat = CURRENT_CENTER["lat"] + random.uniform(-RANGE_DEGREES, RANGE_DEGREES)
+        self.lon = CURRENT_CENTER["lon"] + random.uniform(-RANGE_DEGREES, RANGE_DEGREES)
         
         # Random heading and speed
         self.track = random.uniform(0, 359)
@@ -233,6 +307,13 @@ def write_vdl2_data(aircraft_list):
 def main():
     print("🚀 Starting Mock Data Generator for UDP Bridge")
     print("=" * 60)
+    
+    # Initialize regional configuration
+    region_code = REGION_CODE
+    if len(sys.argv) > 1:
+        region_code = sys.argv[1].upper()
+    
+    initialize_region(region_code)
     
     # Create /tmp directory if it doesn't exist
     os.makedirs('/tmp', exist_ok=True)

@@ -33,7 +33,7 @@ def get_embedding(text):
 def extract_semantic_messages():
     summaries = []
 
-    # ADS-B
+    # ADS-B with airspace information
     try:
         with open(ADS_B_FILE) as f:
             adsb = json.load(f).get("aircraft", [])
@@ -44,7 +44,14 @@ def extract_semantic_messages():
                 speed = a.get("gs", "unknown")
                 lat = a.get("lat", "?")
                 lon = a.get("lon", "?")
-                summaries.append(f"ADS-B: {flight} ({hexcode}) at {alt} ft, speed {speed} knots, position {lat}, {lon}")
+                
+                # Include airspace information if available
+                airspace_info = ""
+                if a.get("airspace"):
+                    airspace = a["airspace"]
+                    airspace_info = f", in {airspace['name']} ({airspace['type']}) - {airspace['description']}"
+                
+                summaries.append(f"ADS-B: {flight} ({hexcode}) at {alt} ft, speed {speed} knots, position {lat}, {lon}{airspace_info}")
     except Exception as e:
         print(f"[ADS-B load error] {e}")
 
@@ -120,7 +127,7 @@ def rebuild_index():
 
     print(f"✅ Indexed {len(metadata)} messages")
 
-def generate_chat_response(query, context_messages, chat_model="gemma3:4b"):
+def generate_chat_response(query, context_messages, chat_model="gemma:2b"):
     """Generate conversational response using retrieved context"""
     
     # Format context for the chat model
@@ -174,7 +181,7 @@ def chat_endpoint():
     query = request.args.get("q", "")
     threshold = float(request.args.get("threshold", "0.3"))  # Lower default for chat
     max_context = int(request.args.get("max_context", "3"))  # Limit context for chat
-    chat_model = request.args.get("model", "gemma3:4b")
+    chat_model = request.args.get("model", "gemma:2b")
     
     if not query:
         return jsonify({"error": "Missing query parameter 'q'"})

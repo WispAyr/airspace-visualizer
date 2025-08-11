@@ -17,6 +17,7 @@ import os
 import math
 from flask import Flask, jsonify, make_response, request
 from collections import deque
+from regional_data import regional_manager
 
 def add_cors_headers(response):
     """Add CORS headers to response"""
@@ -42,13 +43,22 @@ latest_aircraft_data = {"now": time.time(), "aircraft": []}
 recent_acars_messages = deque(maxlen=100)
 latest_vdl2_message = None
 
-def generate_coastline_data(center_lat, center_lon, range_nm):
-    """Generate simplified coastline data for the Gulf Coast region"""
+def generate_coastline_data(center_lat, center_lon, range_nm, region_code=None):
+    """Generate coastline data for any region"""
     
-    # Convert nautical miles to degrees (approximate)
-    range_deg = range_nm / 60.0
+    # Try to get regional data first
+    if region_code:
+        features = regional_manager.generate_geographic_features(center_lat, center_lon, range_nm, region_code)
+        if features:
+            return {
+                "center": {"lat": center_lat, "lon": center_lon},
+                "range_nm": range_nm,
+                "features": features,
+                "feature_count": len(features),
+                "region": region_code
+            }
     
-    # Gulf Coast approximate coastline data (simplified)
+    # Fallback to Gulf Coast data if no regional data available
     gulf_coast_points = [
         # Florida Panhandle to Alabama
         {"lat": 30.1588, "lon": -87.6947, "type": "coast"},  # Pensacola
@@ -84,27 +94,12 @@ def generate_coastline_data(center_lat, center_lon, range_nm):
                 "distance_nm": distance
             })
     
-    # Add some artificial islands and features for demonstration
-    if range_nm > 50:  # Only show at longer ranges
-        artificial_features = [
-            {"lat": center_lat + 0.5, "lon": center_lon - 0.3, "type": "island"},
-            {"lat": center_lat - 0.3, "lon": center_lon + 0.4, "type": "island"},
-        ]
-        for feature in artificial_features:
-            distance = haversine_distance(center_lat, center_lon, feature["lat"], feature["lon"])
-            if distance <= range_nm:
-                visible_features.append({
-                    "lat": feature["lat"],
-                    "lon": feature["lon"],
-                    "type": feature["type"],
-                    "distance_nm": distance
-                })
-    
     return {
         "center": {"lat": center_lat, "lon": center_lon},
         "range_nm": range_nm,
         "features": visible_features,
-        "feature_count": len(visible_features)
+        "feature_count": len(visible_features),
+        "region": "GULF_COAST"
     }
 
 def haversine_distance(lat1, lon1, lat2, lon2):
@@ -311,8 +306,9 @@ def get_coastline():
         center_lat = float(request.args.get('lat', 31.3228))  # Default to Elba, AL
         center_lon = float(request.args.get('lon', -86.0792))
         range_nm = float(request.args.get('range', 100))
+        region_code = request.args.get('region', None)
         
-        coastline_data = generate_coastline_data(center_lat, center_lon, range_nm)
+        coastline_data = generate_coastline_data(center_lat, center_lon, range_nm, region_code)
         
         return jsonify({
             "status": "success",
@@ -323,6 +319,23 @@ def get_coastline():
     except Exception as e:
         return jsonify({
             "status": "error",
+            "error": str(e),
+            "timestamp": time.time()
+        }), 400
+
+@adsb_app.route('/api/regions')
+def get_regions():
+    """Get available regions"""
+    try:
+        regions = regional_manager.get_available_regions()
+        return jsonify({
+            "status": "success",
+            "regions": regions,
+            "timestamp": time.time()
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error", 
             "error": str(e),
             "timestamp": time.time()
         }), 400

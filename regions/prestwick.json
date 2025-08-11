@@ -1,0 +1,231 @@
+{
+  "region": {
+    "name": "Prestwick Region",
+    "code": "PRESTWICK",
+    "country": "Scotland",
+    "center": {
+      "lat": 55.5094,
+      "lon": -4.5967
+    },
+    "range_nm": 100,
+    "timezone": "Europe/London"
+  },
+  "airports": [
+    {
+      "icao": "EGPK",
+      "iata": "PIK",
+      "name": "Glasgow Prestwick Airport",
+      "location": "Prestwick, South Ayrshire, Scotland",
+      "lat": 55.5094,
+      "lon": -4.5967,
+      "elevation_ft": 65,
+      "type": "airport",
+      "runways": [
+        {
+          "designation": "03/21",
+          "length_ft": 6241,
+          "width_ft": 148,
+          "surface": "Asphalt"
+        },
+        {
+          "designation": "12/30", 
+          "length_ft": 9772,
+          "width_ft": 151,
+          "surface": "Asphalt"
+        }
+      ],
+      "frequencies": {
+        "tower": "118.150",
+        "ground": "121.700",
+        "atis": "126.025",
+        "approach": "119.125",
+        "departure": "119.125",
+        "clearance_delivery": "121.700"
+      }
+    },
+    {
+      "icao": "EGPF",
+      "iata": "GLA",
+      "name": "Glasgow Airport",
+      "location": "Glasgow, Scotland", 
+      "lat": 55.8719,
+      "lon": -4.4331,
+      "elevation_ft": 26,
+      "type": "airport"
+    },
+    {
+      "icao": "EGPH",
+      "iata": "EDI",
+      "name": "Edinburgh Airport",
+      "location": "Edinburgh, Scotland",
+      "lat": 55.9500,
+      "lon": -3.3725,
+      "elevation_ft": 135,
+      "type": "airport"
+    }
+  ],
+  "geographic_features": [
+    {
+      "name": "Firth of Clyde",
+      "type": "coast",
+      "coordinates": [
+        {"lat": 55.4500, "lon": -4.8000},
+        {"lat": 55.4800, "lon": -4.7500},
+        {"lat": 55.5100, "lon": -4.7000},
+        {"lat": 55.5400, "lon": -4.6500},
+        {"lat": 55.5700, "lon": -4.6000},
+        {"lat": 55.6000, "lon": -4.5500},
+        {"lat": 55.6300, "lon": -4.5000},
+        {"lat": 55.6600, "lon": -4.4500}
+      ]
+    },
+    {
+      "name": "Ayr Bay",
+      "type": "coast",
+      "coordinates": [
+        {"lat": 55.4600, "lon": -4.6300},
+        {"lat": 55.4700, "lon": -4.6200},
+        {"lat": 55.4800, "lon": -4.6100},
+        {"lat": 55.4900, "lon": -4.6000}
+      ]
+    },
+    {
+      "name": "River Clyde",
+      "type": "river",
+      "coordinates": [
+        {"lat": 55.8600, "lon": -4.2500},
+        {"lat": 55.8400, "lon": -4.3000},
+        {"lat": 55.8200, "lon": -4.3500},
+        {"lat": 55.8000, "lon": -4.4000},
+        {"lat": 55.7800, "lon": -4.4500}
+      ]
+    },
+    {
+      "name": "Arran Island",
+      "type": "island",
+      "coordinates": [
+        {"lat": 55.5800, "lon": -5.2500}
+      ]
+    },
+    {
+      "name": "Ailsa Craig",
+      "type": "island",
+      "coordinates": [
+        {"lat": 55.2500, "lon": -5.1100}
+      ]
+    }
+  ],
+  "cities": [
+    {
+      "name": "Glasgow",
+      "type": "city",
+      "lat": 55.8642,
+      "lon": -4.2518,
+      "population": 635130
+    },
+    {
+      "name": "Edinburgh", 
+      "type": "city",
+      "lat": 55.9533,
+      "lon": -3.1883,
+      "population": 518500
+    },
+    {
+      "name": "Ayr",
+      "type": "city",
+      "lat": 55.4581,
+      "lon": -4.6293,
+      "population": 46849
+    },
+    {
+      "name": "Prestwick",
+      "type": "town",
+      "lat": 55.4944,
+      "lon": -4.6142,
+      "population": 14934
+    },
+    {
+      "name": "Troon",
+      "type": "town", 
+      "lat": 55.5419,
+      "lon": -4.6581,
+      "population": 14766
+    }
+  ],
+  "airlines": [
+    {
+      "name": "Ryanair",
+      "prefix": "FR",
+      "callsign": "RYR",
+      "range": [1, 9999],
+      "common_routes": ["Dublin", "London Stansted", "Barcelona", "Alicante", "Faro"]
+    },
+    {
+      "name": "Loganair",
+      "prefix": "LOG",
+      "callsign": "LGN", 
+      "range": [1, 999],
+      "common_routes": ["Stornoway", "Kirkwall", "Sumburgh", "Campbeltown", "Islay"]
+    },
+    {
+      "name": "British Airways",
+      "prefix": "BA",
+      "callsign": "BAW",
+      "range": [1, 9999],
+      "common_routes": ["London Heathrow", "London Gatwick", "Manchester"]
+    },
+    {
+      "name": "easyJet",
+      "prefix": "EZY",
+      "callsign": "EZY",
+      "range": [1, 9999],
+      "common_routes": ["London Luton", "Bristol", "Belfast", "Amsterdam"]
+    }
+  ],
+  "aircraft_types": [
+    {
+      "type": "B737",
+      "variants": ["B737-800", "B737 MAX 8"],
+      "speed_range": [420, 500],
+      "alt_range": [31000, 39000],
+      "common_airlines": ["Ryanair", "TUI"]
+    },
+    {
+      "type": "A320",
+      "variants": ["A320-200", "A319", "A321"],
+      "speed_range": [400, 480], 
+      "alt_range": [30000, 39000],
+      "common_airlines": ["British Airways", "easyJet"]
+    },
+    {
+      "type": "DHC6",
+      "variants": ["DHC-6 Twin Otter"],
+      "speed_range": [150, 200],
+      "alt_range": [5000, 15000],
+      "common_airlines": ["Loganair"]
+    },
+    {
+      "type": "BN2T",
+      "variants": ["BN2T Turbine Islander"],
+      "speed_range": [140, 180],
+      "alt_range": [3000, 12000],
+      "common_airlines": ["Loganair"]
+    }
+  ],
+  "acars_messages": [
+    "ENGINE DATA NORMAL",
+    "FUEL STATUS: 8500 KG",
+    "WEATHER REQUEST: EGPK",
+    "POSITION REPORT: 55.5N 004.6W",
+    "ETA REVISED: 1545Z",
+    "GATE INFO REQUEST",
+    "MAINTENANCE: HYDRAULICS OK",
+    "DISPATCH: ON SCHEDULE",
+    "CREW REPORT: NORMAL OPS",
+    "TURBULENCE REPORT: MODERATE",
+    "REQUEST DESCENT FL100",
+    "APPROACH BRIEFING COMPLETE",
+    "RUNWAY IN SIGHT",
+    "LANDED PRESTWICK RW30"
+  ]
+}

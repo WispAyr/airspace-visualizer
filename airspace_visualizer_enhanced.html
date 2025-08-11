@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional ADS-B Radar Display - Prestwick Control</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #0a0f0a 0%, #1a2f1a 50%, #0f1f0f 100%);
+            color: #00ff00;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 320px 1fr 380px;
+            grid-template-rows: 60px 1fr 180px;
+            height: 100vh;
+            gap: 3px;
+            padding: 3px;
+        }
+
+        /* Header Bar */
+        .header-bar {
+            grid-column: 1 / -1;
+            background: linear-gradient(90deg, #001100 0%, #003300 50%, #001100 100%);
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 4px 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .status-light {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            box-shadow: 0 0 8px;
+        }
+
+        .led.green { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
+        .led.red { background: #ff0000; box-shadow: 0 0 8px #ff0000; }
+        .led.orange { background: #ff8800; box-shadow: 0 0 8px #ff8800; }
+
+        /* Left Control Panel */
+        .control-panel {
+            background: rgba(0, 20, 0, 0.9);
+            border: 2px solid #00aa00;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-container {
+            display: flex;
+            background: #002200;
+            border-bottom: 2px solid #00aa00;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-right: 1px solid #00aa00;
+        }
+
+        .tab:last-child { border-right: none; }
+        
+        .tab.active {
+            background: #004400;
+            color: #00ff00;
+            box-shadow: inset 0 3px 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .tab:hover:not(.active) {
+            background: #003300;
+        }
+
+        .tab-content {
+            padding: 15px;
+            height: calc(100% - 45px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #00aa00 #002200;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+            padding: 12px;
+            background: rgba(0, 40, 0, 0.5);
+            border-radius: 8px;
+            border: 1px solid #004400;
+        }
+
+        .control-group h4 {
+            color: #00ff00;
+            font-size: 13px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .control-label {
+            font-size: 11px;
+            color: #88cc88;
+            min-width: 100px;
+        }
+
+        .slider-container {
+            flex: 1;
+            margin-left: 10px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 4px;
+            background: #002200;
+            border-radius: 2px;
+            outline: none;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .slider:hover { opacity: 1; }
+
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #00ff00;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 8px #00ff00;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #00ff00;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 8px #00ff00;
+        }
+
+        .input-field {
+            background: #001100;
+            border: 1px solid #00aa00;
+            border-radius: 4px;
+            color: #00ff00;
+            padding: 6px 8px;
+            font-size: 11px;
+            font-family: inherit;
+            width: 100%;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #004400 0%, #006600 100%);
+            border: 1px solid #00aa00;
+            border-radius: 6px;
+            color: #00ff00;
+            padding: 8px 16px;
+            font-size: 11px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #006600 0%, #008800 100%);
+            box-shadow: 0 4px 15px rgba(0, 255, 0, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px 0;
+        }
+
+        .checkbox {
+            width: 16px;
+            height: 16px;
+            appearance: none;
+            background: #001100;
+            border: 2px solid #00aa00;
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .checkbox:checked {
+            background: #00aa00;
+        }
+
+        .checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            top: -2px;
+            left: 2px;
+            color: #000;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Radar Display */
+        .radar-container {
+            background: radial-gradient(circle at center, #001a00 0%, #000800 70%, #000400 100%);
+            border: 3px solid #00aa00;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.4), inset 0 0 60px rgba(0, 255, 0, 0.1);
+        }
+
+        #radarCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: crosshair;
+        }
+
+        .radar-overlay {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #00aa00;
+            font-size: 11px;
+            backdrop-filter: blur(5px);
+        }
+
+        .radar-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        /* Contact List */
+        .contact-panel {
+            background: rgba(0, 20, 0, 0.9);
+            border: 2px solid #00aa00;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
+        }
+
+        .contact-header {
+            background: #002200;
+            padding: 15px;
+            border-bottom: 2px solid #00aa00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contact-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #00ff00;
+        }
+
+        .aircraft-count {
+            background: #004400;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            border: 1px solid #00aa00;
+        }
+
+        .contact-list {
+            height: calc(100% - 70px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #00aa00 #002200;
+        }
+
+        .contact-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #003300;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .contact-item:hover {
+            background: rgba(0, 60, 0, 0.5);
+            border-left: 4px solid #00ff00;
+        }
+
+        .contact-item.selected {
+            background: rgba(0, 80, 0, 0.7);
+            border-left: 4px solid #00ff00;
+        }
+
+        .contact-flight {
+            font-size: 14px;
+            font-weight: 600;
+            color: #00ff00;
+            margin-bottom: 4px;
+        }
+
+        .contact-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 10px;
+            color: #88cc88;
+        }
+
+        .contact-detail {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Communications Log */
+        .comms-panel {
+            background: rgba(0, 20, 0, 0.9);
+            border: 2px solid #00aa00;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
+        }
+
+        .comms-header {
+            background: #002200;
+            padding: 10px 15px;
+            border-bottom: 2px solid #00aa00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .comms-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #00ff00;
+        }
+
+        .message-count {
+            background: #004400;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            border: 1px solid #00aa00;
+        }
+
+        .comms-log {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #00aa00 #002200;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 8px 10px;
+            background: rgba(0, 40, 0, 0.3);
+            border-radius: 6px;
+            border-left: 3px solid #004400;
+            font-size: 11px;
+            line-height: 1.4;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .log-entry.acars {
+            border-left-color: #0088ff;
+            background: rgba(0, 20, 40, 0.3);
+        }
+
+        .log-entry.error {
+            border-left-color: #ff4400;
+            background: rgba(40, 0, 0, 0.3);
+            color: #ff8888;
+        }
+
+        .log-entry.ai {
+            border-left-color: #ff00ff;
+            background: rgba(40, 0, 40, 0.3);
+            color: #ffaaff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* AI Assistant */
+        .ai-panel {
+            background: rgba(0, 20, 0, 0.9);
+            border: 2px solid #00aa00;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
+        }
+
+        .ai-icon {
+            font-size: 24px;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .ai-input {
+            flex: 1;
+            background: #001100;
+            border: 2px solid #00aa00;
+            border-radius: 8px;
+            color: #00ff00;
+            padding: 12px 15px;
+            font-size: 13px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .ai-input:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+
+        .ai-send {
+            background: linear-gradient(135deg, #004400 0%, #006600 100%);
+            border: 2px solid #00aa00;
+            border-radius: 8px;
+            color: #00ff00;
+            padding: 12px 20px;
+            font-size: 13px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .ai-send:hover {
+            background: linear-gradient(135deg, #006600 0%, #008800 100%);
+            box-shadow: 0 6px 20px rgba(0, 255, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .ai-status {
+            font-size: 11px;
+            color: #88cc88;
+            margin-left: 10px;
+        }
+
+        /* Statistics Panel */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: rgba(0, 40, 0, 0.5);
+            border: 1px solid #004400;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #00ff00;
+            text-shadow: 0 0 8px #00ff00;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #88cc88;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1400px) {
+            .main-container {
+                grid-template-columns: 280px 1fr 320px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 60px 1fr 200px 150px;
+            }
+            
+            .control-panel {
+                grid-column: 1;
+                grid-row: 4;
+            }
+            
+            .contact-panel {
+                position: absolute;
+                right: 10px;
+                top: 70px;
+                width: 300px;
+                height: 400px;
+                z-index: 1000;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .rotate {
+            animation: rotate 4s linear infinite;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #001100;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00aa00;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header Bar -->
+        <div class="header-bar">
+            <div class="header-title">🛩️ PRESTWICK RADAR CONTROL</div>
+            <div class="status-indicators">
+                <div class="status-light">
+                    <div class="led green" id="adsb-status"></div>
+                    <span>ADS-B</span>
+                </div>
+                <div class="status-light">
+                    <div class="led orange" id="vdl2-status"></div>
+                    <span>VDL2</span>
+                </div>
+                <div class="status-light">
+                    <div class="led green" id="ai-status"></div>
+                    <span>AI</span>
+                </div>
+                <div class="status-light">
+                    <div class="led green" id="geo-status"></div>
+                    <span>GEO</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Left Control Panel -->
+        <div class="control-panel">
+            <div class="tab-container">
+                <div class="tab active" data-tab="radar">RADAR</div>
+                <div class="tab" data-tab="comms">COMMS</div>
+                <div class="tab" data-tab="region">REGION</div>
+                <div class="tab" data-tab="settings">SETTINGS</div>
+            </div>
+            
+            <div class="tab-content">
+                <!-- Radar Tab -->
+                <div class="tab-pane active" id="radar-tab">
+                    <div class="control-group">
+                        <h4>📡 Radar Configuration</h4>
+                        
+                        <!-- Zoom Controls -->
+                        <div class="zoom-controls" style="margin-bottom: 15px;">
+                            <label style="color: #00ff88; font-size: 11px; display: block; margin-bottom: 5px;">🔍 Quick Range:</label>
+                            <div style="display: flex; gap: 3px; margin-bottom: 5px;">
+                                <button class="zoom-btn" onclick="setRadarRange(5)" style="flex: 1; padding: 3px; font-size: 9px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 3px; cursor: pointer;">5nm</button>
+                                <button class="zoom-btn" onclick="setRadarRange(10)" style="flex: 1; padding: 3px; font-size: 9px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 3px; cursor: pointer;">10nm</button>
+                                <button class="zoom-btn" onclick="setRadarRange(25)" style="flex: 1; padding: 3px; font-size: 9px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 3px; cursor: pointer;">25nm</button>
+                                <button class="zoom-btn" onclick="setRadarRange(50)" style="flex: 1; padding: 3px; font-size: 9px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 3px; cursor: pointer;">50nm</button>
+                            </div>
+                            <div style="display: flex; gap: 3px;">
+                                <button class="zoom-btn" onclick="setRadarRange(100)" style="flex: 1; padding: 3px; font-size: 9px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 3px; cursor: pointer;">100nm</button>
+                                <button class="zoom-btn" onclick="setRadarRange(200)" style="flex: 1; padding: 3px; font-size: 9px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 3px; cursor: pointer;">200nm</button>
+                                <button class="zoom-btn" onclick="setRadarRange(300)" style="flex: 1; padding: 3px; font-size: 9px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 3px; cursor: pointer;">300nm</button>
+                                <button class="zoom-btn" onclick="setRadarRange(500)" style="flex: 1; padding: 3px; font-size: 9px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 3px; cursor: pointer;">500nm</button>
+                            </div>
+                        </div>
+                        
+                        <div class="control-row">
+                            <span class="control-label">Range (nm):</span>
+                            <div class="slider-container">
+                                <input type="range" class="slider" id="rangeSlider" min="5" max="500" value="100">
+                            </div>
+                            <span id="rangeValue" style="margin-left: 8px; font-size: 11px;">100</span>
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Update Rate:</span>
+                            <div class="slider-container">
+                                <input type="range" class="slider" id="updateSlider" min="1" max="10" value="2">
+                            </div>
+                            <span id="updateValue" style="margin-left: 8px; font-size: 11px;">2s</span>
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Center Lat:</span>
+                            <input type="number" class="input-field" id="centerLat" value="55.5094" step="0.0001">
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Center Lon:</span>
+                            <input type="number" class="input-field" id="centerLon" value="-4.5967" step="0.0001">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h4>🎯 Display Options</h4>
+                        <div class="checkbox-container">
+                            <input type="checkbox" class="checkbox" id="showTrails" checked>
+                            <label>Aircraft Trails</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" class="checkbox" id="showCoastline" checked>
+                            <label>Coastline Data</label>
+                        </div>
+                        
+                        <!-- Coastline Brightness Control -->
+                        <div class="slider-container" style="margin-left: 20px; margin-top: 5px;" id="coastlineBrightnessContainer">
+                            <label style="color: #00ff88; font-size: 10px; display: block; margin-bottom: 3px;">🌊 Coastline Brightness:</label>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 9px; color: #888;">Dim</span>
+                                <input type="range" 
+                                       id="coastlineBrightnessSlider" 
+                                       min="0.1" 
+                                       max="1.0" 
+                                       step="0.1" 
+                                       value="0.4"
+                                       style="flex: 1; height: 4px; background: linear-gradient(to right, #003300, #00ff88); border-radius: 2px; outline: none;">
+                                <span style="font-size: 9px; color: #888;">Bright</span>
+                                <span id="coastlineBrightnessValue" style="font-size: 9px; color: #00ff88; min-width: 25px;">40%</span>
+                            </div>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" class="checkbox" id="showAirspace" checked>
+                            <label>UK Airspace</label>
+                        </div>
+                        
+                        <!-- Airspace Type Filters -->
+                        <div class="airspace-filters" style="margin-left: 20px; margin-top: 10px; display: none;" id="airspaceFilters">
+                            <h5 style="color: #00ff88; margin: 5px 0; font-size: 11px;">🛩️ Airspace Types:</h5>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3px; font-size: 9px;">
+                                <div class="checkbox-container" style="margin: 2px 0;">
+                                    <input type="checkbox" class="checkbox" id="showCTR" checked>
+                                    <label style="color: #ff4444;">CTR</label>
+                                </div>
+                                <div class="checkbox-container" style="margin: 2px 0;">
+                                    <input type="checkbox" class="checkbox" id="showCTA">
+                                    <label style="color: #4444ff;">CTA/TMA</label>
+                                </div>
+                                <div class="checkbox-container" style="margin: 2px 0;">
+                                    <input type="checkbox" class="checkbox" id="showATZ">
+                                    <label style="color: #ffaa00;">ATZ</label>
+                                </div>
+                                <div class="checkbox-container" style="margin: 2px 0;">
+                                    <input type="checkbox" class="checkbox" id="showMATZ">
+                                    <label style="color: #ff8800;">MATZ</label>
+                                </div>
+                                <div class="checkbox-container" style="margin: 2px 0;">
+                                    <input type="checkbox" class="checkbox" id="showDanger" checked>
+                                    <label style="color: #ff0000;">Danger</label>
+                                </div>
+                                <div class="checkbox-container" style="margin: 2px 0;">
+                                    <input type="checkbox" class="checkbox" id="showMilitary">
+                                    <label style="color: #aa00aa;">Military</label>
+                                </div>
+                                <div class="checkbox-container" style="margin: 2px 0;">
+                                    <input type="checkbox" class="checkbox" id="showAirways">
+                                    <label style="color: #888888;">Airways</label>
+                                </div>
+                                <div class="checkbox-container" style="margin: 2px 0;">
+                                    <input type="checkbox" class="checkbox" id="showLARS">
+                                    <label style="color: #00aaaa;">LARS</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Airspace Brightness Control -->
+                        <div class="slider-container" style="margin-left: 20px; margin-top: 5px; display: none;" id="airspaceBrightnessContainer">
+                            <label style="color: #00ff88; font-size: 10px; display: block; margin-bottom: 3px;">🛩️ Airspace Brightness:</label>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 9px; color: #888;">Dim</span>
+                                <input type="range" 
+                                       id="airspaceBrightnessSlider" 
+                                       min="0.2" 
+                                       max="1.0" 
+                                       step="0.1" 
+                                       value="0.7"
+                                       style="flex: 1; height: 4px; background: linear-gradient(to right, #330033, #ff4444); border-radius: 2px; outline: none;">
+                                <span style="font-size: 9px; color: #888;">Bright</span>
+                                <span id="airspaceBrightnessValue" style="font-size: 9px; color: #ff4444; min-width: 25px;">70%</span>
+                            </div>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" class="checkbox" id="showRangeRings" checked>
+                            <label>Range Rings</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" class="checkbox" id="showBearings" checked>
+                            <label>Bearing Lines</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" class="checkbox" id="showVectors" checked>
+                            <label>Velocity Vectors</label>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h4>📊 Statistics</h4>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="stat-value" id="aircraftCount">0</div>
+                                <div class="stat-label">Aircraft</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value" id="messageCount">0</div>
+                                <div class="stat-label">Messages</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value" id="geoFeatures">0</div>
+                                <div class="stat-label">Geo Features</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value" id="uptime">00:00</div>
+                                <div class="stat-label">Uptime</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Communications Tab -->
+                <div class="tab-pane" id="comms-tab">
+                    <div class="control-group">
+                        <h4>📡 ADS-B Configuration</h4>
+                        <div class="control-row">
+                            <span class="control-label">Server URL:</span>
+                            <input type="text" class="input-field" id="dump1090Url" value="http://localhost:8080">
+                        </div>
+                        <button class="btn" id="toggleConnection">Start ADS-B Feed</button>
+                    </div>
+
+                    <div class="control-group">
+                        <h4>📻 VDL2 Configuration</h4>
+                        <div class="control-row">
+                            <span class="control-label">Server URL:</span>
+                            <input type="text" class="input-field" id="vdl2Url" value="http://10.0.0.20:8081">
+                        </div>
+                        <button class="btn" id="toggleVDL2">Start VDL2 Feed</button>
+                    </div>
+                </div>
+
+                <!-- Region Tab -->
+                <div class="tab-pane" id="region-tab">
+                    <div class="control-group">
+                        <h4>🌍 Regional Configuration</h4>
+                        <div class="control-row">
+                            <span class="control-label">Current Region:</span>
+                            <span id="currentRegion" style="color: #00ff00;">Prestwick Region</span>
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Select Region:</span>
+                            <select class="input-field" id="regionSelect">
+                                <option value="PRESTWICK" selected>Prestwick Region, Scotland</option>
+                            </select>
+                        </div>
+                        <button class="btn" id="loadRegionBtn">Load Region</button>
+                    </div>
+
+                    <div class="control-group">
+                        <h4>🗺️ Geographic Data</h4>
+                        <div class="control-row">
+                            <span class="control-label">Data Source:</span>
+                            <select class="input-field" id="geoDataSource">
+                                <option value="local" selected>Local Server (C15_COAST)</option>
+                                <option value="osm">OpenStreetMap</option>
+                            </select>
+                        </div>
+                        <button class="btn" id="refreshGeo">Refresh Geographic Data</button>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="tab-pane" id="settings-tab">
+                    <div class="control-group">
+                        <h4>⚙️ System Settings</h4>
+                        <div class="control-row">
+                            <span class="control-label">Trail Length:</span>
+                            <div class="slider-container">
+                                <input type="range" class="slider" id="trailSlider" min="10" max="200" value="100">
+                            </div>
+                            <span id="trailValue" style="margin-left: 8px; font-size: 11px;">100</span>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" class="checkbox" id="showACARSIndicators" checked>
+                            <label>ACARS Indicators</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" class="checkbox" id="smoothAnimation" checked>
+                            <label>Smooth Animation</label>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h4>🎨 Theme Settings</h4>
+                        <div class="control-row">
+                            <span class="control-label">Radar Theme:</span>
+                            <select class="input-field" id="radarTheme">
+                                <option value="classic" selected>Classic Green</option>
+                                <option value="amber">Amber</option>
+                                <option value="blue">Blue</option>
+                            </select>
+                        </div>
+                        <button class="btn" id="resetSettings">Reset to Defaults</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Radar Display -->
+        <div class="radar-container">
+            <canvas id="radarCanvas"></canvas>
+            <div class="radar-overlay">
+                <div class="radar-info">
+                    <div>📍 Center: <span id="centerDisplay">55.5094°N, 4.5967°W</span></div>
+                    <div>📏 Range: <span id="rangeDisplay">100nm</span></div>
+                    <div>🌍 Features: <span id="featureCount">Loading...</span></div>
+                    <div>⏱️ Last Update: <span id="lastUpdate">--:--:--</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact List -->
+        <div class="contact-panel">
+            <div class="contact-header">
+                <div class="contact-title">✈️ Aircraft Contacts</div>
+                <div class="aircraft-count" id="contactCount">0 aircraft</div>
+            </div>
+            <div class="contact-list" id="contactList">
+                <div style="padding: 20px; text-align: center; color: #888;">
+                    No aircraft contacts
+                </div>
+            </div>
+        </div>
+
+        <!-- Communications Log -->
+        <div class="comms-panel">
+            <div class="comms-header">
+                <div class="comms-title">📡 Communications Log</div>
+                <div class="message-count" id="msgCount">0 messages</div>
+            </div>
+            <div class="comms-log" id="commsLog">
+                <div class="log-entry">System initialized - Ready for live ADS-B and VDL2 data</div>
+            </div>
+        </div>
+
+        <!-- AI Assistant -->
+        <div class="ai-panel">
+            <div class="ai-icon">🤖</div>
+            <input type="text" class="ai-input" id="aiInput" placeholder="Ask AI about radar contacts, routes, ACARS messages...">
+            <button class="ai-send" id="aiSend">SEND</button>
+            <div class="ai-status">💡 AI Assistant ready to analyze radar data</div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let canvas, ctx;
+        let aircraft = {};
+        let acarsMessages = [];
+        let vdl2MessageCount = 0;
+        let isConnected = false;
+        let isVDL2Connected = false;
+        let updateInterval = null;
+        let vdl2UpdateInterval = null;
+        let coastlineData = null;
+        let geoFeatures = [];
+        let airspaceZones = [];
+        let availableRegions = {};
+        let currentRegion = 'PRESTWICK';
+        let startTime = Date.now();
+        let messageCount = 0;
+
+        // Radar configuration - Default to Prestwick Airport
+        let radarCenterLat = 55.5094;
+        let radarCenterLon = -4.5967;
+        let RADAR_RANGE_NM = 100;
+        
+        // Zoom control variables
+        let isZooming = false;
+        let zoomTimeout = null;
+
+        // Display options
+        let showTrails = true;
+        let showACARSIndicators = true;
+        let showCoastline = true;
+        let showAirspace = true;
+        let showRangeRings = true;
+        let showBearings = true;
+        let showVectors = true;
+        let trailLength = 100;
+        let smoothAnimation = true;
+        let geoDataSourceStatus = 'local';
+        let coastlineBrightness = 0.4; // Default coastline opacity
+        let airspaceBrightness = 0.7; // Default airspace opacity
+
+        // Airspace filter options
+        let airspaceFilters = {
+            showCTR: true,
+            showCTA: false,      // Start with only critical zones
+            showATZ: false,
+            showMATZ: false,
+            showDanger: true,    // Always show danger areas
+            showMilitary: false,
+            showAirways: false,  // Airways are very cluttering
+            showLARS: false
+        };
+
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tabs
+            const tabs = document.querySelectorAll('.tab');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.dataset.tab;
+                    
+                    // Remove active class from all tabs and panes
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabPanes.forEach(pane => pane.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding pane
+                    this.classList.add('active');
+                    document.getElementById(targetTab + '-tab').classList.add('active');
+                });
+            });
+
+            // Initialize sliders
+            const rangeSlider = document.getElementById('rangeSlider');
+            const updateSlider = document.getElementById('updateSlider');
+            const trailSlider = document.getElementById('trailSlider');
+
+            rangeSlider.addEventListener('input', function() {
+                const newRange = parseInt(this.value);
+                RADAR_RANGE_NM = newRange;
+                document.getElementById('rangeValue').textContent = newRange;
+                document.getElementById('rangeDisplay').textContent = newRange + 'nm';
+                updateActiveZoomButton(newRange);
+                handleZoomChange();
+                if (showCoastline) {
+                    fetchGeographicData();
+                }
+            });
+
+            updateSlider.addEventListener('input', function() {
+                const updateRate = parseInt(this.value) * 1000;
+                document.getElementById('updateValue').textContent = this.value + 's';
+                if (updateInterval) {
+                    clearInterval(updateInterval);
+                    updateInterval = setInterval(fetchAircraftData, updateRate);
+                }
+            });
+
+            trailSlider.addEventListener('input', function() {
+                trailLength = parseInt(this.value);
+                document.getElementById('trailValue').textContent = this.value;
+            });
+
+            // Initialize checkboxes
+            document.getElementById('showTrails').addEventListener('change', function() {
+                showTrails = this.checked;
+            });
+
+            document.getElementById('showCoastline').addEventListener('change', function() {
+                showCoastline = this.checked;
+                const brightnessContainer = document.getElementById('coastlineBrightnessContainer');
+                if (showCoastline) {
+                    fetchGeographicData();
+                    brightnessContainer.style.display = 'block';
+                } else {
+                    geoFeatures = [];
+                    brightnessContainer.style.display = 'none';
+                }
+            });
+
+            // Coastline brightness control
+            document.getElementById('coastlineBrightnessSlider').addEventListener('input', function() {
+                coastlineBrightness = parseFloat(this.value);
+                const percentage = Math.round(coastlineBrightness * 100);
+                document.getElementById('coastlineBrightnessValue').textContent = percentage + '%';
+            });
+
+            document.getElementById('showAirspace').addEventListener('change', function() {
+                showAirspace = this.checked;
+                const filtersPanel = document.getElementById('airspaceFilters');
+                const brightnessContainer = document.getElementById('airspaceBrightnessContainer');
+                if (showAirspace) {
+                    fetchAirspaceData();
+                    filtersPanel.style.display = 'block';
+                    brightnessContainer.style.display = 'block';
+                } else {
+                    airspaceZones = [];
+                    filtersPanel.style.display = 'none';
+                    brightnessContainer.style.display = 'none';
+                }
+            });
+
+            // Airspace brightness control
+            document.getElementById('airspaceBrightnessSlider').addEventListener('input', function() {
+                airspaceBrightness = parseFloat(this.value);
+                const percentage = Math.round(airspaceBrightness * 100);
+                document.getElementById('airspaceBrightnessValue').textContent = percentage + '%';
+            });
+
+            // Airspace filter event handlers
+            document.getElementById('showCTR').addEventListener('change', function() {
+                airspaceFilters.showCTR = this.checked;
+            });
+            document.getElementById('showCTA').addEventListener('change', function() {
+                airspaceFilters.showCTA = this.checked;
+            });
+            document.getElementById('showATZ').addEventListener('change', function() {
+                airspaceFilters.showATZ = this.checked;
+            });
+            document.getElementById('showMATZ').addEventListener('change', function() {
+                airspaceFilters.showMATZ = this.checked;
+            });
+            document.getElementById('showDanger').addEventListener('change', function() {
+                airspaceFilters.showDanger = this.checked;
+            });
+            document.getElementById('showMilitary').addEventListener('change', function() {
+                airspaceFilters.showMilitary = this.checked;
+            });
+            document.getElementById('showAirways').addEventListener('change', function() {
+                airspaceFilters.showAirways = this.checked;
+            });
+            document.getElementById('showLARS').addEventListener('change', function() {
+                airspaceFilters.showLARS = this.checked;
+            });
+
+            document.getElementById('showRangeRings').addEventListener('change', function() {
+                showRangeRings = this.checked;
+            });
+
+            document.getElementById('showBearings').addEventListener('change', function() {
+                showBearings = this.checked;
+            });
+
+            document.getElementById('showVectors').addEventListener('change', function() {
+                showVectors = this.checked;
+            });
+
+            document.getElementById('showACARSIndicators').addEventListener('change', function() {
+                showACARSIndicators = this.checked;
+            });
+
+            document.getElementById('smoothAnimation').addEventListener('change', function() {
+                smoothAnimation = this.checked;
+            });
+
+            // Initialize radar
+            init();
+            loadAvailableRegions();
+            
+            // Start uptime counter
+            setInterval(updateUptime, 1000);
+        });
+
+        function updateUptime() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('uptime').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function init() {
+            canvas = document.getElementById('radarCanvas');
+            if (!canvas) {
+                console.error('Canvas element not found');
+                return;
+            }
+
+            ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Update center display
+            document.getElementById('centerDisplay').textContent = 
+                `${radarCenterLat.toFixed(4)}°N, ${Math.abs(radarCenterLon).toFixed(4)}°W`;
+            
+            // Set initial region
+            document.getElementById('currentRegion').textContent = 'Prestwick Region';
+            
+            // Load coastline if enabled
+            if (showCoastline) {
+                fetchGeographicData();
+            }
+
+            // Load airspace if enabled
+            if (showAirspace) {
+                fetchAirspaceData();
+                document.getElementById('airspaceFilters').style.display = 'block';
+                document.getElementById('airspaceBrightnessContainer').style.display = 'block';
+            }
+
+            // Start radar sweep animation
+            requestAnimationFrame(drawRadar);
+        }
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+
+        function drawRadar() {
+            if (!ctx) return;
+
+            // Clear canvas
+            ctx.fillStyle = '#000800';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const maxRadius = Math.min(centerX, centerY) * 0.9;
+
+            // Draw range rings
+            if (showRangeRings) {
+                drawRangeRings(centerX, centerY, maxRadius);
+            }
+
+            // Draw bearing lines
+            if (showBearings) {
+                drawBearingLines(centerX, centerY, maxRadius);
+            }
+
+            // Draw coastline
+            if (showCoastline && geoFeatures.length > 0) {
+                drawGeographicFeatures(centerX, centerY, maxRadius);
+            }
+
+            // Draw airspace
+            if (showAirspace && airspaceZones.length > 0) {
+                drawAirspaceZones(centerX, centerY, maxRadius);
+            }
+
+            // Draw aircraft
+            drawAircraft(centerX, centerY, maxRadius);
+
+            // Continue animation
+            requestAnimationFrame(drawRadar);
+        }
+
+        function drawRangeRings(centerX, centerY, maxRadius) {
+            ctx.strokeStyle = '#004400';
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = 0.6;
+
+            const rings = [0.25, 0.5, 0.75, 1.0];
+            rings.forEach(ring => {
+                const radius = maxRadius * ring;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+
+                // Draw range labels
+                ctx.fillStyle = '#006600';
+                ctx.font = '12px JetBrains Mono';
+                ctx.textAlign = 'center';
+                const rangeLabel = Math.round(RADAR_RANGE_NM * ring);
+                ctx.fillText(`${rangeLabel}nm`, centerX, centerY - radius + 15);
+            });
+
+            ctx.globalAlpha = 1.0;
+        }
+
+        function drawBearingLines(centerX, centerY, maxRadius) {
+            ctx.strokeStyle = '#003300';
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = 0.4;
+
+            for (let bearing = 0; bearing < 360; bearing += 30) {
+                const radians = (bearing - 90) * Math.PI / 180;
+                const x = centerX + maxRadius * Math.cos(radians);
+                const y = centerY + maxRadius * Math.sin(radians);
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+
+                // Draw bearing labels
+                ctx.fillStyle = '#006600';
+                ctx.font = '11px JetBrains Mono';
+                ctx.textAlign = 'center';
+                const labelX = centerX + (maxRadius * 0.9) * Math.cos(radians);
+                const labelY = centerY + (maxRadius * 0.9) * Math.sin(radians);
+                ctx.fillText(`${bearing.toString().padStart(3, '0')}°`, labelX, labelY);
+            }
+
+            ctx.globalAlpha = 1.0;
+        }
+
+        function drawGeographicFeatures(centerX, centerY, maxRadius) {
+            // Use brighter green color for better visibility
+            ctx.fillStyle = '#00aa44';  // Much brighter green
+            ctx.globalAlpha = coastlineBrightness;
+
+            // Reduce coastline density based on zoom level
+            const currentRange = RADAR_RANGE_NM;
+            let skipFactor = 1;
+            if (currentRange > 100) skipFactor = 4;
+            else if (currentRange > 50) skipFactor = 2;
+
+            geoFeatures.forEach((feature, index) => {
+                // Skip some points to reduce clutter
+                if (index % skipFactor !== 0) return;
+                
+                const screenPos = getScreenPosition(feature.lat, feature.lon, centerX, centerY, maxRadius);
+                const x = screenPos.x;
+                const y = screenPos.y;
+                
+                if (x > 0 && y > 0 && x < canvas.width && y < canvas.height) {
+                    if (feature.type === 'coastline' || feature.type === 'coast') {
+                        // Draw slightly larger, more visible dots
+                        ctx.beginPath();
+                        ctx.arc(x, y, 0.5, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+                }
+            });
+
+            ctx.globalAlpha = 1.0;
+        }
+
+        function drawAirspaceZones(centerX, centerY, maxRadius) {
+            // Filter zones based on user preferences
+            const visibleZones = airspaceZones.filter(zone => {
+                if (!zone.coordinates || zone.coordinates.length < 3) return false;
+                
+                // Apply filters
+                switch(zone.type) {
+                    case 'CTR': return airspaceFilters.showCTR;
+                    case 'CTA/TMA': 
+                    case 'TMA': return airspaceFilters.showCTA;
+                    case 'ATZ': return airspaceFilters.showATZ;
+                    case 'MATZ': return airspaceFilters.showMATZ;
+                    case 'Danger Area': return airspaceFilters.showDanger;
+                    case 'MTA':
+                    case 'ATA':
+                    case 'AARA':
+                    case 'AIAA': return airspaceFilters.showMilitary;
+                    case 'Upper Airway CL':
+                    case 'Lower Airway CL':
+                    case 'Lower Airway Boundary':
+                    case 'TACAN Route': return airspaceFilters.showAirways;
+                    case 'LARS': return airspaceFilters.showLARS;
+                    default: return false; // Hide unknown types by default
+                }
+            });
+
+            // Draw zones in priority order (most important first)
+            const priorityOrder = ['Danger Area', 'CTR', 'CTA/TMA', 'TMA', 'ATZ', 'MATZ', 'LARS', 'MTA', 'ATA', 'AARA', 'AIAA'];
+            const sortedZones = visibleZones.sort((a, b) => {
+                const aPriority = priorityOrder.indexOf(a.type);
+                const bPriority = priorityOrder.indexOf(b.type);
+                return (aPriority === -1 ? 999 : aPriority) - (bPriority === -1 ? 999 : bPriority);
+            });
+
+            sortedZones.forEach(zone => {
+                // Enhanced color scheme with better contrast
+                const airspaceStyles = {
+                    'CTR': { color: '#ff3333', fillAlpha: 0.15, strokeAlpha: 0.8, lineWidth: 2 },
+                    'CTA/TMA': { color: '#3366ff', fillAlpha: 0.12, strokeAlpha: 0.7, lineWidth: 2 },
+                    'TMA': { color: '#3366ff', fillAlpha: 0.12, strokeAlpha: 0.7, lineWidth: 2 },
+                    'ATZ': { color: '#ff9900', fillAlpha: 0.15, strokeAlpha: 0.8, lineWidth: 1.5 },
+                    'MATZ': { color: '#ff6600', fillAlpha: 0.15, strokeAlpha: 0.8, lineWidth: 1.5 },
+                    'Danger Area': { color: '#ff0000', fillAlpha: 0.25, strokeAlpha: 1.0, lineWidth: 3 },
+                    'LARS': { color: '#00cccc', fillAlpha: 0.1, strokeAlpha: 0.6, lineWidth: 1 },
+                    'MTA': { color: '#cc00cc', fillAlpha: 0.1, strokeAlpha: 0.6, lineWidth: 1 },
+                    'ATA': { color: '#cc00cc', fillAlpha: 0.1, strokeAlpha: 0.6, lineWidth: 1 },
+                    'AARA': { color: '#cc00cc', fillAlpha: 0.1, strokeAlpha: 0.6, lineWidth: 1 },
+                    'AIAA': { color: '#cc00cc', fillAlpha: 0.1, strokeAlpha: 0.6, lineWidth: 1 }
+                };
+
+                const style = airspaceStyles[zone.type] || { color: '#666666', fillAlpha: 0.1, strokeAlpha: 0.5, lineWidth: 1 };
+                
+                // Draw filled polygon with dynamic brightness
+                ctx.fillStyle = style.color;
+                ctx.globalAlpha = style.fillAlpha * airspaceBrightness;
+                ctx.beginPath();
+                
+                let firstPoint = true;
+                let visiblePoints = 0;
+                
+                zone.coordinates.forEach(coord => {
+                    const screenPos = getScreenPosition(coord[0], coord[1], centerX, centerY, maxRadius);
+                    
+                    // Only draw if point is somewhat near the visible area
+                    if (screenPos.x > -100 && screenPos.y > -100 && screenPos.x < canvas.width + 100 && screenPos.y < canvas.height + 100) {
+                        if (firstPoint) {
+                            ctx.moveTo(screenPos.x, screenPos.y);
+                            firstPoint = false;
+                        } else {
+                            ctx.lineTo(screenPos.x, screenPos.y);
+                        }
+                        visiblePoints++;
+                    }
+                });
+                
+                if (visiblePoints > 2) {
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Draw border with dynamic brightness
+                    ctx.strokeStyle = style.color;
+                    ctx.globalAlpha = style.strokeAlpha * airspaceBrightness;
+                    ctx.lineWidth = style.lineWidth;
+                    ctx.stroke();
+                }
+
+                // Draw selective labels for important zones only
+                if ((zone.type === 'CTR' || zone.type === 'Danger Area') && visiblePoints > 2) {
+                    const centroid = calculateCentroid(zone.coordinates);
+                    const labelPos = getScreenPosition(centroid.lat, centroid.lon, centerX, centerY, maxRadius);
+                    
+                    if (labelPos.x > 50 && labelPos.y > 50 && labelPos.x < canvas.width - 50 && labelPos.y < canvas.height - 50) {
+                        ctx.globalAlpha = 1.0;
+                        ctx.fillStyle = style.color;
+                        ctx.font = '11px JetBrains Mono';
+                        ctx.textAlign = 'center';
+                        
+                        // Clean up zone name
+                        let text = zone.name.replace('CTR_D_', '').replace('_', ' ');
+                        if (text.length > 12) text = text.substring(0, 10) + '..';
+                        
+                        // Draw text background
+                        const textWidth = ctx.measureText(text).width;
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                        ctx.fillRect(labelPos.x - textWidth/2 - 3, labelPos.y - 9, textWidth + 6, 14);
+                        
+                        // Draw text
+                        ctx.fillStyle = style.color;
+                        ctx.fillText(text, labelPos.x, labelPos.y + 2);
+                    }
+                }
+            });
+
+            ctx.globalAlpha = 1.0;
+        }
+
+        function calculateCentroid(coordinates) {
+            let totalLat = 0, totalLon = 0;
+            coordinates.forEach(coord => {
+                totalLat += coord[0];
+                totalLon += coord[1];
+            });
+            return {
+                lat: totalLat / coordinates.length,
+                lon: totalLon / coordinates.length
+            };
+        }
+
+        // Zoom Control Functions
+        function setRadarRange(newRange) {
+            RADAR_RANGE_NM = newRange;
+            
+            // Update slider and display
+            const slider = document.getElementById('rangeSlider');
+            const rangeDisplay = document.getElementById('rangeValue');
+            if (slider) slider.value = newRange;
+            if (rangeDisplay) rangeDisplay.textContent = newRange;
+            
+            // Highlight active button
+            updateActiveZoomButton(newRange);
+            
+            // Trigger smart data reloading
+            handleZoomChange();
+            
+            addLogEntry(`🔍 Range set to ${newRange}nm`);
+        }
+
+        function updateActiveZoomButton(activeRange) {
+            // Remove active styling from all buttons
+            document.querySelectorAll('.zoom-btn').forEach(btn => {
+                btn.style.background = '#003300';
+                btn.style.color = '#00ff88';
+            });
+            
+            // Highlight the active button
+            const activeBtn = document.querySelector(`button[onclick="setRadarRange(${activeRange})"]`);
+            if (activeBtn) {
+                activeBtn.style.background = '#00aa44';
+                activeBtn.style.color = '#000000';
+            }
+        }
+
+        function handleZoomChange() {
+            // Prevent rapid successive calls
+            if (zoomTimeout) clearTimeout(zoomTimeout);
+            isZooming = true;
+            
+            zoomTimeout = setTimeout(() => {
+                // Reload geographic data at new range
+                if (showCoastline) {
+                    fetchGeographicData();
+                }
+                
+                // Reload airspace data at new range  
+                if (showAirspace) {
+                    fetchAirspaceData();
+                }
+                
+                isZooming = false;
+            }, 500); // 500ms delay to prevent spam
+        }
+
+        function zoomIn() {
+            const currentRange = RADAR_RANGE_NM;
+            const zoomLevels = [5, 10, 25, 50, 100, 200, 300, 500];
+            const currentIndex = zoomLevels.indexOf(currentRange);
+            
+            if (currentIndex > 0) {
+                setRadarRange(zoomLevels[currentIndex - 1]);
+            } else if (currentRange > 5) {
+                setRadarRange(Math.max(5, Math.round(currentRange * 0.5)));
+            }
+        }
+
+        function zoomOut() {
+            const currentRange = RADAR_RANGE_NM;
+            const zoomLevels = [5, 10, 25, 50, 100, 200, 300, 500];
+            const currentIndex = zoomLevels.indexOf(currentRange);
+            
+            if (currentIndex >= 0 && currentIndex < zoomLevels.length - 1) {
+                setRadarRange(zoomLevels[currentIndex + 1]);
+            } else if (currentRange < 500) {
+                setRadarRange(Math.min(500, Math.round(currentRange * 2)));
+            }
+        }
+
+        function drawAircraft(centerX, centerY, maxRadius) {
+            Object.values(aircraft).forEach(ac => {
+                if (!ac.lat || !ac.lon) return;
+
+                const screenPos = getScreenPosition(ac.lat, ac.lon, centerX, centerY, maxRadius);
+                const x = screenPos.x;
+                const y = screenPos.y;
+
+                if (x < 0 || y < 0 || x > canvas.width || y > canvas.height) return;
+
+                // Draw trail
+                if (showTrails && ac.trail && ac.trail.length > 1) {
+                    drawTrail(ac.trail, centerX, centerY, maxRadius);
+                }
+
+                // Draw aircraft symbol
+                drawAircraftSymbol(x, y, ac);
+
+                // Draw velocity vector
+                if (showVectors && ac.gs && ac.track !== undefined) {
+                    drawVelocityVector(x, y, ac);
+                }
+
+                // Draw data block
+                drawDataBlock(x, y, ac);
+            });
+        }
+
+        function drawAircraftSymbol(x, y, aircraft) {
+            const size = 6;
+            
+            // Determine color based on altitude
+            let color = '#00ff00';
+            if (aircraft.alt_baro) {
+                if (aircraft.alt_baro > 30000) color = '#00ffff';
+                else if (aircraft.alt_baro > 20000) color = '#ffff00';
+                else if (aircraft.alt_baro > 10000) color = '#ff8800';
+                else color = '#ff0000';
+            }
+
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+
+            // Draw diamond shape
+            ctx.beginPath();
+            ctx.moveTo(x, y - size);
+            ctx.lineTo(x + size, y);
+            ctx.lineTo(x, y + size);
+            ctx.lineTo(x - size, y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Draw heading indicator
+            if (aircraft.track !== undefined) {
+                const headingRad = (aircraft.track - 90) * Math.PI / 180;
+                const lineLength = size * 2;
+                const endX = x + lineLength * Math.cos(headingRad);
+                const endY = y + lineLength * Math.sin(headingRad);
+
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+            }
+        }
+
+        function drawTrail(trail, centerX, centerY, maxRadius) {
+            if (trail.length < 2) return;
+
+            ctx.strokeStyle = '#004400';
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = 0.5;
+
+            ctx.beginPath();
+            trail.forEach((point, index) => {
+                const screenPos = getScreenPosition(point.lat, point.lon, centerX, centerY, maxRadius);
+                if (index === 0) {
+                    ctx.moveTo(screenPos.x, screenPos.y);
+                } else {
+                    ctx.lineTo(screenPos.x, screenPos.y);
+                }
+            });
+            ctx.stroke();
+
+            ctx.globalAlpha = 1.0;
+        }
+
+        function drawVelocityVector(x, y, aircraft) {
+            if (!aircraft.gs || aircraft.track === undefined) return;
+
+            const vectorLength = Math.min(aircraft.gs / 10, 50); // Scale speed to reasonable length
+            const headingRad = (aircraft.track - 90) * Math.PI / 180;
+            const endX = x + vectorLength * Math.cos(headingRad);
+            const endY = y + vectorLength * Math.sin(headingRad);
+
+            ctx.strokeStyle = '#ffff00';
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = 0.8;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            // Draw arrowhead
+            const arrowSize = 4;
+            const arrowAngle = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(
+                endX - arrowSize * Math.cos(headingRad - arrowAngle),
+                endY - arrowSize * Math.sin(headingRad - arrowAngle)
+            );
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(
+                endX - arrowSize * Math.cos(headingRad + arrowAngle),
+                endY - arrowSize * Math.sin(headingRad + arrowAngle)
+            );
+            ctx.stroke();
+
+            ctx.globalAlpha = 1.0;
+        }
+
+        function drawDataBlock(x, y, aircraft) {
+            const flight = aircraft.flight ? aircraft.flight.trim() : aircraft.hex;
+            const altitude = aircraft.alt_baro ? Math.round(aircraft.alt_baro / 100) : '---';
+            const speed = aircraft.gs ? Math.round(aircraft.gs) : '---';
+
+            ctx.fillStyle = '#00ff00';
+            ctx.font = '11px JetBrains Mono';
+            ctx.textAlign = 'left';
+
+            // Draw background
+            const text = `${flight}`;
+            const textWidth = ctx.measureText(text).width;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(x + 10, y - 15, textWidth + 8, 30);
+
+            // Draw text
+            ctx.fillStyle = '#00ff00';
+            ctx.fillText(flight, x + 12, y - 5);
+            ctx.fillText(`${altitude} ${speed}kt`, x + 12, y + 8);
+        }
+
+        function getScreenPosition(lat, lon, centerX, centerY, maxRadius) {
+            const latDiff = lat - radarCenterLat;
+            const lonDiff = lon - radarCenterLon;
+            
+            // Convert to nautical miles (approximate)
+            const latNM = latDiff * 60;
+            const lonNM = lonDiff * 60 * Math.cos(radarCenterLat * Math.PI / 180);
+            
+            // Convert to screen coordinates
+            const distance = Math.sqrt(latNM * latNM + lonNM * lonNM);
+            const bearing = Math.atan2(lonNM, latNM);
+            
+            const screenDistance = (distance / RADAR_RANGE_NM) * maxRadius;
+            const x = centerX + screenDistance * Math.sin(bearing);
+            const y = centerY - screenDistance * Math.cos(bearing);
+            
+            return { x, y };
+        }
+
+        // Aircraft data fetching
+        function fetchAircraftData() {
+            const dump1090Url = document.getElementById('dump1090Url').value;
+            
+            const fetchUrl = dump1090Url.includes('aircraft.json') ? dump1090Url : dump1090Url + '/tmp/aircraft.json';
+            
+            fetch(fetchUrl, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data && data.aircraft) {
+                        updateAircraftDataAndTrails(data.aircraft);
+                        updateContactList(data.aircraft);
+                        updateStatistics();
+                        document.getElementById('adsb-status').className = 'led green';
+                        document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+                    }
+                })
+                .catch(error => {
+                    console.error('Data fetch error:', error);
+                    addLogEntry(`❌ ADS-B connection error: ${error.message}`);
+                    document.getElementById('adsb-status').className = 'led red';
+                });
+        }
+
+        function updateAircraftDataAndTrails(aircraftData) {
+            const currentTime = Date.now();
+            
+            aircraftData.forEach(ac => {
+                if (!ac.hex) return;
+                
+                if (!aircraft[ac.hex]) {
+                    aircraft[ac.hex] = { ...ac, trail: [], lastSeen: currentTime };
+                } else {
+                    // Update existing aircraft
+                    Object.assign(aircraft[ac.hex], ac);
+                    aircraft[ac.hex].lastSeen = currentTime;
+                }
+                
+                // Add to trail if position is available
+                if (ac.lat && ac.lon) {
+                    if (!aircraft[ac.hex].trail) aircraft[ac.hex].trail = [];
+                    aircraft[ac.hex].trail.push({ lat: ac.lat, lon: ac.lon, time: currentTime });
+                    
+                    // Limit trail length
+                    if (aircraft[ac.hex].trail.length > trailLength) {
+                        aircraft[ac.hex].trail.shift();
+                    }
+                }
+            });
+            
+            // Remove old aircraft
+            Object.keys(aircraft).forEach(hex => {
+                if (currentTime - aircraft[hex].lastSeen > 60000) { // 1 minute timeout
+                    delete aircraft[hex];
+                }
+            });
+        }
+
+        function updateContactList(aircraftData) {
+            const contactList = document.getElementById('contactList');
+            const count = aircraftData.length;
+            
+            document.getElementById('contactCount').textContent = `${count} aircraft`;
+            document.getElementById('aircraftCount').textContent = count;
+            
+            if (count === 0) {
+                contactList.innerHTML = '<div style="padding: 20px; text-align: center; color: #888;">No aircraft contacts</div>';
+                return;
+            }
+            
+            contactList.innerHTML = aircraftData.map(ac => `
+                <div class="contact-item" data-hex="${ac.hex}">
+                    <div class="contact-flight">${ac.flight ? ac.flight.trim() : ac.hex}</div>
+                    <div class="contact-details">
+                        <div class="contact-detail">
+                            <span>Alt:</span>
+                            <span>${ac.alt_baro ? Math.round(ac.alt_baro) + 'ft' : 'N/A'}</span>
+                        </div>
+                        <div class="contact-detail">
+                            <span>Speed:</span>
+                            <span>${ac.gs ? Math.round(ac.gs) + 'kt' : 'N/A'}</span>
+                        </div>
+                        <div class="contact-detail">
+                            <span>Track:</span>
+                            <span>${ac.track !== undefined ? ac.track.toFixed(0) + '°' : 'N/A'}</span>
+                        </div>
+                        <div class="contact-detail">
+                            <span>Squawk:</span>
+                            <span>${ac.squawk || 'N/A'}</span>
+                        </div>
+                        ${ac.airspace ? `<div class="contact-detail" style="grid-column: 1 / -1; margin-top: 5px; font-size: 9px; color: #aaffaa;">
+                            <span>Airspace: ${ac.airspace.name} (${ac.airspace.type})</span>
+                        </div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStatistics() {
+            document.getElementById('messageCount').textContent = messageCount;
+            document.getElementById('geoFeatures').textContent = geoFeatures.length;
+        }
+
+        // Geographic data fetching
+        function fetchGeographicData() {
+            const source = document.getElementById('geoDataSource').value;
+            
+            if (source === 'local') {
+                fetchLocalCoastlineData();
+            } else {
+                // OSM data would go here
+                addLogEntry('📍 OSM data source not yet implemented');
+            }
+        }
+
+        // Airspace data fetching
+        function fetchAirspaceData() {
+            const lat = radarCenterLat;
+            const lon = radarCenterLon;
+            const range = RADAR_RANGE_NM;
+            
+            fetch(`http://localhost:8080/api/airspace?lat=${lat}&lon=${lon}&range=${range}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success' && data.data && data.data.zones) {
+                        airspaceZones = data.data.zones;
+                        addLogEntry(`🛩️ Loaded ${airspaceZones.length} airspace zones`);
+                        
+                        // Update statistics
+                        const typeCount = Object.keys(data.data.summary.by_type).length;
+                        addLogEntry(`📊 Airspace types: ${Object.entries(data.data.summary.by_type).map(([type, count]) => `${type}(${count})`).join(', ')}`);
+                        
+                        document.getElementById('geo-status').className = 'led green';
+                    } else {
+                        addLogEntry('🛩️ No airspace data received');
+                        document.getElementById('geo-status').className = 'led orange';
+                    }
+                })
+                .catch(error => {
+                    console.error('Airspace data fetch error:', error);
+                    addLogEntry(`❌ Airspace data error: ${error.message}`);
+                    document.getElementById('geo-status').className = 'led red';
+                });
+        }
+
+        function fetchLocalCoastlineData() {
+            const lat = radarCenterLat;
+            const lon = radarCenterLon;
+            const range = RADAR_RANGE_NM;
+            const region = currentRegion;
+            
+            fetch(`http://localhost:8080/api/coastline?lat=${lat}&lon=${lon}&range=${range}&region=${region}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success' && data.data && data.data.features) {
+                        geoFeatures = data.data.features;
+                        addLogEntry(`📍 Loaded ${geoFeatures.length} geographic features`);
+                        document.getElementById('featureCount').textContent = geoFeatures.length;
+                        document.getElementById('geo-status').className = 'led green';
+                    } else {
+                        addLogEntry('📍 No geographic data received');
+                        document.getElementById('geo-status').className = 'led orange';
+                    }
+                })
+                .catch(error => {
+                    console.error('Geographic data fetch error:', error);
+                    addLogEntry(`❌ Geographic data error: ${error.message}`);
+                    document.getElementById('geo-status').className = 'led red';
+                });
+        }
+
+        function loadAvailableRegions() {
+            fetch('http://localhost:8080/api/regions')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success' && data.regions) {
+                        availableRegions = data.regions;
+                        populateRegionSelect();
+                        addLogEntry(`🌍 Loaded ${Object.keys(availableRegions).length} regions`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to load regions:', error);
+                    populateRegionSelect(); // Still populate with hardcoded Prestwick
+                });
+        }
+
+        function populateRegionSelect() {
+            const select = document.getElementById('regionSelect');
+            select.innerHTML = '<option value="PRESTWICK" selected>Prestwick Region, Scotland</option>';
+            
+            Object.entries(availableRegions).forEach(([code, name]) => {
+                if (code !== 'PRESTWICK') {
+                    const option = document.createElement('option');
+                    option.value = code;
+                    option.textContent = name;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        // Utility functions
+        function addLogEntry(message) {
+            const log = document.getElementById('commsLog');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+            
+            messageCount++;
+            document.getElementById('msgCount').textContent = `${messageCount} messages`;
+        }
+
+        // Event listeners
+        document.getElementById('toggleConnection').addEventListener('click', function() {
+            if (isConnected) {
+                clearInterval(updateInterval);
+                isConnected = false;
+                this.textContent = 'Start ADS-B Feed';
+                this.style.background = 'linear-gradient(135deg, #004400 0%, #006600 100%)';
+                addLogEntry('🔴 ADS-B feed stopped');
+                document.getElementById('adsb-status').className = 'led red';
+            } else {
+                const updateRate = parseInt(document.getElementById('updateSlider').value) * 1000;
+                updateInterval = setInterval(fetchAircraftData, updateRate);
+                fetchAircraftData(); // Initial fetch
+                isConnected = true;
+                this.textContent = 'Stop ADS-B Feed';
+                this.style.background = 'linear-gradient(135deg, #440000 0%, #660000 100%)';
+                addLogEntry('🟢 ADS-B feed started');
+            }
+        });
+
+        document.getElementById('toggleVDL2').addEventListener('click', function() {
+            if (isVDL2Connected) {
+                clearInterval(vdl2UpdateInterval);
+                isVDL2Connected = false;
+                this.textContent = 'Start VDL2 Feed';
+                this.style.background = 'linear-gradient(135deg, #004400 0%, #006600 100%)';
+                addLogEntry('🔴 VDL2 feed stopped');
+                document.getElementById('vdl2-status').className = 'led red';
+            } else {
+                // VDL2 functionality would go here
+                addLogEntry('📻 VDL2 feed not yet implemented');
+                document.getElementById('vdl2-status').className = 'led orange';
+            }
+        });
+
+        document.getElementById('loadRegionBtn').addEventListener('click', function() {
+            const selectedRegion = document.getElementById('regionSelect').value;
+            loadRegion(selectedRegion);
+        });
+
+        document.getElementById('refreshGeo').addEventListener('click', function() {
+            if (showCoastline) {
+                fetchGeographicData();
+            }
+        });
+
+        document.getElementById('resetSettings').addEventListener('click', function() {
+            // Reset to defaults
+            document.getElementById('rangeSlider').value = 100;
+            document.getElementById('updateSlider').value = 2;
+            document.getElementById('trailSlider').value = 100;
+            
+            RADAR_RANGE_NM = 100;
+            trailLength = 100;
+            
+            document.getElementById('rangeValue').textContent = '100';
+            document.getElementById('updateValue').textContent = '2s';
+            document.getElementById('trailValue').textContent = '100';
+            document.getElementById('rangeDisplay').textContent = '100nm';
+            
+            addLogEntry('⚙️ Settings reset to defaults');
+        });
+
+        function loadRegion(regionCode) {
+            if (regionCode === 'PRESTWICK') {
+                radarCenterLat = 55.5094;
+                radarCenterLon = -4.5967;
+                currentRegion = 'PRESTWICK';
+                
+                document.getElementById('centerLat').value = radarCenterLat;
+                document.getElementById('centerLon').value = radarCenterLon;
+                document.getElementById('currentRegion').textContent = 'Prestwick Region';
+                document.getElementById('centerDisplay').textContent = 
+                    `${radarCenterLat.toFixed(4)}°N, ${Math.abs(radarCenterLon).toFixed(4)}°W`;
+                
+                if (showCoastline) {
+                    fetchGeographicData();
+                }
+                
+                addLogEntry(`🌍 Loaded region: Prestwick, Scotland`);
+            }
+        }
+
+        // AI Assistant functionality
+        document.getElementById('aiSend').addEventListener('click', async function () {
+            const inputBox = document.getElementById('aiInput');
+            const input = inputBox.value.trim();
+
+            if (!input) return;
+
+            inputBox.disabled = true;
+            addLogEntry(`🧠 You: ${input}`);
+
+            try {
+                const res = await fetch(`http://localhost:11435/ask?q=${encodeURIComponent(input)}&threshold=0.3`);
+                const data = await res.json();
+
+                if (data.results && Array.isArray(data.results)) {
+                    data.results.forEach(response => {
+                        addLogEntry(`🤖 AI: ${response}`);
+                    });
+                } else if (data.answer) {
+                    addLogEntry(`🤖 AI: ${data.answer}`);
+                } else if (data.error) {
+                    addLogEntry(`❌ Error: ${data.error}`);
+                } else {
+                    addLogEntry(`⚠️ Unexpected response from AI assistant`);
+                }
+                document.getElementById('ai-status').className = 'led green';
+            } catch (err) {
+                addLogEntry(`❌ Connection error: ${err.message}`);
+                document.getElementById('ai-status').className = 'led red';
+            } finally {
+                inputBox.disabled = false;
+                inputBox.value = '';
+            }
+        });
+
+        // Handle Enter key in AI input
+        document.getElementById('aiInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('aiSend').click();
+            }
+        });
+
+        // Center coordinate updates
+        document.getElementById('centerLat').addEventListener('change', function() {
+            radarCenterLat = parseFloat(this.value);
+            document.getElementById('centerDisplay').textContent = 
+                `${radarCenterLat.toFixed(4)}°N, ${Math.abs(radarCenterLon).toFixed(4)}°W`;
+            if (showCoastline) {
+                fetchGeographicData();
+            }
+        });
+
+        document.getElementById('centerLon').addEventListener('change', function() {
+            radarCenterLon = parseFloat(this.value);
+            document.getElementById('centerDisplay').textContent = 
+                `${radarCenterLat.toFixed(4)}°N, ${Math.abs(radarCenterLon).toFixed(4)}°W`;
+            if (showCoastline) {
+                fetchGeographicData();
+            }
+        });
+    </script>
+</body>
+</html>
