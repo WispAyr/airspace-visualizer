@@ -1,0 +1,33 @@
+# Airspace Visualizer Requirements
+# Install with: pip install -r requirements.txt
+
+# Core web framework
+Flask>=2.3.0
+flask-cors>=4.0.0
+
+# HTTP requests
+requests>=2.31.0
+
+# Numerical computing
+numpy>=1.24.0
+
+# Vector similarity search
+faiss-cpu>=1.7.4
+
+# Geospatial processing
+shapely>=2.0.0
+
+# AI/ML integration
+ollama>=0.1.0
+
+# Data processing
+json5>=0.9.6
+
+# Optional: For better performance
+# gunicorn>=21.2.0
+
+# Development dependencies (optional)
+# pytest>=7.4.0
+# black>=23.0.0
+# flake8>=6.0.0
+

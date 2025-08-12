@@ -1,0 +1,397 @@
+0000.	SSR data unreliable
+0001.	Height Monitoring Unit
+0002.	Ground Transponder Testing
+0003-0005	Not allocated
+0006.	British Transport Police ASU
+0007.	Off-shore Safety Area (OSA) Conspicuity
+0010.	Aircraft operating outside of Birmingham CAS and monitoring Birmingham Radar
+0011.	Solent Monitoring Code
+0012.	Aircraft operating outside of EGLL/EGLC/EGKK CAS and monitoring Thames/Gatwick Radar
+0013.	Aircraft operating outside of Luton/Stansted CAS and monitoring Luton/Essex Radar
+0014.	Kent Air Ambulance (HMD21)
+0015.	Essex Air Ambulance (HMD07)
+0016.	Thames Valley Air Ambulance(HMD24)
+0017.	Virgin HEMS (HMD27)
+0020.	Air Ambulance Helicopter Emergency Medivac
+0021.	Fixed-wing aircraft (Receiving service from a ship)
+0022.	Helicopter(s) (Receiving service from a ship)
+0023.	Aircraft engaged in actual SAR Operations
+0024.	Radar Flight Evaluation/Calibration
+0025.	Not allocated
+0026.	Special Tasks (Mil) - activated under Special Flight Notification (SFN)
+0027.	London AC (Swanwick) Ops Crossing/Joining CAS
+0030.	FIR Lost
+0031.	An aircraft receiving a radar service from Scottish D & D centre
+0032.	Aircraft engaged in police air support operations
+0033.	Aircraft Paradropping
+0034.	Antenna trailing/target towing
+0035.	Selected Flights - Helicopters
+0036.	Helicopter Pipeline/Powerline Inspection Flights
+0037.	Royal Flights - Helicopters
+0040.	Civil Helicopters North Sea
+0041-0042	Greater Manchester Police ASU
+0043-0044	Metropolitan Police ASU
+0045.	Sussex Police ASU
+0046.	Essex Police ASU
+0047.	Surrey Police ASU
+0050.	Chiltern Police ASU (Western Base)
+0051.	Chiltern Police ASU (Eastern Base)
+0052.	Norfolk Police ASU
+0052.	West Yorkshire Police ASU
+0053.	Suffolk Police ASU
+0053.	South Yorkshire Police ASU
+0054.	Cambridgeshire Police ASU
+0054.	Merseyside Police ASU
+0054.	South and East Wales Police ASU
+0055.	Cleveland Police ASU
+0055.	Cheshire Police ASU
+0056.	Northumbria Police ASU
+0056.	North Midlands Police ASU
+0057.	Strathclyde Police ASU
+0057.	Humberside Police ASU
+0057.	East Midlands Police ASU
+0060.	West Midlands Police ASU
+0061.	Lancashire Police ASU
+0061.	Western Counties Police ASU
+0062-0077	No 1 Air Control Centre
+0100.	NATO - CAOC 9 Exercises (activated by NOTAM)
+0101-0117	Transit (ORCAM) Brussels
+0120-0137	Transit (ORCAM) Germany
+0140-0177	Transit (ORCAM) Amsterdam
+0200.	NATO - CAOC 9 Exercises (activated by NOTAM)
+0201-0213	TC Stansted/TC Luton
+0201-0217	RAF Leuchars
+0201-0257	Ireland Domestic
+0201-0257	RNAS Yeovilton
+0220.	RAF Leuchars Conspicuity
+0220-0237	RAF Shawbury
+0221-0247	RAF Leuchars
+0224-0243	Anglia Radar
+0240.	RAF Shawbury Conspicuity
+0241-0246	RAF Shawbury
+0244.	North Denes Conspicuity
+0245-0267	Anglia Radar
+0247.	Cranfield Airport - IFR Conspicuity Purposes
+0260.	Liverpool Airport Conspicuity
+0260-0261	Coventry Airport Conspicuity
+0260-0261	Oil Survey Helicopters - Faeroes/Iceland Gap
+0260-0267	Westland Helicopters Yeovil
+0260-0267	RAF Northolt
+0261-0267	Liverpool Airport
+0270-0277	Superdomestic - Ireland to UK, Germany and Benelux
+0300.	NATO - CAOC 9 Exercises (activated by NOTAM)
+0301-0377	Transit (ORCAM) UK
+0400.	NATO - CAOC 9 Exercises (activated by NOTAM)
+0401.	RAF Leeming Conspicuity
+0401.	Shoreham Approach Procedural
+0401-0420	Birmingham Approach
+0401-0430	Exeter Approach
+0401-0437	Ireland Domestic
+0401-0467	RAF Lakenheath
+0402-0416	RAF Leeming
+0421-0446	Farnborough Radar/LARS
+0427.	RAF Leeming (Topcliffe) Conspicuity
+0430-0443	Edinburgh Approach
+0447.	Farnborough LARS - Blackbushe Departures
+0450-0456	Blackpool Approach
+0450-0456	Farnborough Radar/LARS
+0457.	Blackpool Approach (Liverpool Bay and Morecambe Bay Helicopters)
+0457.	Farnborough LARS - Fairoaks Departures
+0460-0466	Blackpool Approach
+0460-0467	Farnborough Radar/LARS
+0467.	Blackpool Approach (Liverpool Bay and Morecambe Bay Helicopters)
+0470-0477	UK Domestic
+0500.	NATO - CAOC 9 Exercises (activated by NOTAM)
+0501-0577	Transit (ORCAM) UK
+0600.	NATO - CAOC 9 Exercises (activated by NOTAM)
+0601-0637	Transit (ORCAM) Germany
+0640-0677	Transit (ORCAM) Paris
+0700.	NATO - CAOC 9 Exercises (activated by NOTAM)
+0701-0777	Transit (ORCAM) Maastricht
+2000.	Aircraft from non SSR environment or on the aerodrome surface
+2001-2077	Transit (ORCAM) Shannon
+2100.	NATO - CAOC 9 Exercises (activated by NOTAM)
+2101-2177	Transit (ORCAM) Amsterdam
+2200.	NATO - CAOC 9 Exercises (activated by NOTAM)
+2201-2277	Superdomestic UK to LF, LE, LP, GC and FA
+2300.	NATO - CAOC 9 Exercises (activated by NOTAM)
+2301-2337	Transit (ORCAM) Bordeaux
+2340-2377	Transit (ORCAM) Brest
+2400-2477	NATO - CAOC 9 Exercises (activated by NOTAM)
+2500.	NATO - CAOC 9 Exercises (activated by NOTAM)
+2501-2577	Transit (ORCAM) Karlsruhe
+2600.	NATO - CAOC 9 Exercises (activated by NOTAM)
+2601-2620	Aberdeen Approach
+2601-2637	RAF Cranwell
+2601-2645	MoD Boscombe Down
+2601-2657	Irish Domestic Westbound departures and Eastbound arrivals
+2621-2630	Aberdeen (Sumburgh Approach)
+2631-2637	Aberdeen (Northern North Sea Off-shore)
+2640-2657	Aberdeen (Northern North Sea Off-shore - Sumburgh Sector)
+2641-2642	RAF Cranwell - Lincolnshire AIAA
+2646-2647	MoD Boscombe Down - High Risks Trial
+2650.	MoD Boscombe Down Conspicuity
+2650-2653	Leeds Bradford Approach
+2651-2657	MoD Boscombe Down
+2654.	Leeds Bradford Conspicuity
+2655-2677	Leeds Bradford Approach
+2660-2675	Middle Wallop
+2660-2677	Aberdeen (Northern North Sea Off-shore)
+2676-2677	Middle Wallop Conspicuity
+2700.	NATO - CAOC 9 Exercises (activated by NOTAM)
+2701-2737	Transit (ORCAM) Shannon
+2740-2777	Transit (ORCAM) Zurich
+3000.	NATO - Aircraft receiving a service from AEW aircraft
+3001-3077	Transit (ORCAM) Zurich
+3100.	NATO - Aircraft receiving a service from AEW aircraft
+3101-3127	Transit (ORCAM) Germany
+3130-3177	Transit (ORCAM) Amsterdam
+3200.	NATO - Aircraft receiving a service from AEW aircraft
+3201-3202	UK Domestic (London TC (Swanwick) Special Sector Codes)
+3203-3216	UK Domestic (London AC (Swanwick) Special Sector Codes)
+3217-3220	UK Domestic
+3221-3257	Superdomestic - UK to Oceanic via Shannon/Dublin
+3260-3277	UK Domestic
+3300.	NATO - Aircraft receiving a service from AEW aircraft
+3301-3304	Swanwick (Military) Special Tasks
+3305-3307	London D&D Cell
+3310-3367	Swanwick (Military)
+3370-3377	UK Domestic
+3400.	NATO - Aircraft receiving a service from AEW aircraft
+3401-3457	Superdomestic - UK to Germany, Netherlands and Benelux
+3460-3477	Transit (ORCAM) Germany to UK
+3500.	NATO - Aircraft receiving a service from AEW aircraft
+3501-3507	Transit (ORCAM) Luxembourg
+3510-3537	Transit (ORCAM) Maastricht
+3540-3577	Transit (ORCAM) Berlin
+3600.	NATO - Aircraft receiving a service from AEW aircraft
+3601-3623	RAF Benson
+3601-3632	Scottish ATSOCA Purposes
+3601-3634	RAF Waddington
+3601-3644	Cardiff Approach
+3601-3647	Jersey Approach
+3624.	RAF Benson Conspicuity
+3640-3645	RAF Odiham
+3640-3665	RAF Marham
+3640-3677	Aberdeen (Northern North Sea Off-shore)
+3641-3677	BAe Warton
+3645.	Cardiff Approach - St Athan Conspicuity
+3646.	RAF Odiham Conspicuity
+3646-3657	Cardiff Approach
+3647-3653	RAF Odiham
+3660-3677	Solent Approach (Southampton)
+3666.	Solent Radar Conspicuity
+3666.	RAF Marham - Visual Recovery
+3667.	RAF Marham - FIS Conspicuity
+3667-3677	Solent Approach (Southampton)
+3700.	NATO - Aircraft receiving a service from AEW aircraft
+3701-3710	Norwich Approach
+3701-3710	BAe Woodford
+3701-3717	Military aircraft under service from RN AEW aircraft in South West Approaches
+3701-3736	RAF Brize Norton
+3701-3747	Guernsey Approach
+3701-3747	RAF Lossiemouth
+3711.	Woodford Entry/Exit Lane (Woodford Inbounds and Outbounds)
+3712.	Woodford Entry/Exit Lane (Manchester Inbounds)
+3713.	Manchester VFR/SVFR (Outbounds)
+3720.	RAF Cottesmore Conspicuity
+3720-3727	RAF Valley
+3720-3766	Newcastle Approach
+3721-3754	RAF Cottesmore
+3730-3736	RAF Valley
+3737.	RAF Valley - Visual Recovery
+3737.	RAF Brize Norton Approach Conspicuity
+3740-3745	RAF Brize Norton
+3740-3747	RAF Valley
+3750.	RAF Valley - VFR VATA East
+3750-3763	Gatwick Approach (TC)
+3751.	RAF Valley - VFR VATA West
+3752.	RAF Valley - RIFA
+3753.	RAF Valley - Low Level Helicopters
+3754.	RAF Valley - Special Tasks
+3755.	RAF Valley
+3755-3762	RAF Wittering Approach
+3756-3765	RAF Valley - VATA IFR Traffic
+3764-3767	Gatwick Tower
+3767.	Redhill Approach Conspicuity
+3767.	Newcastle Approach Conspicuity
+3770-3777	ATSOCAS
+4000.	NATO - Aircraft receiving a service from AEW aircraft
+4001-4077	Transit (ORCAM) Aix-en-Provence
+4100.	NATO - Aircraft receiving a service from AEW aircraft
+4101-4127	Transit (ORCAM) Frankfurt
+4130-4177	Transit (ORCAM) Dusseldorf
+4200.	NATO - Aircraft receiving a service from AEW aircraft
+4201-4214	Heathrow Domestic
+4215-4247	Superdomestic - Shannon inbound UK
+4250.	Manston Conspicuity
+4250-4257	Belfast City Approach
+4250-4267	Aberdeen Approach
+4250-4277	BAe Bristol Filton
+4250-4277	Humberside Approach
+4251-4267	Manston Approach
+4300.	NATO - Aircraft receiving a service from AEW aircraft
+4301-4307	UK Domestic
+4310-4323	UK Domestic (Gatwick Special Sector Codes)
+4324-4337	UK Domestic (Scottish Special Sector Codes)
+4340-4353	UK Domestic (SCoACC Special Sector Codes)
+4354-4377	UK Domestic
+4400.	NATO - Aircraft receiving a service from AEW aircraft
+4401-4427	Superdomestic - Brussels FIR to UK FIR
+4430-4477	Superdomestic - UK to Eire and Oceanic
+4500.	NATO - Aircraft receiving a service from AEW aircraft
+4501.	Wattisham Conspicuity
+4501-4515	RAF Lyneham
+4501-4520	Prestwick Approach
+4501-4547	RAF Linton-on-Ouse
+4502-4547	Wattisham Approach
+4516-4517	RAF Lyneham Conspicuity
+4520-4524	RAF Lyneham
+4530-4542	MoD Aberporth
+4530-4567	Plymouth (Military) Radar
+4550-4567	Isle of Man
+4550-4572	East Midlands Approach
+4573.	East Midlands Approach Conspicuity
+4574.	Not allocated
+4575.	RAF Leeming/RAF Linton-on-Ouse
+4575.	Southend Airport Conspicuity
+4576-4577	RAF Colerne Conspicuity
+4576-4577	Vale of York AIAA Conspicuity
+4600.	NATO - Aircraft receiving a service from AEW aircraft
+4601.	Hawarden Conspicuity
+4601.	RAF Wyton QGH Approach
+4602-4607	Hawarden Approach
+4610-4667	Scottish (Military) Radar
+4670-4676	TC Stansted/TC Luton
+4670-4677	RAF Coningsby RWS
+4677.	Carlisle Airport Conspicuity
+4677.	Luton Airport Tower Conspicuity
+4700.	NATO - Aircraft receiving a service from AEW aircraft
+4701-4777	Special Events (activated by NOTAM)
+
+5000.	NATO - Aircraft receiving a service from AEW aircraft
+5001-5012	TC Non-Standard Flights
+5013-5017	UK Domestic
+5020-5046	Farnborough LLARS
+5047.	Farnborough LLARS Conspicuity
+5050-5067	Bristol Approach
+5070.	Bristol VFR Conspicuity
+5071-5077	Bristol Approach
+5100.	NATO - Aircraft receiving a service from AEW aircraft
+5101-5177	CRC Boulmer
+5200.	NATO - Aircraft receiving a service from AEW aircraft
+5201-5260	Transit (ORCAM) UK
+5261-5270	Transit (ORCAM) Dublin to Europe
+5271-5277	Transit (ORCAM) Channel Islands
+5300.	NATO - Aircraft receiving a service from AEW aircraft
+5301-5377	Transit (ORCAM) Barcelona
+5400.	NATO - Aircraft receiving a service from AEW aircraft
+5401-5477	UK Domestic
+5500.	NATO - Aircraft receiving a service from AEW aircraft
+5501-5577	Transit (ORCAM) Barcelona
+5600.	NATO - Aircraft receiving a service from AEW aircraft
+5601-5647	Transit (ORCAM) Paris
+5650-5657	Transit (ORCAM) Luxembourg
+5660-5677	Transit (ORCAM) Reims
+5700.	NATO - Aircraft receiving a service from AEW aircraft
+5701-5777	Transit (ORCAM) Geneva
+6000.	NATO - CAOC 9 Exercises
+6001-6007	UK Domestic
+6010-6037	UK Domestic
+6040-6077	London (Military) Radar
+6100.	NATO - CAOC 9 Exercises
+6101-6107	London (Military) Radar
+6110-6137	Scottish (Military) Radar
+6140-6147	London (Military) Radar
+6151-6157	Scottish (Military) Radar
+6160.	Doncaster Sheffield Conspicuity
+6160-6176	Cambridge Approach
+6160-6176	Inverness Approach
+6160-6177	Plymouth (Military) Radar
+6161-6167	Doncaster Sheffield Approach
+6170.	Aircraft operating outside of Doncaster Sheffield Controlled Airspace Zone and Monitoring Doncaster Sheffield Radar frequency
+6171-6177	Doncaster Sheffield Approach
+6177.	Cambridge Conspicuity
+6177.	Inverness VFR Conspicuity
+6200.	NATO - CAOC 9 Exercises
+6201-6227	Superdomestic - Dublin inbound UK
+6230-6247	Superdomestic - UK to Scandinavia and Russia
+6250-6257	Superdomestic - UK to Amsterdam
+6260-6277	Superdomestic - Amsterdam to UK, Eire and Iceland
+6300.	NATO - CAOC 9 Exercises
+6301-6377	Superdomestic - UK to France
+6400.	NATO - CAOC 9 Exercises
+6401-6457	Swanwick (Military) Radar
+6460-6477	UK Domestic
+6500.	NATO - CAOC 9 Exercises
+6501-6577	CRC Scampton
+6600.	NATO - CAOC 9 Exercises
+6601-6677	Transit (ORCAM) Germany
+6700.	NATO - CAOC 9 Exercises
+6701-6747	Transit (ORCAM) Reims
+6750-6777	Transit (ORCAM) Aix-en-Provence
+7000.	General Conspicuity code
+7001.	Military Fixed-wing Low Level Conspicuity/Climbout
+7002.	Danger Areas General
+7003.	Red Arrows Transit/Display
+7004.	Conspicuity Aerobatics and Display
+7005.	High-Energy Manoeuvres
+7006.	Autonomous Operations within TRA and TRA (G)
+7007.	Open Skies Observation Aircraft
+7010.	Operating in Aerodrome Traffic Pattern
+7011-7013	Not allocated
+7014-7027	UK Domestic
+7030-7045	RNAS Culdrose
+7030-7046	TC Thames/TC Heathrow
+7030-7047	Aldergrove Approach
+7030-7066	Durham Tees Valley Airport
+7030-7077	Aberdeen (Northern North Sea Off-shore)
+7046-7047	RNAS Culdrose Conspicuity
+7047.	TC Thames (Biggin Hill Airport Conspicuity)
+7050-7056	TC Thames/TC Heathrow
+7057.	TC Thames (London City Airport Conspicuity)
+7050-7077	RNAS Culdrose
+7067.	Durham Tees Valley Airport Conspicuity
+7070-7076	TC Thames/TC Heathrow
+7077.	TC Thames (London Heliport Conspicuity)
+7100.	London Control (Swanwick) Saturation Code
+7101-7177	Transit (ORCAM) Brussels
+7200.	RN Ships
+7201-7247	Transit (ORCAM) Vienna
+7250-7257	UK Superdomestic for destinations in France and Barcelona FIR
+7260-7267	Superdomestic - Shannon/Dublin to France and Spain
+7270-7277	Plymouth Radar Superdomestic for destinations in UK and France
+7300.	Not allocated
+7301-7307	Superdomestic - Shannon Eastbound landing UK
+7310-7327	Superdomestic - UK to Netherlands
+7330-7347	Superdomestic - Netherlands to UK
+7350.	Norwich Approach Conspicuity
+7350-7361	MoD Ops in EG D701 (Hebrides)
+7350-7365	Manchester Approach
+7350-7367	RNAS Culdrose
+7350-7376	Bournemouth Approach/LARS
+7351-7377	Norwich Approach
+7362.	MoD Ops in EG D702 (Fort George)
+7363.	MoD Ops in EG D703 (Tain)
+7367-7373	Manchester Approach
+7374.	Dundee Airport Conspicuity
+7375.	Manchester TMA and Woodvale Local Area (Woodvale UAS Conspicuity)
+7377.	Bournemouth Radar Conspicuity
+7400.	MPA/DEFRA/Fishery Protection Conspicuity
+7401-7437	UK Domestic
+7440-7477	Superdomestic Spain and France to UK, Ireland, Iceland and North America
+7500.	Special Purpose Code - Hi-Jacking
+7501-7537	Transit (ORCAM) Geneva
+7540-7547	Transit (ORCAM) Bremen
+7550-7577	Transit (ORCAM) Paris
+7600.	Special Purpose Code - Radio Failure
+7601-7607	Superdomestic - Shannon/Dublin to Nordic States
+7610-7617	Superdomestic - Ireland to UK
+7620-7657	Superdomestic - UK to USA, Canada and Caribbean
+7660-7677	Superdomestic - UK to USA, Canada, Canaries and Caribbean
+7700.	Special Purpose Code - Emergency
+7701-7717	Superdomestic - UK to France and Spain
+7720-7727	Transit (ORCAM) Munich
+7730-7757	Superdomestic - Shannon Eastbound landing UK
+7760-7775	Superdomestic - UK to Channel Islands
+7776-7777	SSR Monitors

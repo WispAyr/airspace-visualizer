@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Radar Test</title>
+    <style>
+        body { margin: 0; padding: 20px; background: #001100; color: #00ff00; font-family: monospace; }
+        canvas { border: 2px solid #00ff00; background: #000800; margin: 10px 0; }
+        .controls { margin: 10px 0; }
+        button { background: #003300; color: #00ff00; border: 1px solid #00ff00; padding: 8px 16px; margin: 5px; cursor: pointer; }
+        button:hover { background: #005500; }
+        .status { margin: 5px 0; font-size: 12px; }
+        .info { margin: 10px 0; padding: 10px; border: 1px solid #004400; background: #001100; }
+    </style>
+</head>
+<body>
+    <h1>🚨 Emergency Radar Test</h1>
+    <div class="info">
+        <strong>Quick Diagnostic Tool</strong><br>
+        Testing basic radar functionality with minimal complexity
+    </div>
+    
+    <div class="controls">
+        <button onclick="testBasicRender()">🎨 Test Basic Render</button>
+        <button onclick="loadAndTest()">📡 Load Data & Test</button>
+        <button onclick="testZoom()">🔍 Test Zoom</button>
+        <button onclick="clearCanvas()">🧹 Clear Canvas</button>
+    </div>
+    
+    <div id="status" class="status">Ready for testing...</div>
+    <canvas id="testCanvas" width="800" height="600"></canvas>
+    
+    <div class="info">
+        <strong>Status:</strong>
+        <div>Coastline Data: <span id="coastlineStatus">Not loaded</span></div>
+        <div>Aircraft Data: <span id="aircraftStatus">Not loaded</span></div>
+        <div>Zoom Level: <span id="zoomStatus">1.0x</span></div>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('testCanvas');
+        const ctx = canvas.getContext('2d');
+        const statusDiv = document.getElementById('status');
+        
+        // Test data
+        let geoFeatures = [];
+        let aircraft = [];
+        let zoomLevel = 1.0;
+        
+        // Configuration
+        const radarCenterLat = 55.5094;
+        const radarCenterLon = -4.5967;
+        const radarRange = 100;
+        
+        function updateStatus(msg) {
+            statusDiv.innerHTML += `<br>${new Date().toLocaleTimeString()}: ${msg}`;
+            console.log(msg);
+        }
+        
+        function clearCanvas() {
+            ctx.fillStyle = '#000800';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            updateStatus("Canvas cleared");
+        }
+        
+        function testBasicRender() {
+            clearCanvas();
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            // Test basic drawing
+            ctx.strokeStyle = '#00ff00';
+            ctx.lineWidth = 2;
+            
+            // Draw center cross
+            ctx.beginPath();
+            ctx.moveTo(centerX - 10, centerY);
+            ctx.lineTo(centerX + 10, centerY);
+            ctx.moveTo(centerX, centerY - 10);
+            ctx.lineTo(centerX, centerY + 10);
+            ctx.stroke();
+            
+            // Draw range circles
+            [50, 100, 150, 200].forEach(radius => {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+            });
+            
+            // Draw text
+            ctx.fillStyle = '#00ff00';
+            ctx.font = '14px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('RADAR CENTER', centerX, centerY - 30);
+            ctx.fillText(`${radarCenterLat.toFixed(4)}°N, ${Math.abs(radarCenterLon).toFixed(4)}°W`, centerX, centerY + 250);
+            
+            updateStatus("✅ Basic rendering test completed");
+        }
+        
+        async function loadAndTest() {
+            updateStatus("🔄 Loading test data...");
+            
+            try {
+                // Test coastline API
+                const coastlineResponse = await fetch(`http://localhost:8080/api/coastline?lat=${radarCenterLat}&lon=${radarCenterLon}&range=50`);
+                const coastlineData = await coastlineResponse.json();
+                
+                if (coastlineData.status === 'success' && coastlineData.data && coastlineData.data.features) {
+                    geoFeatures = coastlineData.data.features.slice(0, 500); // Limit for performance
+                    document.getElementById('coastlineStatus').textContent = `${geoFeatures.length} features loaded`;
+                    updateStatus(`✅ Loaded ${geoFeatures.length} coastline features`);
+                } else {
+                    document.getElementById('coastlineStatus').textContent = 'Failed to load';
+                    updateStatus(`❌ Coastline API error`);
+                }
+                
+                // Test aircraft API
+                const aircraftResponse = await fetch('http://localhost:8080/tmp/aircraft.json');
+                const aircraftData = await aircraftResponse.json();
+                
+                if (aircraftData.aircraft) {
+                    aircraft = aircraftData.aircraft.filter(ac => ac.lat && ac.lon);
+                    document.getElementById('aircraftStatus').textContent = `${aircraft.length} aircraft loaded`;
+                    updateStatus(`✅ Loaded ${aircraft.length} aircraft`);
+                } else {
+                    document.getElementById('aircraftStatus').textContent = 'Failed to load';
+                    updateStatus(`❌ Aircraft API error`);
+                }
+                
+                // Render everything
+                renderTestRadar();
+                
+            } catch (error) {
+                updateStatus(`❌ Error: ${error.message}`);
+            }
+        }
+        
+        function renderTestRadar() {
+            clearCanvas();
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const maxRadius = Math.min(centerX, centerY) * 0.9;
+            
+            // Draw range rings
+            ctx.strokeStyle = '#004400';
+            ctx.lineWidth = 1;
+            [0.25, 0.5, 0.75, 1.0].forEach(factor => {
+                const radius = maxRadius * factor;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+            });
+            
+            // Draw coastline (simple dots)
+            if (geoFeatures.length > 0) {
+                ctx.fillStyle = '#00ffcc';
+                geoFeatures.forEach((feature, index) => {
+                    if (index % 5 !== 0) return; // Skip some for performance
+                    
+                    if (feature.coordinates && feature.coordinates.length === 2) {
+                        const lat = feature.coordinates[1];
+                        const lon = feature.coordinates[0];
+                        
+                        // Simple projection
+                        const latDiff = lat - radarCenterLat;
+                        const lonDiff = lon - radarCenterLon;
+                        
+                        const x = centerX + (lonDiff * 60 * maxRadius / (radarRange / zoomLevel));
+                        const y = centerY - (latDiff * 60 * maxRadius / (radarRange / zoomLevel));
+                        
+                        if (x >= 0 && x <= canvas.width && y >= 0 && y <= canvas.height) {
+                            ctx.fillRect(x-1, y-1, 2, 2);
+                        }
+                    }
+                });
+                updateStatus(`Drew coastline with zoom ${zoomLevel.toFixed(1)}x`);
+            }
+            
+            // Draw aircraft
+            if (aircraft.length > 0) {
+                aircraft.forEach(ac => {
+                    const latDiff = ac.lat - radarCenterLat;
+                    const lonDiff = ac.lon - radarCenterLon;
+                    
+                    const x = centerX + (lonDiff * 60 * maxRadius / (radarRange / zoomLevel));
+                    const y = centerY - (latDiff * 60 * maxRadius / (radarRange / zoomLevel));
+                    
+                    if (x >= -50 && x <= canvas.width + 50 && y >= -50 && y <= canvas.height + 50) {
+                        // Draw aircraft symbol
+                        ctx.fillStyle = '#ffff00';
+                        ctx.fillRect(x-3, y-3, 6, 6);
+                        
+                        // Draw callsign
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = '10px monospace';
+                        ctx.textAlign = 'left';
+                        const callsign = ac.flight ? ac.flight.trim() : ac.hex;
+                        ctx.fillText(callsign, x + 8, y - 5);
+                    }
+                });
+                updateStatus(`Drew ${aircraft.length} aircraft`);
+            }
+            
+            // Draw center point
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(centerX-2, centerY-2, 4, 4);
+        }
+        
+        function testZoom() {
+            if (zoomLevel < 5.0) {
+                zoomLevel *= 1.5;
+            } else {
+                zoomLevel = 1.0;
+            }
+            
+            document.getElementById('zoomStatus').textContent = zoomLevel.toFixed(1) + 'x';
+            updateStatus(`Zoom changed to ${zoomLevel.toFixed(1)}x`);
+            
+            if (geoFeatures.length > 0 || aircraft.length > 0) {
+                renderTestRadar();
+            }
+        }
+        
+        // Auto-run basic test on load
+        window.onload = function() {
+            updateStatus("Emergency test page loaded");
+            testBasicRender();
+        };
+    </script>
+</body>
+</html>
+

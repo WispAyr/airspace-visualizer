@@ -109,8 +109,8 @@ def proxy_aircraft():
 if __name__ == "__main__":
     print("🗺️  Starting Coastline Server for Airspace Visualizer")
     print("=" * 60)
-    print("📍 Coastline API: http://localhost:8080/api/coastline")
-    print("🌍 Regions API: http://localhost:8080/api/regions")
+    print("📍 Coastline API: http://localhost:8084/api/coastline")
+    print("🌍 Regions API: http://localhost:8084/api/regions")
     print("=" * 60)
     
-    app.run(host='0.0.0.0', port=8080, debug=False)
+    app.run(host='0.0.0.0', port=8084, debug=False)

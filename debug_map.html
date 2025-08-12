@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Map Rendering Debug</title>
+    <style>
+        body { margin: 0; padding: 20px; background: #000; color: #0f0; font-family: monospace; }
+        canvas { border: 2px solid #0f0; background: #000800; }
+        .debug { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Map Rendering Debug Tool</h1>
+    <div class="debug" id="status">Initializing...</div>
+    <canvas id="testCanvas" width="800" height="600"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('testCanvas');
+        const ctx = canvas.getContext('2d');
+        const status = document.getElementById('status');
+        
+        let step = 0;
+        
+        function updateStatus(msg) {
+            status.innerHTML += `<br>Step ${++step}: ${msg}`;
+            console.log(`Debug Step ${step}: ${msg}`);
+        }
+        
+        async function runDiagnostics() {
+            updateStatus("Canvas initialized");
+            
+            // Test basic canvas drawing
+            ctx.fillStyle = '#000800';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            updateStatus("Canvas cleared");
+            
+            // Test drawing basic shapes
+            ctx.strokeStyle = '#00ff00';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(400, 300, 100, 0, 2 * Math.PI);
+            ctx.stroke();
+            updateStatus("Test circle drawn");
+            
+            // Test coastline API
+            try {
+                const coastlineResponse = await fetch('http://localhost:8080/api/coastline?lat=55.5094&lon=-4.5967&range=50');
+                const coastlineData = await coastlineResponse.json();
+                updateStatus(`Coastline API: ${coastlineData.status}, Features: ${coastlineData.data?.features?.length || 0}`);
+                
+                if (coastlineData.data?.features?.length > 0) {
+                    // Draw some coastline points
+                    ctx.fillStyle = '#00aa00';
+                    const features = coastlineData.data.features.slice(0, 100); // First 100 points
+                    features.forEach((feature, i) => {
+                        if (feature.coordinates) {
+                            const x = 400 + (feature.coordinates[0] + 4.5967) * 1000; // Simple projection
+                            const y = 300 - (feature.coordinates[1] - 55.5094) * 1000;
+                            if (x >= 0 && x <= canvas.width && y >= 0 && y <= canvas.height) {
+                                ctx.fillRect(x-1, y-1, 2, 2);
+                            }
+                        }
+                    });
+                    updateStatus(`Drew ${features.length} coastline points`);
+                } else {
+                    updateStatus("No coastline features to draw");
+                }
+                
+            } catch (error) {
+                updateStatus(`Coastline API Error: ${error.message}`);
+            }
+            
+            // Test airspace API
+            try {
+                const airspaceResponse = await fetch('http://localhost:8080/api/airspace?lat=55.5094&lon=-4.5967&range=50');
+                const airspaceData = await airspaceResponse.json();
+                updateStatus(`Airspace API: ${airspaceData.status}, Zones: ${airspaceData.data?.zones?.length || 0}`);
+                
+            } catch (error) {
+                updateStatus(`Airspace API Error: ${error.message}`);
+            }
+            
+            // Test aircraft API
+            try {
+                const aircraftResponse = await fetch('http://localhost:8080/tmp/aircraft.json');
+                const aircraftData = await aircraftResponse.json();
+                updateStatus(`Aircraft API: ${aircraftData.aircraft?.length || 0} aircraft`);
+                
+            } catch (error) {
+                updateStatus(`Aircraft API Error: ${error.message}`);
+            }
+            
+            updateStatus("Diagnostics complete!");
+        }
+        
+        runDiagnostics();
+    </script>
+</body>
+</html>
+

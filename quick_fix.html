@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Map Fix Test</title>
+    <style>
+        body { margin: 0; padding: 20px; background: #001100; color: #00ff00; font-family: monospace; }
+        canvas { border: 2px solid #00ff00; background: #000800; margin: 10px 0; }
+        .controls { margin: 10px 0; }
+        button { background: #003300; color: #00ff00; border: 1px solid #00ff00; padding: 5px 10px; margin: 5px; }
+        .status { margin: 5px 0; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>🗺️ Map Rendering Quick Fix Test</h1>
+    
+    <div class="controls">
+        <button onclick="loadAndRender()">🔄 Load & Render Map</button>
+        <button onclick="testBasicDrawing()">🎨 Test Basic Drawing</button>
+        <button onclick="toggleRangeRings()">⭕ Toggle Range Rings</button>
+        <button onclick="toggleCoastline()">🏖️ Toggle Coastline</button>
+    </div>
+    
+    <div id="status" class="status">Ready...</div>
+    
+    <canvas id="mapCanvas" width="800" height="600"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('mapCanvas');
+        const ctx = canvas.getContext('2d');
+        const statusDiv = document.getElementById('status');
+        
+        // Configuration
+        const radarCenterLat = 55.5094;
+        const radarCenterLon = -4.5967;
+        const radarRange = 100;
+        
+        // Data storage
+        let geoFeatures = [];
+        let airspaceZones = [];
+        let showRangeRings = true;
+        let showCoastline = true;
+        
+        function updateStatus(msg) {
+            statusDiv.innerHTML += `<br>${new Date().toLocaleTimeString()}: ${msg}`;
+            console.log(msg);
+        }
+        
+        function testBasicDrawing() {
+            updateStatus("Testing basic canvas drawing...");
+            
+            // Clear canvas
+            ctx.fillStyle = '#000800';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const maxRadius = Math.min(centerX, centerY) * 0.9;
+            
+            // Draw test circle
+            ctx.strokeStyle = '#00ff00';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 50, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Draw test text
+            ctx.fillStyle = '#00ff00';
+            ctx.font = '16px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('MAP CENTER', centerX, centerY - 70);
+            ctx.fillText(`${radarCenterLat.toFixed(4)}°N, ${Math.abs(radarCenterLon).toFixed(4)}°W`, centerX, centerY + 90);
+            
+            updateStatus("✅ Basic drawing test completed");
+        }
+        
+        function drawRangeRings() {
+            if (!showRangeRings) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const maxRadius = Math.min(centerX, centerY) * 0.9;
+            
+            ctx.strokeStyle = '#004400';
+            ctx.lineWidth = 1;
+            
+            // Draw range rings for 25, 50, 75, 100 nm
+            const rings = [25, 50, 75, 100];
+            rings.forEach(range => {
+                const radius = (range / radarRange) * maxRadius;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Add range labels
+                ctx.fillStyle = '#006600';
+                ctx.font = '10px monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${range}nm`, centerX, centerY - radius + 12);
+            });
+        }
+        
+        function drawCoastline() {
+            if (!showCoastline || geoFeatures.length === 0) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const maxRadius = Math.min(centerX, centerY) * 0.9;
+            
+            ctx.strokeStyle = '#00ffcc';
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = 0.8;
+            
+            geoFeatures.forEach(feature => {
+                if (feature.coordinates && feature.coordinates.length === 2) {
+                    const lat = feature.coordinates[1];
+                    const lon = feature.coordinates[0];
+                    
+                    // Simple projection (not accurate but good for testing)
+                    const latDiff = lat - radarCenterLat;
+                    const lonDiff = lon - radarCenterLon;
+                    
+                    const x = centerX + (lonDiff * 60 * maxRadius / radarRange);
+                    const y = centerY - (latDiff * 60 * maxRadius / radarRange);
+                    
+                    if (x >= 0 && x <= canvas.width && y >= 0 && y <= canvas.height) {
+                        ctx.fillStyle = '#00ffcc';
+                        ctx.fillRect(x-1, y-1, 2, 2);
+                    }
+                }
+            });
+            
+            ctx.globalAlpha = 1.0;
+            updateStatus(`Drew ${geoFeatures.length} coastline points`);
+        }
+        
+        function renderMap() {
+            // Clear canvas
+            ctx.fillStyle = '#000800';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw components
+            drawRangeRings();
+            drawCoastline();
+            
+            // Draw center point
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(centerX-2, centerY-2, 4, 4);
+            
+            updateStatus("Map rendered");
+        }
+        
+        async function loadAndRender() {
+            updateStatus("🔄 Loading map data...");
+            
+            try {
+                // Load coastline data
+                const coastlineResponse = await fetch(`http://localhost:8080/api/coastline?lat=${radarCenterLat}&lon=${radarCenterLon}&range=${radarRange}`);
+                const coastlineData = await coastlineResponse.json();
+                
+                if (coastlineData.status === 'success' && coastlineData.data && coastlineData.data.features) {
+                    geoFeatures = coastlineData.data.features;
+                    updateStatus(`✅ Loaded ${geoFeatures.length} coastline features`);
+                } else {
+                    updateStatus(`❌ Coastline API error: ${coastlineData.error || 'Unknown error'}`);
+                }
+                
+                // Load airspace data
+                const airspaceResponse = await fetch(`http://localhost:8080/api/airspace?lat=${radarCenterLat}&lon=${radarCenterLon}&range=${radarRange}`);
+                const airspaceData = await airspaceResponse.json();
+                
+                if (airspaceData.status === 'success' && airspaceData.data && airspaceData.data.zones) {
+                    airspaceZones = airspaceData.data.zones;
+                    updateStatus(`✅ Loaded ${airspaceZones.length} airspace zones`);
+                } else {
+                    updateStatus(`❌ Airspace API error: ${airspaceData.error || 'Unknown error'}`);
+                }
+                
+                // Render the map
+                renderMap();
+                
+            } catch (error) {
+                updateStatus(`❌ Error loading data: ${error.message}`);
+            }
+        }
+        
+        function toggleRangeRings() {
+            showRangeRings = !showRangeRings;
+            updateStatus(`Range rings: ${showRangeRings ? 'ON' : 'OFF'}`);
+            renderMap();
+        }
+        
+        function toggleCoastline() {
+            showCoastline = !showCoastline;
+            updateStatus(`Coastline: ${showCoastline ? 'ON' : 'OFF'}`);
+            renderMap();
+        }
+        
+        // Initialize
+        updateStatus("Quick fix test initialized");
+        testBasicDrawing();
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGPK Prestwick Airport - Radar Control</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 15px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .airport-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .airport-logo {
+            font-size: 2.5rem;
+            color: #fbbf24;
+        }
+
+        .airport-details h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .airport-details p {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        .status-dot.warning { background: #f59e0b; }
+        .status-dot.error { background: #ef4444; }
+
+        .main-container {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+
+        .radar-section {
+            flex: 1;
+            position: relative;
+            background: #0f172a;
+            border-right: 2px solid #1e293b;
+        }
+
+        .radar-canvas {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 70%);
+        }
+
+        .radar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .radar-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            max-width: 300px;
+            z-index: 20;
+        }
+
+        .radar-info h3 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .info-label {
+            color: #94a3b8;
+        }
+
+        .info-value {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .control-panel {
+            width: 400px;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 2px solid #1e293b;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .control-group h3 {
+            color: #fbbf24;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .control-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .control-value {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .btn.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .btn.warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .flight-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .flight-item {
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .flight-item:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+
+        .flight-item.active {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: #3b82f6;
+        }
+
+        .flight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .flight-callsign {
+            font-weight: 600;
+            color: #fbbf24;
+            font-size: 1rem;
+        }
+
+        .flight-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .status-arrival { background: #10b981; color: white; }
+        .status-departure { background: #3b82f6; color: white; }
+        .status-holding { background: #f59e0b; color: white; }
+        .status-enroute { background: #8b5cf6; color: white; }
+
+        .flight-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.8rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .detail-label {
+            color: #94a3b8;
+        }
+
+        .detail-value {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .runway-info {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .runway-info h4 {
+            color: #10b981;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .runway-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .runway-name {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .runway-conditions {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .conditions-good { background: #10b981; color: white; }
+        .conditions-moderate { background: #f59e0b; color: white; }
+        .conditions-poor { background: #ef4444; color: white; }
+
+        .weather-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .weather-info h4 {
+            color: #3b82f6;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .weather-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .weather-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+
+        .weather-label {
+            color: #94a3b8;
+        }
+
+        .weather-value {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .notam-alert {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .notam-alert h4 {
+            color: #ef4444;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .notam-item {
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .notam-item:hover {
+            background: rgba(0,0,0,0.4);
+            transform: translateX(2px);
+        }
+
+        .notam-priority {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .priority-critical { background: #ef4444; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-medium { background: #eab308; color: white; }
+        .priority-normal { background: #10b981; color: white; }
+
+        .notam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .notam-distance {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .notam-location {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+
+        .notam-description {
+            color: #e2e8f0;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 5px;
+        }
+
+        .notam-time {
+            color: #64748b;
+            font-size: 0.75rem;
+            font-style: italic;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #94a3b8;
+        }
+
+        .error {
+            color: #ef4444;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .control-panel {
+                width: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .control-panel {
+                width: 100%;
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="airport-info">
+                <div class="airport-logo">✈️</div>
+                <div class="airport-details">
+                    <h1>EGPK - Prestwick Airport</h1>
+                    <p>Glasgow Prestwick International Airport • Radar Control</p>
+                </div>
+            </div>
+            <div class="status-bar">
+                <div class="status-indicator">
+                    <div class="status-dot" id="radar-status"></div>
+                    <span>RADAR</span>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-dot" id="adsb-status"></div>
+                    <span>ADS-B</span>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-dot" id="weather-status"></div>
+                    <span>METAR</span>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-dot" id="notam-status"></div>
+                    <span>NOTAM</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="radar-section">
+            <canvas id="radarCanvas" class="radar-canvas"></canvas>
+            <div class="radar-overlay">
+                <div class="radar-info">
+                    <h3>🛩️ Radar Status</h3>
+                    <div class="info-item">
+                        <span class="info-label">Range:</span>
+                        <span class="info-value" id="radar-range">50 NM</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Aircraft:</span>
+                        <span class="info-value" id="aircraft-count">0</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Zoom:</span>
+                        <span class="info-value" id="zoom-level">1.0x</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Center:</span>
+                        <span class="info-value">EGPK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <div class="control-group">
+                <h3>🎯 Airport Operations</h3>
+                <div class="control-row">
+                    <span class="control-label">Current Time:</span>
+                    <span class="control-value" id="current-time">--:--</span>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">Active Runways:</span>
+                    <span class="control-value">12/30</span>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">ATIS:</span>
+                    <span class="control-value">INFO ALPHA</span>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">Ground:</span>
+                    <span class="control-value">121.9 MHz</span>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">Tower:</span>
+                    <span class="control-value">118.1 MHz</span>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">Approach:</span>
+                    <span class="control-value">119.3 MHz</span>
+                </div>
+            </div>
+
+            <div class="runway-info">
+                <h4>🛣️ Runway Status</h4>
+                <div class="runway-status">
+                    <span class="runway-name">Runway 12</span>
+                    <span class="runway-conditions conditions-good">GOOD</span>
+                </div>
+                <div class="runway-status">
+                    <span class="runway-name">Runway 30</span>
+                    <span class="runway-conditions conditions-good">GOOD</span>
+                </div>
+                <div class="runway-status">
+                    <span class="runway-name">Taxiway A</span>
+                    <span class="runway-conditions conditions-good">GOOD</span>
+                </div>
+                <div class="runway-status">
+                    <span class="runway-name">Taxiway B</span>
+                    <span class="runway-conditions conditions-good">GOOD</span>
+                </div>
+            </div>
+
+            <div class="weather-info">
+                <h4>🌤️ Real METAR Data</h4>
+                <div class="weather-grid">
+                    <div class="weather-item">
+                        <span class="weather-label">Wind:</span>
+                        <span class="weather-value" id="wind-info">--</span>
+                    </div>
+                    <div class="weather-item">
+                        <span class="weather-label">Visibility:</span>
+                        <span class="weather-value" id="visibility">--</span>
+                    </div>
+                    <div class="weather-item">
+                        <span class="weather-label">Temperature:</span>
+                        <span class="weather-value" id="temperature">--</span>
+                    </div>
+                    <div class="weather-item">
+                        <span class="weather-label">Pressure:</span>
+                        <span class="weather-value" id="pressure">--</span>
+                    </div>
+                    <div class="weather-item">
+                        <span class="weather-label">Clouds:</span>
+                        <span class="weather-value" id="clouds">--</span>
+                    </div>
+                    <div class="weather-item">
+                        <span class="weather-label">Weather:</span>
+                        <span class="weather-value" id="weather-phenomena">--</span>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.8rem; color: #10b981; text-align: center;">
+                    ✅ Live METAR data from NOAA Aviation Weather Center
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>✈️ Active Flights</h3>
+                <div id="active-flights" class="flight-list">
+                    <div class="loading">Loading flights...</div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>🔧 Radar Controls</h3>
+                <button class="btn" onclick="toggleRadar()">🔄 Refresh Radar</button>
+                <button class="btn" onclick="resetZoom()">🎯 Reset View</button>
+                <button class="btn" onclick="toggleLabels()">🏷️ Toggle Labels</button>
+                <button class="btn" onclick="toggleTrails()">📍 Toggle Trails</button>
+            </div>
+
+            <div class="notam-alert">
+                <h4>⚠️ Active NOTAMs</h4>
+                <div id="notam-list">
+                    <div class="loading">Loading NOTAMs...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Radar configuration
+        const RADAR_CENTER = { lat: 55.5094, lon: -4.5967 }; // EGPK coordinates
+        const RADAR_RANGE_NM = 50;
+        const CANVAS_SIZE = 800;
+        
+        // Global variables
+        let canvas, ctx;
+        let zoomLevel = 1.0;
+        let panOffset = { x: 0, y: 0 };
+        let isDragging = false;
+        let lastMousePos = { x: 0, y: 0 };
+        let aircraftData = [];
+        let notamData = [];
+        let showLabels = true;
+        let showTrails = true;
+        let updateInterval;
+
+        // Initialize the application
+        function init() {
+            canvas = document.getElementById('radarCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = CANVAS_SIZE;
+            canvas.height = CANVAS_SIZE;
+            
+            // Add event listeners
+            canvas.addEventListener('mousedown', startDrag);
+            canvas.addEventListener('mousemove', drag);
+            canvas.addEventListener('mouseup', endDrag);
+            canvas.addEventListener('wheel', handleZoom);
+            
+            // Start data updates
+            startDataUpdates();
+            
+            // Initial render
+            drawRadar();
+            
+            // Update time
+            updateTime();
+            setInterval(updateTime, 1000);
+        }
+
+        // Start data updates
+        function startDataUpdates() {
+            fetchAircraftData();
+            fetchNOTAMs();
+            fetchWeatherData();
+            
+            // Update every 5 seconds
+            updateInterval = setInterval(() => {
+                fetchAircraftData();
+                fetchNOTAMs();
+                fetchWeatherData();
+            }, 5000);
+        }
+
+        // Fetch aircraft data
+        async function fetchAircraftData() {
+            try {
+                const response = await fetch('http://localhost:8080/api/aircraft/active');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    aircraftData = data.data || [];
+                    updateAircraftCount();
+                    updateFlightList();
+                    drawRadar();
+                }
+            } catch (error) {
+                console.error('Error fetching aircraft data:', error);
+            }
+        }
+
+        // Fetch NOTAMs
+        async function fetchNOTAMs() {
+            try {
+                const response = await fetch('http://localhost:8080/api/notams');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    notamData = data.data.notams || [];
+                    updateNOTAMList();
+                }
+            } catch (error) {
+                console.error('Error fetching NOTAMs:', error);
+            }
+        }
+
+        // Fetch real METAR data
+        async function fetchWeatherData() {
+            try {
+                const response = await fetch('http://localhost:8080/api/metar/EGPK');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    updateWeatherDisplay(data.data);
+                } else {
+                    console.log('METAR data not available:', data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching METAR data:', error);
+            }
+        }
+
+        // Update aircraft count display
+        function updateAircraftCount() {
+            document.getElementById('aircraft-count').textContent = aircraftData.length;
+        }
+
+        // Update flight list
+        function updateFlightList() {
+            const container = document.getElementById('active-flights');
+            
+            if (aircraftData.length === 0) {
+                container.innerHTML = '<div class="loading">No active flights</div>';
+                return;
+            }
+
+            container.innerHTML = aircraftData.map(aircraft => {
+                const status = getFlightStatus(aircraft);
+                const statusClass = `status-${status.toLowerCase()}`;
+                
+                return `
+                    <div class="flight-item" onclick="selectFlight('${aircraft.hex}')">
+                        <div class="flight-header">
+                            <span class="flight-callsign">${aircraft.flight || aircraft.hex}</span>
+                            <span class="flight-status ${statusClass}">${status}</span>
+                        </div>
+                        <div class="flight-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Altitude:</span>
+                                <span class="detail-value">${aircraft.altitude || '--'} ft</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Speed:</span>
+                                <span class="detail-value">${aircraft.speed || '--'} kt</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Heading:</span>
+                                <span class="detail-value">${aircraft.track || '--'}°</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Squawk:</span>
+                                <span class="detail-value">${aircraft.squawk || '--'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Get flight status based on aircraft data
+        function getFlightStatus(aircraft) {
+            if (!aircraft.altitude) return 'UNKNOWN';
+            
+            const alt = parseInt(aircraft.altitude);
+            const distance = calculateDistance(aircraft.lat, aircraft.lon);
+            
+            if (alt < 1000 && distance < 5) return 'ARRIVAL';
+            if (alt < 1000 && distance < 10) return 'DEPARTURE';
+            if (alt < 3000 && distance < 15) return 'HOLDING';
+            return 'ENROUTE';
+        }
+
+        // Calculate distance from EGPK
+        function calculateDistance(lat, lon) {
+            const R = 3440.065; // Earth radius in nautical miles
+            const dLat = (lat - RADAR_CENTER.lat) * Math.PI / 180;
+            const dLon = (lon - RADAR_CENTER.lon) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                     Math.cos(RADAR_CENTER.lat * Math.PI / 180) * Math.cos(lat * Math.PI / 180) *
+                     Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // Update NOTAM list
+        function updateNOTAMList() {
+            const container = document.getElementById('notam-list');
+            
+            if (notamData.length === 0) {
+                container.innerHTML = '<div class="loading">No active NOTAMs</div>';
+                updateNOTAMStatus(0);
+                return;
+            }
+
+            // Sort NOTAMs by priority (CRITICAL, HIGH, MEDIUM, NORMAL)
+            const priorityOrder = { 'CRITICAL': 0, 'HIGH': 1, 'MEDIUM': 2, 'NORMAL': 3 };
+            const sortedNOTAMs = notamData.sort((a, b) => {
+                return (priorityOrder[a.priority] || 4) - (priorityOrder[b.priority] || 4);
+            });
+
+            // Update NOTAM status indicator
+            updateNOTAMStatus(notamData.length);
+
+            container.innerHTML = sortedNOTAMs.slice(0, 5).map(notam => {
+                const priorityClass = `priority-${notam.priority.toLowerCase()}`;
+                const distance = notam.distance_nm ? `${notam.distance_nm.toFixed(1)}nm` : '';
+                const location = notam.location || 'Unknown';
+                const description = notam.description || notam.raw_text || 'No description';
+                
+                return `
+                    <div class="notam-item">
+                        <div class="notam-priority ${priorityClass}">${notam.priority}</div>
+                        <div class="notam-header">
+                            <strong>${notam.id}</strong> 
+                            ${distance ? `<span class="notam-distance">${distance}</span>` : ''}
+                        </div>
+                        <div class="notam-location">📍 ${location}</div>
+                        <div class="notam-description">${description.substring(0, 100)}${description.length > 100 ? '...' : ''}</div>
+                        ${notam.effective_from ? `<div class="notam-time">🕒 ${formatNOTAMTime(notam.effective_from)} - ${formatNOTAMTime(notam.effective_to)}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            // Show count of total NOTAMs
+            if (notamData.length > 5) {
+                container.innerHTML += `
+                    <div class="notam-count">
+                        <em>Showing 5 of ${notamData.length} NOTAMs</em>
+                    </div>
+                `;
+            }
+        }
+
+        // Update NOTAM status indicator
+        function updateNOTAMStatus(count) {
+            const notamStatus = document.getElementById('notam-status');
+            const notamIndicator = document.querySelector('.status-indicator:has(#notam-status)');
+            
+            if (count === 0) {
+                notamStatus.className = 'status-dot';
+                if (notamIndicator) notamIndicator.querySelector('span').textContent = 'NOTAM';
+            } else if (count > 0 && count <= 5) {
+                notamStatus.className = 'status-dot warning';
+                if (notamIndicator) notamIndicator.querySelector('span').textContent = `NOTAM (${count})`;
+            } else {
+                notamStatus.className = 'status-dot error';
+                if (notamIndicator) notamIndicator.querySelector('span').textContent = `NOTAM (${count})`;
+            }
+        }
+
+        // Format NOTAM time for display
+        function formatNOTAMTime(timeStr) {
+            if (!timeStr) return '';
+            try {
+                const date = new Date(timeStr);
+                if (isNaN(date.getTime())) return timeStr;
+                return date.toLocaleDateString('en-GB', { 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            } catch (e) {
+                return timeStr;
+            }
+        }
+
+        // Get NOTAM color based on priority
+        function getNOTAMColor(priority) {
+            switch (priority?.toUpperCase()) {
+                case 'CRITICAL': return '#ef4444'; // Red
+                case 'HIGH': return '#f59e0b';     // Orange
+                case 'MEDIUM': return '#eab308';   // Yellow
+                case 'NORMAL': return '#10b981';   // Green
+                default: return '#6b7280';         // Gray
+            }
+        }
+
+        // Update weather display with real METAR data
+        function updateWeatherDisplay(metar) {
+            // Wind information
+            if (metar.wind) {
+                let windText = `${metar.wind.direction}° at ${metar.wind.speed} kt`;
+                if (metar.wind.gust) {
+                    windText += ` (G${metar.wind.gust} kt)`;
+                }
+                document.getElementById('wind-info').textContent = windText;
+            } else {
+                document.getElementById('wind-info').textContent = 'Calm';
+            }
+            
+            // Visibility
+            if (metar.visibility) {
+                document.getElementById('visibility').textContent = `${metar.visibility} m`;
+            } else {
+                document.getElementById('visibility').textContent = '--';
+            }
+            
+            // Temperature
+            if (metar.temperature !== null && metar.temperature !== undefined) {
+                document.getElementById('temperature').textContent = `${metar.temperature}°C`;
+            } else {
+                document.getElementById('temperature').textContent = '--';
+            }
+            
+            // Pressure (QNH)
+            if (metar.pressure) {
+                document.getElementById('pressure').textContent = `${metar.pressure} hPa`;
+            } else {
+                document.getElementById('pressure').textContent = '--';
+            }
+            
+            // Cloud information
+            if (metar.clouds) {
+                const cloudText = `${metar.clouds.type} ${metar.clouds.height} ft`;
+                document.getElementById('clouds').textContent = cloudText;
+            } else {
+                document.getElementById('clouds').textContent = 'Clear';
+            }
+            
+            // Weather phenomena
+            if (metar.weather) {
+                let weatherText = metar.weather.phenomena;
+                if (metar.weather.intensity === '+') {
+                    weatherText = 'Heavy ' + weatherText;
+                } else if (metar.weather.intensity === '-') {
+                    weatherText = 'Light ' + weatherText;
+                }
+                document.getElementById('weather-phenomena').textContent = weatherText;
+            } else {
+                document.getElementById('weather-phenomena').textContent = 'None';
+            }
+            
+            // Update status indicator
+            document.getElementById('weather-status').classList.remove('warning', 'error');
+            document.getElementById('weather-status').classList.add('green');
+        }
+
+        // Update time display
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-GB', { 
+                hour12: false, 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        // Draw radar
+        function drawRadar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Apply zoom and pan
+            ctx.save();
+            ctx.translate(canvas.width/2 + panOffset.x, canvas.height/2 + panOffset.y);
+            ctx.scale(zoomLevel, zoomLevel);
+            
+            // Draw radar background
+            drawRadarBackground();
+            
+            // Draw airspace zones
+            drawAirspaceZones();
+            
+            // Draw runways
+            drawRunways();
+            
+            // Draw aircraft
+            drawAircraft();
+            
+            // Draw NOTAMs
+            drawNOTAMs();
+            
+            ctx.restore();
+            
+            // Update radar info
+            updateRadarInfo();
+        }
+
+        // Draw radar background
+        function drawRadarBackground() {
+            // Draw range rings
+            for (let range = 10; range <= RADAR_RANGE_NM; range += 10) {
+                const radius = (range / RADAR_RANGE_NM) * (CANVAS_SIZE / 2);
+                ctx.strokeStyle = 'rgba(59, 130, 246, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Draw range labels
+                if (showLabels) {
+                    ctx.fillStyle = 'rgba(59, 130, 246, 0.8)';
+                    ctx.font = '12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`${range} NM`, 0, -radius + 20);
+                }
+            }
+            
+            // Draw bearing lines
+            for (let bearing = 0; bearing < 360; bearing += 30) {
+                const angle = (bearing * Math.PI) / 180;
+                const radius = (CANVAS_SIZE / 2) * 0.8;
+                const x = Math.sin(angle) * radius;
+                const y = -Math.cos(angle) * radius;
+                
+                ctx.strokeStyle = 'rgba(59, 130, 246, 0.2)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                
+                // Draw bearing labels
+                if (showLabels) {
+                    ctx.fillStyle = 'rgba(59, 130, 246, 0.8)';
+                    ctx.font = '10px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`${bearing}°`, x * 1.1, y * 1.1);
+                }
+            }
+        }
+
+        // Draw airspace zones
+        function drawAirspaceZones() {
+            // This would integrate with the airspace API
+            // For now, draw a simple CTR around EGPK
+            const ctrRadius = 3; // 3 NM CTR
+            const radius = (ctrRadius / RADAR_RANGE_NM) * (CANVAS_SIZE / 2);
+            
+            ctx.strokeStyle = 'rgba(239, 68, 68, 0.8)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            if (showLabels) {
+                ctx.fillStyle = 'rgba(239, 68, 68, 0.9)';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('CTR EGPK', 0, -radius - 10);
+            }
+        }
+
+        // Draw runways
+        function drawRunways() {
+            // Runway 12/30
+            const runwayLength = 2.5; // 2.5 NM
+            const runwayWidth = 0.1; // 0.1 NM
+            
+            const lengthPixels = (runwayLength / RADAR_RANGE_NM) * (CANVAS_SIZE / 2);
+            const widthPixels = (runwayWidth / RADAR_RANGE_NM) * (CANVAS_SIZE / 2);
+            
+            // Runway 12/30 (North-South)
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fillRect(-widthPixels/2, -lengthPixels/2, widthPixels, lengthPixels);
+            
+            // Runway markings
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, -lengthPixels/2);
+            ctx.lineTo(0, lengthPixels/2);
+            ctx.stroke();
+            
+            if (showLabels) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('12', 0, -lengthPixels/2 - 10);
+                ctx.fillText('30', 0, lengthPixels/2 + 20);
+            }
+        }
+
+        // Draw aircraft
+        function drawAircraft() {
+            aircraftData.forEach(aircraft => {
+                if (aircraft.lat && aircraft.lon) {
+                    const distance = calculateDistance(aircraft.lat, aircraft.lon);
+                    if (distance <= RADAR_RANGE_NM) {
+                        const x = ((aircraft.lon - RADAR_CENTER.lon) / (RADAR_RANGE_NM / 60)) * (CANVAS_SIZE / 2);
+                        const y = -((aircraft.lat - RADAR_CENTER.lat) / (RADAR_RANGE_NM / 60)) * (CANVAS_SIZE / 2);
+                        
+                        // Draw aircraft symbol
+                        ctx.save();
+                        ctx.translate(x, y);
+                        ctx.rotate((aircraft.track || 0) * Math.PI / 180);
+                        
+                        // Aircraft triangle
+                        ctx.fillStyle = '#10b981';
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(0, -8);
+                        ctx.lineTo(-6, 4);
+                        ctx.lineTo(6, 4);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                        
+                        ctx.restore();
+                        
+                        // Draw aircraft label
+                        if (showLabels) {
+                            ctx.fillStyle = '#ffffff';
+                            ctx.font = '10px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(aircraft.flight || aircraft.hex.slice(-6), x, y - 15);
+                            ctx.fillText(`${aircraft.altitude || '--'}`, x, y + 20);
+                        }
+                    }
+                }
+            });
+        }
+
+        // Draw NOTAMs
+        function drawNOTAMs() {
+            notamData.forEach(notam => {
+                if (notam.coordinates && notam.coordinates.lat && notam.coordinates.lon) {
+                    const distance = calculateDistance(notam.coordinates.lat, notam.coordinates.lon);
+                    if (distance <= RADAR_RANGE_NM) {
+                        const x = ((notam.coordinates.lon - RADAR_CENTER.lon) / (RADAR_RANGE_NM / 60)) * (CANVAS_SIZE / 2);
+                        const y = -((notam.coordinates.lat - RADAR_CENTER.lat) / (RADAR_RANGE_NM / 60)) * (CANVAS_SIZE / 2);
+                        
+                        // Draw NOTAM symbol
+                        ctx.save();
+                        ctx.translate(x, y);
+                        
+                        // Draw NOTAM circle
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 8, 0, 2 * Math.PI);
+                        ctx.fillStyle = getNOTAMColor(notam.priority);
+                        ctx.fill();
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                        
+                        // Draw NOTAM type indicator
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = 'bold 10px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(notam.type ? notam.type.charAt(0).toUpperCase() : 'N', 0, 3);
+                        
+                        // Draw radius if available
+                        if (notam.radius_nm) {
+                            const radiusPixels = (notam.radius_nm / RADAR_RANGE_NM) * (CANVAS_SIZE / 2);
+                            ctx.beginPath();
+                            ctx.arc(0, 0, radiusPixels, 0, 2 * Math.PI);
+                            ctx.strokeStyle = getNOTAMColor(notam.priority);
+                            ctx.lineWidth = 1;
+                            ctx.setLineDash([5, 5]);
+                            ctx.stroke();
+                            ctx.setLineDash([]);
+                        }
+                        
+                        ctx.restore();
+                    }
+                }
+            });
+        }
+
+        // Update radar info
+        function updateRadarInfo() {
+            document.getElementById('radar-range').textContent = `${RADAR_RANGE_NM} NM`;
+            document.getElementById('zoom-level').textContent = `${zoomLevel.toFixed(1)}x`;
+        }
+
+        // Mouse event handlers
+        function startDrag(e) {
+            isDragging = true;
+            lastMousePos = { x: e.clientX, y: e.clientY };
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                const deltaX = e.clientX - lastMousePos.x;
+                const deltaY = e.clientY - lastMousePos.y;
+                
+                panOffset.x += deltaX;
+                panOffset.y += deltaY;
+                
+                lastMousePos = { x: e.clientX, y: e.clientY };
+                drawRadar();
+            }
+        }
+
+        function endDrag() {
+            isDragging = false;
+        }
+
+        function handleZoom(e) {
+            e.preventDefault();
+            
+            const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+            zoomLevel = Math.max(0.5, Math.min(3.0, zoomLevel * zoomFactor));
+            
+            drawRadar();
+        }
+
+        // Control functions
+        function toggleRadar() {
+            fetchAircraftData();
+            fetchNOTAMs();
+            fetchWeatherData();
+        }
+
+        function resetZoom() {
+            zoomLevel = 1.0;
+            panOffset = { x: 0, y: 0 };
+            drawRadar();
+        }
+
+        function toggleLabels() {
+            showLabels = !showLabels;
+            drawRadar();
+        }
+
+        function toggleTrails() {
+            showTrails = !showTrails;
+            drawRadar();
+        }
+
+        function selectFlight(hex) {
+            // Highlight selected flight
+            document.querySelectorAll('.flight-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            event.currentTarget.classList.add('active');
+            
+            // Center radar on selected aircraft
+            const aircraft = aircraftData.find(a => a.hex === hex);
+            if (aircraft && aircraft.lat && aircraft.lon) {
+                const x = ((aircraft.lon - RADAR_CENTER.lon) / (RADAR_RANGE_NM / 60)) * (CANVAS_SIZE / 2);
+                const y = -((aircraft.lat - RADAR_CENTER.lat) / (RADAR_RANGE_NM / 60)) * (CANVAS_SIZE / 2);
+                
+                panOffset.x = -x;
+                panOffset.y = -y;
+                drawRadar();
+            }
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

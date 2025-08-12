@@ -106,10 +106,10 @@ def get_regions():
 if __name__ == "__main__":
     print("🛩️  Starting Combined Aircraft Proxy & Coastline Server")
     print("=" * 60)
-    print("📡 Aircraft Proxy: http://localhost:8080/tmp/aircraft.json")
-    print("🗺️  Coastline API: http://localhost:8080/api/coastline")
-    print("🌍 Regions API: http://localhost:8080/api/regions")
-    print("🧪 Test: http://localhost:8080/test")
+    print("📡 Aircraft Proxy: http://localhost:8083/tmp/aircraft.json")
+    print("🗺️  Coastline API: http://localhost:8083/api/coastline")
+    print("🌍 Regions API: http://localhost:8083/api/regions")
+    print("🧪 Test: http://localhost:8083/test")
     print("=" * 60)
     
-    app.run(host='0.0.0.0', port=8080, debug=False)
+    app.run(host='0.0.0.0', port=8083, debug=False)

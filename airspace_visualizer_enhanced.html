@@ -23,51 +23,50 @@
 
         .main-container {
             display: grid;
-            grid-template-columns: 320px 1fr 380px;
-            grid-template-rows: 60px 1fr 180px;
+            grid-template-columns: 200px 1fr 200px;
+            grid-template-rows: 40px 1fr 35px;
             height: 100vh;
-            gap: 3px;
-            padding: 3px;
+            gap: 1px;
+            padding: 1px;
         }
 
         /* Header Bar */
         .header-bar {
             grid-column: 1 / -1;
-            background: linear-gradient(90deg, #001100 0%, #003300 50%, #001100 100%);
-            border: 2px solid #00ff00;
-            border-radius: 8px;
+            background: #002200;
+            border: 1px solid #00ff00;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
-            box-shadow: 0 4px 20px rgba(0, 255, 0, 0.3);
+            padding: 0 15px;
+            box-shadow: 0 2px 10px rgba(0, 255, 0, 0.2);
         }
 
         .header-title {
-            font-size: 24px;
+            font-size: 14px;
             font-weight: 600;
             color: #00ff00;
-            text-shadow: 0 0 10px #00ff00;
         }
 
         .status-indicators {
             display: flex;
-            gap: 20px;
+            gap: 12px;
             align-items: center;
         }
 
         .status-light {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 12px;
+            gap: 4px;
+            font-size: 9px;
         }
 
         .led {
-            width: 12px;
-            height: 12px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            box-shadow: 0 0 8px;
+            box-shadow: 0 0 4px;
         }
 
         .led.green { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
@@ -82,6 +81,41 @@
             overflow: hidden;
             box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
             backdrop-filter: blur(10px);
+            position: relative;
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .control-panel.collapsed {
+            width: 50px;
+        }
+
+        .control-panel.collapsed .tab-container,
+        .control-panel.collapsed .tab-content {
+            display: none;
+        }
+
+        .control-panel.collapsed .collapse-toggle {
+            right: 2px;
+            top: 2px;
+        }
+
+        .collapse-toggle {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #004400;
+            border: 1px solid #00aa00;
+            border-radius: 3px;
+            color: #00ff00;
+            cursor: pointer;
+            padding: 2px 4px;
+            font-size: 8px;
+            z-index: 10;
+        }
+
+        .collapse-toggle:hover {
+            background: #006600;
         }
 
         .tab-container {
@@ -92,12 +126,12 @@
 
         .tab {
             flex: 1;
-            padding: 12px 8px;
+            padding: 6px 4px;
             text-align: center;
-            font-size: 11px;
+            font-size: 9px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             border-right: 1px solid #00aa00;
         }
 
@@ -114,8 +148,8 @@
         }
 
         .tab-content {
-            padding: 15px;
-            height: calc(100% - 45px);
+            padding: 8px;
+            height: calc(100% - 35px);
             overflow-y: auto;
             scrollbar-width: thin;
             scrollbar-color: #00aa00 #002200;
@@ -270,12 +304,14 @@
 
         /* Radar Display */
         .radar-container {
-            background: radial-gradient(circle at center, #001a00 0%, #000800 70%, #000400 100%);
-            border: 3px solid #00aa00;
-            border-radius: 12px;
+            background: #001100;
+            border: 2px solid #00aa00;
+            border-radius: 8px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 40px rgba(0, 255, 0, 0.4), inset 0 0 60px rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+            grid-column: 2;
+            grid-row: 2;
         }
 
         #radarCanvas {
@@ -303,122 +339,241 @@
             gap: 4px;
         }
 
-        /* Contact List */
-        .contact-panel {
+        /* Right Information Panel */
+        .info-panel {
             background: rgba(0, 20, 0, 0.9);
             border: 2px solid #00aa00;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            grid-column: 3;
+            grid-row: 2;
         }
 
-        .contact-header {
-            background: #002200;
-            padding: 15px;
-            border-bottom: 2px solid #00aa00;
+        .info-section {
+            flex: 1;
+            border-bottom: 1px solid #003300;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-section:last-child {
+            border-bottom: none;
+        }
+
+        .info-header {
+            background: linear-gradient(90deg, #002200 0%, #003300 100%);
+            padding: 4px 8px;
+            border-bottom: 1px solid #00aa00;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .contact-title {
-            font-size: 16px;
+        .info-title {
+            font-size: 10px;
             font-weight: 600;
             color: #00ff00;
         }
 
-        .aircraft-count {
+        .info-count {
             background: #004400;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
+            padding: 1px 4px;
+            border-radius: 6px;
+            font-size: 8px;
             border: 1px solid #00aa00;
+            color: #00ff88;
         }
 
-        .contact-list {
-            height: calc(100% - 70px);
+        .info-content {
+            flex: 1;
             overflow-y: auto;
             scrollbar-width: thin;
             scrollbar-color: #00aa00 #002200;
+            min-height: 40px;
+            max-height: 60px;
+            padding: 4px;
         }
 
         .contact-item {
-            padding: 12px 15px;
+            padding: 4px 6px;
             border-bottom: 1px solid #003300;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             cursor: pointer;
+            position: relative;
         }
 
         .contact-item:hover {
             background: rgba(0, 60, 0, 0.5);
-            border-left: 4px solid #00ff00;
+            border-left: 2px solid #00ff00;
         }
 
         .contact-item.selected {
             background: rgba(0, 80, 0, 0.7);
-            border-left: 4px solid #00ff00;
+            border-left: 2px solid #00ff00;
         }
 
         .contact-flight {
-            font-size: 14px;
+            font-size: 10px;
             font-weight: 600;
             color: #00ff00;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .contact-flight .enhanced-badge {
+            background: #00aaff;
+            color: white;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-size: 8px;
+            font-weight: bold;
         }
 
         .contact-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            font-size: 10px;
+            gap: 3px;
+            font-size: 7px;
             color: #88cc88;
+            margin-top: 2px;
         }
 
         .contact-detail {
             display: flex;
             justify-content: space-between;
-        }
-
-        /* Communications Log */
-        .comms-panel {
-            background: rgba(0, 20, 0, 0.9);
-            border: 2px solid #00aa00;
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
-        }
-
-        .comms-header {
-            background: #002200;
-            padding: 10px 15px;
-            border-bottom: 2px solid #00aa00;
-            display: flex;
-            justify-content: space-between;
             align-items: center;
         }
 
-        .comms-title {
-            font-size: 14px;
+        .contact-detail .label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .contact-detail .value {
+            color: #00ff88;
             font-weight: 600;
-            color: #00ff00;
         }
 
-        .message-count {
-            background: #004400;
-            padding: 2px 6px;
-            border-radius: 8px;
+        /* Alert items within info sections */
+        .alert-item {
+            padding: 6px 8px;
+            margin-bottom: 6px;
+            background: rgba(255, 102, 0, 0.1);
+            border-left: 3px solid #ff6600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
             font-size: 10px;
-            border: 1px solid #00aa00;
+            line-height: 1.3;
         }
 
-        .comms-log {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            scrollbar-width: thin;
-            scrollbar-color: #00aa00 #002200;
+        .alert-item:hover {
+            background: rgba(255, 102, 0, 0.2);
+        }
+
+        .alert-item.critical {
+            border-left-color: #ff0000;
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        .alert-item.critical:hover {
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        .alert-item.high {
+            border-left-color: #ff6600;
+            background: rgba(255, 102, 0, 0.1);
+        }
+
+        .alert-item.high:hover {
+            background: rgba(255, 102, 0, 0.2);
+        }
+
+        .alert-item.medium {
+            border-left-color: #ffaa00;
+            background: rgba(255, 170, 0, 0.1);
+        }
+
+        .alert-item.medium:hover {
+            background: rgba(255, 170, 0, 0.2);
+        }
+
+        .alert-item {
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            background: rgba(255, 102, 0, 0.1);
+            border-left: 3px solid #ff6600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .alert-item:hover {
+            background: rgba(255, 102, 0, 0.2);
+        }
+
+        .alert-item.critical {
+            border-left-color: #ff0000;
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        .alert-item.critical:hover {
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        .alert-item.high {
+            border-left-color: #ff6600;
+            background: rgba(255, 102, 0, 0.1);
+        }
+
+        .alert-item.high:hover {
+            background: rgba(255, 102, 0, 0.2);
+        }
+
+        .alert-item.medium {
+            border-left-color: #ffaa00;
+            background: rgba(255, 170, 0, 0.1);
+        }
+
+        .alert-item.medium:hover {
+            background: rgba(255, 170, 0, 0.2);
+        }
+
+        /* Log entries within info sections */
+        .log-entry {
+            margin-bottom: 6px;
+            padding: 6px 8px;
+            background: rgba(0, 40, 0, 0.3);
+            border-radius: 4px;
+            border-left: 3px solid #004400;
+            font-size: 10px;
+            line-height: 1.3;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .log-entry.acars {
+            border-left-color: #0088ff;
+            background: rgba(0, 20, 40, 0.3);
+        }
+
+        .log-entry.error {
+            border-left-color: #ff4400;
+            background: rgba(40, 0, 0, 0.3);
+            color: #ff8888;
+        }
+
+        .log-entry.ai {
+            border-left-color: #ff00ff;
+            background: rgba(40, 0, 40, 0.3);
+            color: #ffaaff;
         }
 
         .log-entry {
@@ -457,65 +612,213 @@
         /* AI Assistant */
         .ai-panel {
             background: rgba(0, 20, 0, 0.9);
-            border: 2px solid #00aa00;
-            border-radius: 12px;
+            border: 1px solid #00aa00;
+            border-radius: 6px;
             overflow: hidden;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 15px;
-            box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
+            gap: 6px;
+            padding: 6px 8px;
+            box-shadow: 0 4px 16px rgba(0, 255, 0, 0.2);
         }
 
         .ai-icon {
-            font-size: 24px;
+            font-size: 14px;
             color: #00ff00;
-            text-shadow: 0 0 10px #00ff00;
         }
 
         .ai-input {
             flex: 1;
             background: #001100;
-            border: 2px solid #00aa00;
-            border-radius: 8px;
+            border: 1px solid #00aa00;
+            border-radius: 4px;
             color: #00ff00;
-            padding: 12px 15px;
-            font-size: 13px;
+            padding: 4px 8px;
+            font-size: 10px;
             font-family: inherit;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .ai-input:focus {
             outline: none;
             border-color: #00ff00;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
         }
 
         .ai-send {
-            background: linear-gradient(135deg, #004400 0%, #006600 100%);
-            border: 2px solid #00aa00;
-            border-radius: 8px;
+            background: #004400;
+            border: 1px solid #00aa00;
+            border-radius: 4px;
             color: #00ff00;
-            padding: 12px 20px;
-            font-size: 13px;
+            padding: 4px 8px;
+            font-size: 9px;
             font-family: inherit;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
             font-weight: 600;
         }
 
         .ai-send:hover {
-            background: linear-gradient(135deg, #006600 0%, #008800 100%);
-            box-shadow: 0 6px 20px rgba(0, 255, 0, 0.4);
-            transform: translateY(-2px);
+            background: #006600;
+            box-shadow: 0 2px 8px rgba(0, 255, 0, 0.3);
         }
 
         .ai-status {
-            font-size: 11px;
+            font-size: 8px;
             color: #88cc88;
-            margin-left: 10px;
+            margin-left: 6px;
+        }
+
+        /* Floating AI Chat Popup */
+        .ai-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 450px;
+            background: rgba(0, 20, 0, 0.95);
+            border: 2px solid #00aa00;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 255, 0, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .ai-popup-header {
+            background: #002200;
+            border-bottom: 1px solid #00aa00;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-popup-title {
+            color: #00ff00;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .ai-popup-close {
+            background: none;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px;
+        }
+
+        .ai-popup-close:hover {
+            color: #ff6666;
+        }
+
+        .ai-popup-messages {
+            flex: 1;
+            padding: 8px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ai-message {
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            line-height: 1.3;
+            max-width: 85%;
+        }
+
+        .ai-message.user {
+            background: #004400;
+            color: #00ff88;
+            align-self: flex-end;
+            border: 1px solid #00aa44;
+        }
+
+        .ai-message.assistant {
+            background: #002200;
+            color: #00ff00;
+            align-self: flex-start;
+            border: 1px solid #00aa00;
+        }
+
+        .ai-popup-input {
+            padding: 8px;
+            border-top: 1px solid #00aa00;
+            display: flex;
+            gap: 6px;
+        }
+
+        .ai-popup-input input {
+            flex: 1;
+            background: #001100;
+            border: 1px solid #00aa00;
+            border-radius: 4px;
+            color: #00ff00;
+            padding: 6px 8px;
+            font-size: 11px;
+        }
+
+        .ai-popup-input input:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 4px rgba(0, 255, 0, 0.3);
+        }
+
+        .ai-popup-send {
+            background: #004400;
+            border: 1px solid #00aa00;
+            border-radius: 4px;
+            color: #00ff00;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .ai-popup-send:hover {
+            background: #006600;
+        }
+
+        .ai-popup-send:disabled {
+            background: #002200;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        /* AI Chat Toggle Button */
+        .ai-chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: #004400;
+            border: 2px solid #00aa00;
+            border-radius: 50%;
+            color: #00ff00;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 16px rgba(0, 255, 0, 0.3);
+            z-index: 999;
+            transition: all 0.2s ease;
+        }
+
+        .ai-chat-toggle:hover {
+            background: #006600;
+            transform: scale(1.1);
+        }
+
+        .ai-chat-toggle.active {
+            background: #00aa00;
+            color: #001100;
         }
 
         /* Statistics Panel */
@@ -638,13 +941,27 @@
                     <div class="led green" id="geo-status"></div>
                     <span>GEO</span>
                 </div>
+                <div class="status-light">
+                    <a href="historical_data.html" style="text-decoration: none; color: inherit;">
+                        <div class="led blue" style="background: #3b82f6;"></div>
+                        <span>📊 Analytics</span>
+                    </a>
+                </div>
+                <div class="status-light">
+                    <a href="egpk_radar.html" style="text-decoration: none; color: inherit;">
+                        <div class="led orange" style="background: #f59e0b;"></div>
+                        <span>🛩️ EGPK</span>
+                    </a>
+                </div>
             </div>
         </div>
 
         <!-- Left Control Panel -->
-        <div class="control-panel">
+        <div class="control-panel" id="controlPanel">
+            <button class="collapse-toggle" onclick="toggleControlPanel()" id="collapseToggle">◀</button>
             <div class="tab-container">
                 <div class="tab active" data-tab="radar">RADAR</div>
+                <div class="tab" data-tab="ships">SHIPS</div>
                 <div class="tab" data-tab="comms">COMMS</div>
                 <div class="tab" data-tab="region">REGION</div>
                 <div class="tab" data-tab="settings">SETTINGS</div>
@@ -655,6 +972,14 @@
                 <div class="tab-pane active" id="radar-tab">
                     <div class="control-group">
                         <h4>📡 Radar Configuration</h4>
+                        <div style="text-align: center; margin-bottom: 15px;">
+                            <a href="historical_data.html" class="btn" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 11px; display: inline-block; margin-right: 10px;">
+                                📊 View Historical Data & Analytics
+                            </a>
+                            <a href="egpk_radar.html" class="btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 11px; display: inline-block;">
+                                🛩️ EGPK Prestwick Radar
+                            </a>
+                        </div>
                         
                         <!-- Zoom Controls -->
                         <div class="zoom-controls" style="margin-bottom: 15px;">
@@ -673,6 +998,59 @@
                             </div>
                         </div>
                         
+                        <!-- Enhanced Zoom Controls -->
+                        <div style="margin-bottom: 15px;">
+                            <label style="color: #00ff88; font-size: 11px; display: block; margin-bottom: 5px;">🔍 Zoom Controls:</label>
+                            <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+                                <button class="btn" onclick="smoothZoomIn()" style="flex: 1; padding: 5px; font-size: 10px;">Zoom In</button>
+                                <button class="btn" onclick="smoothZoomOut()" style="flex: 1; padding: 5px; font-size: 10px;">Zoom Out</button>
+                                <button class="btn" onclick="resetZoom()" style="flex: 1; padding: 5px; font-size: 10px;">Reset</button>
+                            </div>
+                            <div style="text-align: center; font-size: 10px; color: #888; margin-bottom: 8px;">
+                                Zoom: <span id="zoomDisplay">1.0x</span> | Range: <span id="effectiveRange">100nm</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Pan Controls -->
+                        <div style="margin-bottom: 15px;">
+                            <label style="color: #00ff88; font-size: 11px; display: block; margin-bottom: 5px;">🧭 Pan Controls:</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; width: 120px; margin: 0 auto;">
+                                <div></div>
+                                <button class="btn" onclick="panDirection('north')" style="padding: 4px; font-size: 9px;">↑</button>
+                                <div></div>
+                                <button class="btn" onclick="panDirection('west')" style="padding: 4px; font-size: 9px;">←</button>
+                                <button class="btn" onclick="recenterRadar()" style="padding: 4px; font-size: 8px;">⌂</button>
+                                <button class="btn" onclick="panDirection('east')" style="padding: 4px; font-size: 9px;">→</button>
+                                <div></div>
+                                <button class="btn" onclick="panDirection('south')" style="padding: 4px; font-size: 9px;">↓</button>
+                                <div></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Control Guide -->
+                        <div style="margin-bottom: 10px; padding: 6px; background: rgba(0,100,0,0.1); border: 1px solid #004400; border-radius: 4px;">
+                            <label style="color: #00ff88; font-size: 9px; font-weight: bold; display: block; margin-bottom: 3px;">⌨️ Controls:</label>
+                            <div style="font-size: 8px; color: #888; line-height: 1.2;">
+                                <strong>Zoom:</strong> Mouse wheel, +/- keys<br/>
+                                <strong>Pan:</strong> Click & drag, arrow keys<br/>
+                                <strong>Reset:</strong> O key, ⌂ button<br/>
+                                <strong>Select:</strong> Click aircraft
+                            </div>
+                        </div>
+                        
+                        <!-- BaseStation Database Info -->
+                        <div style="margin-bottom: 10px; padding: 6px; background: rgba(0,50,100,0.1); border: 1px solid #004466; border-radius: 4px;">
+                            <label style="color: #00aaff; font-size: 9px; font-weight: bold; display: block; margin-bottom: 3px;">✈️ BaseStation DB</label>
+                            <div style="font-size: 8px; color: #888; line-height: 1.2;">
+                                <strong>Enhanced:</strong> <span id="enhancedAircraftCount" style="color: #00aaff;">--</span> aircraft<br/>
+                                <strong>Total:</strong> <span id="totalAircraftCount" style="color: #00aaff;">--</span> records<br/>
+                                <strong>Status:</span> <span id="basestationStatus" style="color: #00ff88;">Connected</span>
+                            </div>
+                            <div style="margin-top: 6px; text-align: center;">
+                                <button class="btn" onclick="refreshBaseStationInfo()" style="padding: 3px 6px; font-size: 8px; background: #004466; color: #00aaff; border: 1px solid #006688;">🔄 Refresh</button>
+                            </div>
+                        </div>
+                        
                         <div class="control-row">
                             <span class="control-label">Range (nm):</span>
                             <div class="slider-container">
@@ -683,9 +1061,9 @@
                         <div class="control-row">
                             <span class="control-label">Update Rate:</span>
                             <div class="slider-container">
-                                <input type="range" class="slider" id="updateSlider" min="1" max="10" value="2">
+                                <input type="range" class="slider" id="updateSlider" min="1" max="10" value="5">
                             </div>
-                            <span id="updateValue" style="margin-left: 8px; font-size: 11px;">2s</span>
+                            <span id="updateValue" style="margin-left: 8px; font-size: 11px;">5s</span>
                         </div>
                         <div class="control-row">
                             <span class="control-label">Center Lat:</span>
@@ -718,10 +1096,16 @@
                                        min="0.1" 
                                        max="1.0" 
                                        step="0.1" 
-                                       value="0.4"
+                                       value="0.8"
                                        style="flex: 1; height: 4px; background: linear-gradient(to right, #003300, #00ff88); border-radius: 2px; outline: none;">
                                 <span style="font-size: 9px; color: #888;">Bright</span>
-                                <span id="coastlineBrightnessValue" style="font-size: 9px; color: #00ff88; min-width: 25px;">40%</span>
+                                <span id="coastlineBrightnessValue" style="font-size: 9px; color: #00ff88; min-width: 25px;">80%</span>
+                            </div>
+                            <div style="display: flex; gap: 3px; margin-top: 4px;">
+                                <button onclick="setCoastlineBrightness(0.3)" style="flex: 1; padding: 2px; font-size: 8px; background: #003300; color: #888; border: 1px solid #004400; border-radius: 2px; cursor: pointer;">Low</button>
+                                <button onclick="setCoastlineBrightness(0.6)" style="flex: 1; padding: 2px; font-size: 8px; background: #003300; color: #00aa44; border: 1px solid #004400; border-radius: 2px; cursor: pointer;">Med</button>
+                                <button onclick="setCoastlineBrightness(0.8)" style="flex: 1; padding: 2px; font-size: 8px; background: #003300; color: #00ff88; border: 1px solid #004400; border-radius: 2px; cursor: pointer;">High</button>
+                                <button onclick="setCoastlineBrightness(1.0)" style="flex: 1; padding: 2px; font-size: 8px; background: #003300; color: #00ff88; border: 1px solid #004400; border-radius: 2px; cursor: pointer;">Max</button>
                             </div>
                         </div>
                         <div class="checkbox-container">
@@ -821,6 +1205,87 @@
                     </div>
                 </div>
 
+                <!-- Ships Tab -->
+                <div class="tab-pane" id="ships-tab">
+                    <div class="control-group">
+                        <h4>🚢 AIS Connection</h4>
+                        <div class="control-row">
+                            <span class="control-label">Status:</span>
+                            <span id="aisStatus" style="color: #ff8800;">Disconnected</span>
+                        </div>
+                        <div class="control-row">
+                            <button class="btn" id="connectAIS">Connect AIS</button>
+                            <button class="btn" id="disconnectAIS" style="margin-left: 10px;">Disconnect</button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h4>📊 Ship Statistics</h4>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="stat-value" id="totalShips">0</div>
+                                <div class="stat-label">Total Ships</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value" id="activeShips">0</div>
+                                <div class="stat-label">Active Ships</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h4>🎯 Display Mode</h4>
+                        <div class="control-row">
+                            <span class="control-label">Show:</span>
+                            <select class="input-field" id="displayMode">
+                                <option value="both" selected>Aircraft & Ships</option>
+                                <option value="aircraft">Aircraft Only</option>
+                                <option value="ships">Ships Only</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h4>🔍 Ship Filters</h4>
+                        <div class="control-row">
+                            <span class="control-label">Vessel Type:</span>
+                            <select class="input-field" id="vesselTypeFilter">
+                                <option value="all" selected>All Types</option>
+                                <option value="cargo">Cargo Ships</option>
+                                <option value="tanker">Tankers</option>
+                                <option value="passenger">Passenger</option>
+                                <option value="fishing">Fishing</option>
+                                <option value="military">Military</option>
+                                <option value="pilot">Pilot Vessels</option>
+                                <option value="sar">Search & Rescue</option>
+                                <option value="tug">Tugs</option>
+                            </select>
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Nav Status:</span>
+                            <select class="input-field" id="navStatusFilter">
+                                <option value="all" selected>All Status</option>
+                                <option value="underway">Under Way</option>
+                                <option value="anchored">At Anchor</option>
+                                <option value="moored">Moored</option>
+                                <option value="aground">Aground</option>
+                                <option value="fishing">Engaged in Fishing</option>
+                                <option value="sailing">Under Way Sailing</option>
+                            </select>
+                        </div>
+                        <button class="btn" id="applyShipFilters">Apply Filters</button>
+                    </div>
+
+                    <div class="control-group">
+                        <h4>🚢 Active Ships</h4>
+                        <div id="shipsList" style="max-height: 200px; overflow-y: auto; font-size: 10px;">
+                            <div style="padding: 10px; text-align: center; color: #888;">
+                                No ships connected
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Communications Tab -->
                 <div class="tab-pane" id="comms-tab">
                     <div class="control-group">
@@ -905,6 +1370,40 @@
                         </div>
                         <button class="btn" id="resetSettings">Reset to Defaults</button>
                     </div>
+
+                    <div class="control-group">
+                        <h4>📋 NOTAMs (Notices to Airmen)</h4>
+                        <div class="checkbox-container">
+                            <input type="checkbox" class="checkbox" id="showNOTAMs" checked>
+                            <label>Show NOTAMs</label>
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Priority Filter:</span>
+                            <select class="input-field" id="notamPriorityFilter">
+                                <option value="ALL" selected>All Priorities</option>
+                                <option value="CRITICAL">Critical Only</option>
+                                <option value="HIGH">High & Critical</option>
+                                <option value="MEDIUM">Medium & Above</option>
+                            </select>
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Category Filter:</span>
+                            <select class="input-field" id="notamCategoryFilter">
+                                <option value="ALL" selected>All Categories</option>
+                                <option value="SECURITY">Security</option>
+                                <option value="AIRSPACE">Airspace</option>
+                                <option value="AIRPORT">Airport</option>
+                                <option value="HAZARD">Hazards</option>
+                                <option value="NAVAID">Navigation</option>
+                            </select>
+                        </div>
+                        <button class="btn" id="refreshNOTAMs">Refresh NOTAMs</button>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 10px; color: #888;">
+                                Active NOTAMs: <span id="notamCount" style="color: #00ff88;">0</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -922,27 +1421,69 @@
             </div>
         </div>
 
-        <!-- Contact List -->
-        <div class="contact-panel">
-            <div class="contact-header">
-                <div class="contact-title">✈️ Aircraft Contacts</div>
-                <div class="aircraft-count" id="contactCount">0 aircraft</div>
+        <!-- Combined Information Panel -->
+        <div class="info-panel">
+            <!-- Aircraft Contacts Section -->
+            <div class="info-section">
+                <div class="info-header">
+                    <div class="info-title">✈️ Aircraft Contacts</div>
+                    <div class="info-count" id="contactCount">0 aircraft</div>
+                </div>
+                <div class="info-content" id="contactList">
+                    <div style="padding: 15px; text-align: center; color: #888; font-size: 11px;">
+                        No aircraft contacts
+                    </div>
+                </div>
+                
+                <!-- Selected Aircraft Details -->
+                <div id="selectedAircraftPanel" style="display: none; margin-top: 8px; padding: 8px; background: rgba(0, 40, 0, 0.8); border: 1px solid #00aa44; border-radius: 4px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <div style="color: #00ff88; font-weight: bold; font-size: 11px;">📍 Selected Aircraft</div>
+                        <button onclick="clearSelectedAircraft()" style="background: none; border: none; color: #ff4444; cursor: pointer; font-size: 12px;">✕</button>
+                    </div>
+                    <div id="selectedAircraftDetails" style="font-size: 9px; line-height: 1.2;">
+                        <!-- Details will be populated here -->
+                    </div>
+                    <div style="margin-top: 6px; display: flex; gap: 4px;">
+                        <button onclick="centerOnAircraft()" style="flex: 1; padding: 2px; font-size: 8px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 2px; cursor: pointer;">Center</button>
+                        <button onclick="trackAircraft()" style="flex: 1; padding: 2px; font-size: 8px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 2px; cursor: pointer;">Track</button>
+                    </div>
+                </div>
             </div>
-            <div class="contact-list" id="contactList">
-                <div style="padding: 20px; text-align: center; color: #888;">
-                    No aircraft contacts
+
+            <!-- Alerts Section -->
+            <div class="info-section">
+                <div class="info-header">
+                    <div class="info-title">🚨 Active Alerts</div>
+                    <div class="info-count" id="alertsCount">0 alerts</div>
+                </div>
+                <div class="info-content" id="alertsList">
+                    <div style="padding: 15px; text-align: center; color: #888; font-size: 11px;">
+                        No active alerts
+                    </div>
+                </div>
+            </div>
+
+            <!-- Communications Section -->
+            <div class="info-section">
+                <div class="info-header">
+                    <div class="info-title">📡 Communications</div>
+                    <div class="info-count" id="msgCount">0 messages</div>
+                </div>
+                <div class="info-content" id="commsLog">
+                    <div class="log-entry">System initialized - Ready for live ADS-B and VDL2 data</div>
                 </div>
             </div>
         </div>
 
-        <!-- Communications Log -->
-        <div class="comms-panel">
-            <div class="comms-header">
-                <div class="comms-title">📡 Communications Log</div>
-                <div class="message-count" id="msgCount">0 messages</div>
+        <!-- NOTAM Details Panel -->
+        <div id="notamDetailsPanel" style="display: none; position: absolute; background: rgba(0, 0, 0, 0.95); border: 2px solid #ff6600; border-radius: 8px; padding: 15px; max-width: 400px; z-index: 1000; color: #ffffff; font-family: 'Courier New', monospace;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div style="color: #ff6600; font-weight: bold; font-size: 14px;">📋 NOTAM Details</div>
+                <button onclick="hideNOTAMDetails()" style="background: none; border: none; color: #ff4444; cursor: pointer; font-size: 16px;">✕</button>
             </div>
-            <div class="comms-log" id="commsLog">
-                <div class="log-entry">System initialized - Ready for live ADS-B and VDL2 data</div>
+            <div id="notamDetailsContent" style="font-size: 11px; line-height: 1.4;">
+                <!-- NOTAM details will be populated here -->
             </div>
         </div>
 
@@ -959,10 +1500,13 @@
         // Global variables
         let canvas, ctx;
         let aircraft = {};
+        let ships = {};
         let acarsMessages = [];
         let vdl2MessageCount = 0;
+        let controlPanelCollapsed = false;
         let isConnected = false;
         let isVDL2Connected = false;
+        let isAISConnected = false;
         let updateInterval = null;
         let vdl2UpdateInterval = null;
         let coastlineData = null;
@@ -981,6 +1525,20 @@
         // Zoom control variables
         let isZooming = false;
         let zoomTimeout = null;
+        
+        // Enhanced zoom and pan variables
+        let isPanning = false;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+        let panStartX = 0;
+        let panStartY = 0;
+        let zoomLevel = 1.0;
+        let minZoom = 0.1;
+        let maxZoom = 10.0;
+        
+        // Aircraft selection variables
+        let selectedAircraft = null;
+        let isTracking = false;
 
         // Display options
         let showTrails = true;
@@ -990,11 +1548,23 @@
         let showRangeRings = true;
         let showBearings = true;
         let showVectors = true;
+        let displayMode = 'both'; // 'both', 'aircraft', 'ships'
+        let showShips = true;
+        
+        // Ship filtering variables
+        let shipVesselTypeFilter = 'all';
+        let shipNavStatusFilter = 'all';
         let trailLength = 100;
         let smoothAnimation = true;
         let geoDataSourceStatus = 'local';
-        let coastlineBrightness = 0.4; // Default coastline opacity
+        let coastlineBrightness = 0.8; // Increased default coastline opacity
         let airspaceBrightness = 0.7; // Default airspace opacity
+
+        // NOTAM variables
+        let notamData = [];
+        let showNOTAMs = true;
+        let notamPriorityFilter = 'ALL';
+        let notamCategoryFilter = 'ALL';
 
         // Airspace filter options
         let airspaceFilters = {
@@ -1151,6 +1721,26 @@
                 smoothAnimation = this.checked;
             });
 
+            // NOTAM event listeners
+            document.getElementById('showNOTAMs').addEventListener('change', function() {
+                showNOTAMs = this.checked;
+                if (showNOTAMs && notamData.length === 0) {
+                    fetchNOTAMs();
+                }
+            });
+
+            document.getElementById('notamPriorityFilter').addEventListener('change', function() {
+                notamPriorityFilter = this.value;
+            });
+
+            document.getElementById('notamCategoryFilter').addEventListener('change', function() {
+                notamCategoryFilter = this.value;
+            });
+
+            document.getElementById('refreshNOTAMs').addEventListener('click', function() {
+                fetchNOTAMs();
+            });
+
             // Initialize radar
             init();
             loadAvailableRegions();
@@ -1179,6 +1769,159 @@
             // Set canvas size
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
+            
+            // Add enhanced mouse wheel zoom support (explicitly non-passive)
+            const wheelHandler = function(e) {
+                e.preventDefault();
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                if (e.deltaY < 0) {
+                    smoothZoomIn(mouseX, mouseY);
+                } else {
+                    smoothZoomOut(mouseX, mouseY);
+                }
+            };
+            canvas.addEventListener('wheel', wheelHandler, { passive: false });
+            // Also listen on window to catch events if overlay intercepts
+            window.addEventListener('wheel', function(e){
+                if (e.target === canvas || canvas.contains(e.target)) {
+                    wheelHandler(e);
+                }
+            }, { passive: false });
+            
+            // Add click detection for aircraft selection
+            canvas.addEventListener('click', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const clickY = e.clientY - rect.top;
+                
+                // Check if click is near any aircraft
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const maxRadius = Math.min(centerX, centerY) * 0.9;
+                
+                let clickedAircraft = null;
+                let minDistance = Infinity;
+                
+                Object.entries(aircraft).forEach(([hex, ac]) => {
+                    if (!ac.lat || !ac.lon) return;
+                    
+                    const screenPos = getScreenPosition(ac.lat, ac.lon, centerX, centerY, maxRadius);
+                    const distance = Math.sqrt(Math.pow(clickX - screenPos.x, 2) + Math.pow(clickY - screenPos.y, 2));
+                    
+                    if (distance < 15 && distance < minDistance) { // 15px click radius
+                        minDistance = distance;
+                        clickedAircraft = hex;
+                    }
+                });
+                
+                if (clickedAircraft) {
+                    selectAircraft(clickedAircraft);
+                } else {
+                    clearSelectedAircraft();
+                }
+            });
+            
+            // Add mouse panning support
+            canvas.addEventListener('mousedown', function(e) {
+                if (e.button === 0) { // Left mouse button
+                    isPanning = true;
+                    const rect = canvas.getBoundingClientRect();
+                    panStartX = e.clientX - rect.left;
+                    panStartY = e.clientY - rect.top;
+                    lastMouseX = panStartX;
+                    lastMouseY = panStartY;
+                    canvas.style.cursor = 'grabbing';
+                }
+            });
+            
+            canvas.addEventListener('mousemove', function(e) {
+                if (isPanning) {
+                    const rect = canvas.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+                    
+                    const deltaX = mouseX - lastMouseX;
+                    const deltaY = mouseY - lastMouseY;
+                    
+                    // Convert pixel movement to lat/lon movement
+                    panRadar(deltaX, deltaY);
+                    
+                    lastMouseX = mouseX;
+                    lastMouseY = mouseY;
+                }
+            });
+            
+            canvas.addEventListener('mouseup', function(e) {
+                if (e.button === 0) {
+                    isPanning = false;
+                    canvas.style.cursor = 'default';
+                }
+            });
+            
+            canvas.addEventListener('mouseleave', function() {
+                isPanning = false;
+                canvas.style.cursor = 'default';
+            });
+            
+            // Initialize active zoom button and displays
+            updateActiveZoomButton(RADAR_RANGE_NM);
+            updateZoomDisplay();
+            updateCenterDisplay();
+            
+            // Add keyboard shortcuts for zoom
+            document.addEventListener('keydown', function(e) {
+                // Only process if not typing in an input field
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                
+                switch(e.key) {
+                    case '+':
+                    case '=':
+                        e.preventDefault();
+                        smoothZoomIn();
+                        break;
+                    case '-':
+                    case '_':
+                        e.preventDefault();
+                        smoothZoomOut();
+                        break;
+                    case '0':
+                        e.preventDefault();
+                        resetZoom();
+                        break;
+                    case 'ArrowUp':
+                    case 'w':
+                    case 'W':
+                        e.preventDefault();
+                        panDirection('north');
+                        break;
+                    case 'ArrowDown':
+                    case 's':
+                    case 'S':
+                        e.preventDefault();
+                        panDirection('south');
+                        break;
+                    case 'ArrowLeft':
+                    case 'a':
+                    case 'A':
+                        e.preventDefault();
+                        panDirection('west');
+                        break;
+                    case 'ArrowRight':
+                    case 'd':
+                    case 'D':
+                        e.preventDefault();
+                        panDirection('east');
+                        break;
+                    case 'Home':
+                    case 'h':
+                    case 'H':
+                        e.preventDefault();
+                        recenterRadar();
+                        break;
+                }
+            });
 
             // Update center display
             document.getElementById('centerDisplay').textContent = 
@@ -1187,20 +1930,48 @@
             // Set initial region
             document.getElementById('currentRegion').textContent = 'Prestwick Region';
             
-            // Load coastline if enabled
-            if (showCoastline) {
-                fetchGeographicData();
-            }
-
-            // Load airspace if enabled
+            // Load airspace first (to ensure it's not overwritten)
             if (showAirspace) {
                 fetchAirspaceData();
                 document.getElementById('airspaceFilters').style.display = 'block';
                 document.getElementById('airspaceBrightnessContainer').style.display = 'block';
             }
 
+            // Load coastline after a small delay to avoid race conditions
+            if (showCoastline) {
+                setTimeout(() => {
+                    fetchGeographicData();
+                }, 100);
+            }
+
+            // Start aircraft data feed automatically (with error handling)
+            try {
+                const updateSlider = document.getElementById('updateSlider');
+                const toggleButton = document.getElementById('toggleADSB');
+                
+                if (updateSlider && toggleButton) {
+                    const updateRate = parseInt(updateSlider.value) * 1000;
+                    updateInterval = setInterval(fetchAircraftData, updateRate);
+                    fetchAircraftData(); // Initial fetch
+                    isConnected = true;
+                    toggleButton.textContent = 'Stop ADS-B Feed';
+                    toggleButton.style.background = 'linear-gradient(135deg, #440000 0%, #660000 100%)';
+                    addLogEntry('🟢 ADS-B feed auto-started');
+                } else {
+                    addLogEntry('⚠️ Auto-start skipped - UI elements not ready');
+                }
+            } catch (error) {
+                console.error('Auto-start error:', error);
+                addLogEntry('❌ Auto-start failed: ' + error.message);
+            }
+
+
+            
             // Start radar sweep animation
             requestAnimationFrame(drawRadar);
+            
+            // Add canvas click handler for NOTAM selection
+            canvas.addEventListener('click', handleNOTAMClick);
         }
 
         function resizeCanvas() {
@@ -1210,7 +1981,18 @@
         }
 
         function drawRadar() {
-            if (!ctx) return;
+            if (!ctx) {
+                console.error('Canvas context not available');
+                return;
+            }
+            
+            if (!canvas.width || !canvas.height) {
+                console.error('Canvas has no size:', canvas.width, canvas.height);
+                return;
+            }
+
+            // Clear NOTAM positions for this frame
+            clearNOTAMPositions();
 
             // Clear canvas
             ctx.fillStyle = '#000800';
@@ -1230,18 +2012,48 @@
                 drawBearingLines(centerX, centerY, maxRadius);
             }
 
-            // Draw coastline
+            // Draw coastline FIRST (behind)
             if (showCoastline && geoFeatures.length > 0) {
+                ctx.save();
+                ctx.globalAlpha = 1.0;
+                ctx.globalCompositeOperation = 'source-over';
                 drawGeographicFeatures(centerX, centerY, maxRadius);
+                ctx.restore();
             }
 
-            // Draw airspace
+            // Then draw airspace on top
             if (showAirspace && airspaceZones.length > 0) {
+                ctx.save();
+                ctx.globalAlpha = 1.0;
+                ctx.globalCompositeOperation = 'source-over';
                 drawAirspaceZones(centerX, centerY, maxRadius);
+                ctx.restore();
             }
 
             // Draw aircraft
-            drawAircraft(centerX, centerY, maxRadius);
+            if (displayMode === 'both' || displayMode === 'aircraft') {
+                ctx.save();
+                ctx.globalAlpha = 1.0;
+                ctx.globalCompositeOperation = 'source-over';
+                drawAircraft(centerX, centerY, maxRadius);
+                ctx.restore();
+            }
+
+            // Draw ships
+            if (displayMode === 'both' || displayMode === 'ships') {
+                ctx.save();
+                ctx.globalAlpha = 1.0;
+                ctx.globalCompositeOperation = 'source-over';
+                drawShips(centerX, centerY, maxRadius);
+                ctx.restore();
+            }
+
+            // Draw NOTAMs
+            ctx.save();
+            ctx.globalAlpha = 1.0;
+            ctx.globalCompositeOperation = 'source-over';
+            drawNOTAMs(centerX, centerY, maxRadius);
+            ctx.restore();
 
             // Continue animation
             requestAnimationFrame(drawRadar);
@@ -1252,19 +2064,35 @@
             ctx.lineWidth = 1;
             ctx.globalAlpha = 0.6;
 
+            // Get the screen position of the radar center
+            const radarCenterScreen = getScreenPosition(radarCenterLat, radarCenterLon, centerX, centerY, maxRadius);
+            
+            const safeZoomLevel = Math.max(0.1, zoomLevel || 1.0);
+            const effectiveRange = RADAR_RANGE_NM / safeZoomLevel;
             const rings = [0.25, 0.5, 0.75, 1.0];
+            
             rings.forEach(ring => {
+                const ringRangeNM = effectiveRange * ring;
                 const radius = maxRadius * ring;
+                
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.arc(radarCenterScreen.x, radarCenterScreen.y, radius, 0, 2 * Math.PI);
                 ctx.stroke();
 
-                // Draw range labels
+                // Draw range labels - position them relative to the radar center
                 ctx.fillStyle = '#006600';
                 ctx.font = '12px JetBrains Mono';
                 ctx.textAlign = 'center';
-                const rangeLabel = Math.round(RADAR_RANGE_NM * ring);
-                ctx.fillText(`${rangeLabel}nm`, centerX, centerY - radius + 15);
+                const rangeLabel = Math.round(ringRangeNM);
+                
+                // Position label above the ring, relative to radar center
+                const labelX = radarCenterScreen.x;
+                const labelY = radarCenterScreen.y - radius + 15;
+                
+                // Only draw label if it's visible on screen
+                if (labelX > 10 && labelX < canvas.width - 10 && labelY > 10 && labelY < canvas.height - 10) {
+                    ctx.fillText(`${rangeLabel}nm`, labelX, labelY);
+                }
             });
 
             ctx.globalAlpha = 1.0;
@@ -1275,61 +2103,193 @@
             ctx.lineWidth = 1;
             ctx.globalAlpha = 0.4;
 
+            // Get the screen position of the radar center
+            const radarCenterScreen = getScreenPosition(radarCenterLat, radarCenterLon, centerX, centerY, maxRadius);
+
             for (let bearing = 0; bearing < 360; bearing += 30) {
                 const radians = (bearing - 90) * Math.PI / 180;
-                const x = centerX + maxRadius * Math.cos(radians);
-                const y = centerY + maxRadius * Math.sin(radians);
+                const x = radarCenterScreen.x + maxRadius * Math.cos(radians);
+                const y = radarCenterScreen.y + maxRadius * Math.sin(radians);
 
                 ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
+                ctx.moveTo(radarCenterScreen.x, radarCenterScreen.y);
                 ctx.lineTo(x, y);
                 ctx.stroke();
 
-                // Draw bearing labels
+                // Draw bearing labels - position them relative to radar center
                 ctx.fillStyle = '#006600';
                 ctx.font = '11px JetBrains Mono';
                 ctx.textAlign = 'center';
-                const labelX = centerX + (maxRadius * 0.9) * Math.cos(radians);
-                const labelY = centerY + (maxRadius * 0.9) * Math.sin(radians);
-                ctx.fillText(`${bearing.toString().padStart(3, '0')}°`, labelX, labelY);
+                const labelX = radarCenterScreen.x + (maxRadius * 0.9) * Math.cos(radians);
+                const labelY = radarCenterScreen.y + (maxRadius * 0.9) * Math.sin(radians);
+                
+                // Only draw label if it's visible on screen
+                if (labelX > 15 && labelX < canvas.width - 15 && labelY > 15 && labelY < canvas.height - 15) {
+                    ctx.fillText(`${bearing.toString().padStart(3, '0')}°`, labelX, labelY);
+                }
             }
 
             ctx.globalAlpha = 1.0;
         }
 
         function drawGeographicFeatures(centerX, centerY, maxRadius) {
-            // Use brighter green color for better visibility
-            ctx.fillStyle = '#00aa44';  // Much brighter green
+            if (!geoFeatures || geoFeatures.length === 0) return;
+            
+            // Save canvas state to prevent interference with other elements
+            ctx.save();
+            
+            // Use bright cyan color for coastlines for better visibility
+            ctx.strokeStyle = '#00ffcc';  // Bright cyan for coastlines
+            ctx.fillStyle = '#00ffcc';
             ctx.globalAlpha = coastlineBrightness;
 
-            // Reduce coastline density based on zoom level
-            const currentRange = RADAR_RANGE_NM;
+            // Use effective range that accounts for zoom level (with safety check)
+            const safeZoomLevel = Math.max(0.1, zoomLevel || 1.0);
+            const effectiveRange = RADAR_RANGE_NM / safeZoomLevel;
             let skipFactor = 1;
-            if (currentRange > 100) skipFactor = 4;
-            else if (currentRange > 50) skipFactor = 2;
+            let lineWidth = 1;
+            
+            // Adjust rendering based on effective range (after zoom) - more aggressive culling
+            if (effectiveRange > 200) {
+                skipFactor = 20;  // Much more aggressive
+                lineWidth = 0.5;
+            } else if (effectiveRange > 100) {
+                skipFactor = 10;  // More aggressive
+                lineWidth = 0.8;
+            } else if (effectiveRange > 50) {
+                skipFactor = 5;   // More aggressive
+                lineWidth = 1.0;
+            } else if (effectiveRange < 25) {
+                skipFactor = 2;   // Still skip some even when zoomed in
+                lineWidth = 1.5;
+            } else {
+                skipFactor = 3;   // Default skip
+                lineWidth = 1.0;
+            }
 
+            ctx.lineWidth = lineWidth;
+
+            // Group features by proximity to draw connected lines
+            const coastlinePoints = [];
             geoFeatures.forEach((feature, index) => {
-                // Skip some points to reduce clutter
                 if (index % skipFactor !== 0) return;
                 
                 const screenPos = getScreenPosition(feature.lat, feature.lon, centerX, centerY, maxRadius);
                 const x = screenPos.x;
                 const y = screenPos.y;
                 
-                if (x > 0 && y > 0 && x < canvas.width && y < canvas.height) {
+                if (x > -50 && y > -50 && x < canvas.width + 50 && y < canvas.height + 50) {
                     if (feature.type === 'coastline' || feature.type === 'coast') {
-                        // Draw slightly larger, more visible dots
-                        ctx.beginPath();
-                        ctx.arc(x, y, 0.5, 0, 2 * Math.PI);
-                        ctx.fill();
+                        coastlinePoints.push({x, y, lat: feature.lat, lon: feature.lon});
                     }
                 }
             });
 
+            // Draw coastline as connected segments, but be much more careful about connections
+            let segmentsForDraw = [];
+            if (coastlinePoints.length > 1) {
+                // Sort points by proximity to create natural coastline segments
+                const segments = [];
+                const used = new Set();
+                
+                for (let i = 0; i < coastlinePoints.length; i++) {
+                    if (used.has(i)) continue;
+                    
+                    const segment = [coastlinePoints[i]];
+                    used.add(i);
+                    let lastPoint = coastlinePoints[i];
+                    
+                    // Find nearby points to extend this segment
+                    let foundNearby = true;
+                    while (foundNearby && segment.length < 20) { // Limit segment length
+                        foundNearby = false;
+                        let closestDistance = Infinity;
+                        let closestIndex = -1;
+                        
+                        for (let j = 0; j < coastlinePoints.length; j++) {
+                            if (used.has(j)) continue;
+                            
+                            const candidate = coastlinePoints[j];
+                            const screenDistance = Math.sqrt(
+                                Math.pow(candidate.x - lastPoint.x, 2) + Math.pow(candidate.y - lastPoint.y, 2)
+                            );
+                            
+                            // Much stricter distance check - only connect very close points
+                            if (screenDistance < 15 && screenDistance < closestDistance) { // Reduced from 50 to 15 pixels
+                                // Also check geographic distance to prevent long jumps
+                                const geoDistance = Math.sqrt(
+                                    Math.pow((candidate.lat - lastPoint.lat) * 111000, 2) + 
+                                    Math.pow((candidate.lon - lastPoint.lon) * 111000 * Math.cos(lastPoint.lat * Math.PI/180), 2)
+                                );
+                                
+                                // Only connect if geographic distance is reasonable (< 2km)
+                                if (geoDistance < 2000) {
+                                    closestDistance = screenDistance;
+                                    closestIndex = j;
+                                    foundNearby = true;
+                                }
+                            }
+                        }
+                        
+                        if (foundNearby && closestIndex >= 0) {
+                            segment.push(coastlinePoints[closestIndex]);
+                            used.add(closestIndex);
+                            lastPoint = coastlinePoints[closestIndex];
+                        }
+                    }
+                    
+                    if (segment.length >= 2) { // Only draw segments with multiple points
+                        segments.push(segment);
+                    }
+                }
+                
+                // Prepare segments for drawing
+                segmentsForDraw = segments;
+
+                // Draw each segment separately
+                segmentsForDraw.forEach(segment => {
+                    if (segment.length < 2) return;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(segment[0].x, segment[0].y);
+                    
+                    for (let i = 1; i < segment.length; i++) {
+                        ctx.lineTo(segment[i].x, segment[i].y);
+                    }
+                    
+                    ctx.stroke();
+                });
+            }
+
+            // Draw individual points only for isolated areas (not part of segments)
+            const segmentPoints = new Set();
+            segmentsForDraw.forEach(segment => {
+                segment.forEach((point, idx) => {
+                    segmentPoints.add(`${point.x},${point.y}`);
+                });
+            });
+            
+            coastlinePoints.forEach(point => {
+                const pointKey = `${point.x},${point.y}`;
+                if (!segmentPoints.has(pointKey)) {
+                    const dotSize = Math.max(0.4, Math.min(1.2, zoomLevel * 0.4));
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, dotSize, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            });
+
+            // Always reset alpha and composite mode before restoring
             ctx.globalAlpha = 1.0;
+            ctx.globalCompositeOperation = 'source-over';
+            // Restore canvas state completely
+            ctx.restore();
         }
 
         function drawAirspaceZones(centerX, centerY, maxRadius) {
+            // Save canvas state to prevent interference
+            ctx.save();
+            
             // Filter zones based on user preferences
             const visibleZones = airspaceZones.filter(zone => {
                 if (!zone.coordinates || zone.coordinates.length < 3) return false;
@@ -1442,7 +2402,8 @@
                 }
             });
 
-            ctx.globalAlpha = 1.0;
+            // Restore canvas state completely
+            ctx.restore();
         }
 
         function calculateCentroid(coordinates) {
@@ -1535,9 +2496,846 @@
             }
         }
 
+        // Enhanced Zoom and Pan Functions
+        function smoothZoomIn(mouseX, mouseY) {
+            const oldZoom = zoomLevel;
+            zoomLevel = Math.min(maxZoom, zoomLevel * 1.2);
+            
+            // Update effective range
+            const newRange = Math.max(5, RADAR_RANGE_NM / zoomLevel);
+            updateZoomDisplay();
+            
+            // Pan towards mouse position if provided
+            if (mouseX !== undefined && mouseY !== undefined) {
+                panTowardsMouse(mouseX, mouseY, oldZoom, zoomLevel);
+            }
+            
+            addLogEntry(`🔍 Zoomed in: ${zoomLevel.toFixed(1)}x`);
+        }
+
+        function smoothZoomOut(mouseX, mouseY) {
+            const oldZoom = zoomLevel;
+            zoomLevel = Math.max(minZoom, zoomLevel / 1.2);
+            
+            // Update effective range
+            const newRange = Math.min(500, RADAR_RANGE_NM / zoomLevel);
+            updateZoomDisplay();
+            
+            // Pan away from mouse position if provided
+            if (mouseX !== undefined && mouseY !== undefined) {
+                panTowardsMouse(mouseX, mouseY, oldZoom, zoomLevel);
+            }
+            
+            addLogEntry(`🔍 Zoomed out: ${zoomLevel.toFixed(1)}x`);
+        }
+
+        function resetZoom() {
+            zoomLevel = 1.0;
+            RADAR_RANGE_NM = 100;
+            updateZoomDisplay();
+            setRadarRange(100);
+            addLogEntry(`🔍 Zoom reset: 1.0x`);
+        }
+
+        function updateZoomDisplay() {
+            const effectiveRange = Math.round(RADAR_RANGE_NM / zoomLevel);
+            document.getElementById('zoomDisplay').textContent = zoomLevel.toFixed(1) + 'x';
+            document.getElementById('effectiveRange').textContent = effectiveRange + 'nm';
+        }
+
+        function panTowardsMouse(mouseX, mouseY, oldZoom, newZoom) {
+            // Calculate center of canvas
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            // Calculate offset from center
+            const offsetX = mouseX - centerX;
+            const offsetY = mouseY - centerY;
+            
+            // Convert to lat/lon offset
+            const zoomFactor = (newZoom - oldZoom) / oldZoom;
+            const latOffset = (offsetY / canvas.height) * (RADAR_RANGE_NM / 60) * zoomFactor * 0.1;
+            const lonOffset = (offsetX / canvas.width) * (RADAR_RANGE_NM / 60) * zoomFactor * 0.1;
+            
+            radarCenterLat -= latOffset;
+            radarCenterLon += lonOffset;
+            updateCenterDisplay();
+        }
+
+        function panRadar(deltaX, deltaY) {
+            // Convert pixel movement to lat/lon movement
+            const effectiveRange = RADAR_RANGE_NM / zoomLevel;
+            const latDelta = (deltaY / canvas.height) * (effectiveRange / 60) * 0.5;
+            const lonDelta = (deltaX / canvas.width) * (effectiveRange / 60) * 0.5;
+            
+            radarCenterLat -= latDelta;
+            radarCenterLon += lonDelta;
+            
+            updateCenterDisplay();
+        }
+
+        function panDirection(direction) {
+            const effectiveRange = RADAR_RANGE_NM / zoomLevel;
+            const panDistance = effectiveRange * 0.1; // Pan 10% of current view
+            const latDelta = panDistance / 60; // Convert nm to degrees
+            const lonDelta = panDistance / 60;
+            
+            switch(direction) {
+                case 'north':
+                    radarCenterLat += latDelta;
+                    break;
+                case 'south':
+                    radarCenterLat -= latDelta;
+                    break;
+                case 'east':
+                    radarCenterLon += lonDelta;
+                    break;
+                case 'west':
+                    radarCenterLon -= lonDelta;
+                    break;
+            }
+            
+            updateCenterDisplay();
+            addLogEntry(`🧭 Panned ${direction}`);
+        }
+
+        function recenterRadar() {
+            // Reset to default Prestwick center
+            radarCenterLat = 55.5094;
+            radarCenterLon = -4.5967;
+            zoomLevel = 1.0;
+            updateCenterDisplay();
+            updateZoomDisplay();
+            addLogEntry(`🏠 Radar recentered to Prestwick`);
+        }
+
+        function updateCenterDisplay() {
+            document.getElementById('centerDisplay').textContent = 
+                `${radarCenterLat.toFixed(4)}°N, ${Math.abs(radarCenterLon).toFixed(4)}°W`;
+            document.getElementById('centerLat').value = radarCenterLat.toFixed(4);
+            document.getElementById('centerLon').value = radarCenterLon.toFixed(4);
+        }
+
+        // Coastline brightness control function
+        function setCoastlineBrightness(value) {
+            coastlineBrightness = value;
+            const slider = document.getElementById('coastlineBrightnessSlider');
+            const display = document.getElementById('coastlineBrightnessValue');
+            
+            if (slider) slider.value = value;
+            if (display) display.textContent = Math.round(value * 100) + '%';
+            
+            addLogEntry(`🌊 Coastline brightness: ${Math.round(value * 100)}%`);
+        }
+
+        // ========== NOTAM FUNCTIONS ==========
+
+        function fetchNOTAMs() {
+            const lat = radarCenterLat;
+            const lon = radarCenterLon;
+            const range = RADAR_RANGE_NM;
+            const priority = notamPriorityFilter;
+            const category = notamCategoryFilter;
+            
+            const url = `http://localhost:8080/api/notams?lat=${lat}&lon=${lon}&range=${range}&priority=${priority}&category=${category}`;
+            
+            addLogEntry('📋 Fetching NOTAMs...');
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('📋 NOTAM API response:', data);
+                    if (data.status === 'success') {
+                        notamData = data.data.notams || [];
+                        console.log('📋 NOTAM data parsed:', notamData);
+                        updateNOTAMCount();
+                        addLogEntry(`📋 Loaded ${notamData.length} NOTAMs`);
+                    } else {
+                        console.error('Error fetching NOTAMs:', data.error);
+                        addLogEntry('❌ Failed to fetch NOTAMs');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching NOTAMs:', error);
+                    addLogEntry('❌ NOTAM fetch error');
+                });
+        }
+
+        function updateNOTAMCount() {
+            document.getElementById('notamCount').textContent = notamData.length;
+        }
+
+        function drawNOTAMs(centerX, centerY, maxRadius) {
+            if (!showNOTAMs || notamData.length === 0) return;
+
+            console.log(`🎯 Drawing ${notamData.length} NOTAMs, showNOTAMs=${showNOTAMs}`);
+            
+            notamData.forEach((notam, index) => {
+                if (notam.coordinates) {
+                    const screenPos = getScreenPosition(notam.coordinates.lat, notam.coordinates.lon, centerX, centerY, maxRadius);
+                    const x = screenPos.x;
+                    const y = screenPos.y;
+
+                    console.log(`📍 NOTAM ${index}: ${notam.coordinates.lat}, ${notam.coordinates.lon} -> screen ${x}, ${y}`);
+                    console.log(`   Priority: ${notam.priority}, Category: ${notam.category}, Type: ${notam.type}`);
+
+                    if (x > 0 && y > 0 && x < canvas.width && y < canvas.height) {
+                        drawNOTAMSymbol(x, y, notam);
+                        
+                        // Store NOTAM position for click detection
+                        if (!window.notamPositions) window.notamPositions = [];
+                        window.notamPositions.push({
+                            x, y, notam, index
+                        });
+                        
+                        console.log(`   ✅ Drawn at ${x}, ${y}`);
+                    } else {
+                        console.log(`   ❌ Outside canvas bounds: ${x}, ${y} (canvas: ${canvas.width}x${canvas.height})`);
+                    }
+                } else {
+                    console.log(`❌ NOTAM ${index} has no coordinates:`, notam);
+                }
+            });
+        }
+
+        function drawNOTAMSymbol(x, y, notam) {
+            // Set color based on priority
+            let color = '#ffaa00'; // Default orange
+            if (notam.priority === 'CRITICAL') color = '#ff0000';
+            else if (notam.priority === 'HIGH') color = '#ff6600';
+            else if (notam.priority === 'MEDIUM') color = '#ffaa00';
+            else if (notam.priority === 'NORMAL') color = '#ffff00';
+
+            // Draw NOTAM area circle if radius is available
+            if (notam.radius_nm) {
+                // Convert radius from nautical miles to screen pixels
+                const radiusPixels = (notam.radius_nm / RADAR_RANGE_NM) * Math.min(canvas.width, canvas.height) * 0.9;
+                
+                // Draw area boundary
+                ctx.strokeStyle = color;
+                ctx.fillStyle = color + '20'; // 20% opacity fill
+                ctx.lineWidth = 2;
+                ctx.globalAlpha = 0.6;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, radiusPixels, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                
+                // Reset alpha
+                ctx.globalAlpha = 1.0;
+            }
+
+            // Draw enhanced NOTAM symbol
+            ctx.fillStyle = color;
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            
+            // Draw larger, more visible triangle
+            ctx.beginPath();
+            ctx.moveTo(x, y - 12);
+            ctx.lineTo(x - 8, y + 6);
+            ctx.lineTo(x + 8, y + 6);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            
+            // Draw priority indicator
+            ctx.fillStyle = '#000000';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            let prioritySymbol = '!';
+            if (notam.priority === 'CRITICAL') prioritySymbol = '⚡';
+            else if (notam.priority === 'HIGH') prioritySymbol = '⚠️';
+            else if (notam.priority === 'MEDIUM') prioritySymbol = '!';
+            else if (notam.priority === 'NORMAL') prioritySymbol = 'i';
+            ctx.fillText(prioritySymbol, x, y + 2);
+            
+            // Draw category indicator
+            ctx.fillStyle = color;
+            ctx.font = 'bold 10px Arial';
+            let categorySymbol = '?';
+            switch (notam.category) {
+                case 'SECURITY': categorySymbol = 'S'; break;
+                case 'AIRSPACE': categorySymbol = 'A'; break;
+                case 'AIRPORT': categorySymbol = 'P'; break;
+                case 'HAZARD': categorySymbol = 'H'; break;
+                case 'NAVAID': categorySymbol = 'N'; break;
+            }
+            ctx.fillText(categorySymbol, x, y + 18);
+            
+            // Draw NOTAM ID for identification
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '8px Arial';
+            ctx.textAlign = 'left';
+            const shortId = notam.id ? notam.id.substring(0, 8) : 'N/A';
+            ctx.fillText(shortId, x + 10, y);
+            
+            // Draw distance if available
+            if (notam.distance_nm) {
+                ctx.fillStyle = '#cccccc';
+                ctx.font = '8px Arial';
+                ctx.textAlign = 'right';
+                ctx.fillText(`${notam.distance_nm.toFixed(1)}nm`, x - 10, y);
+            }
+        }
+
+        // ========== FLIGHT STATUS DETECTION ==========
+
+        function analyzeFlightStatus(aircraft) {
+            const status = {
+                phase: 'UNKNOWN',
+                atc: 'UNKNOWN',
+                emergency: false,
+                priority: 'NORMAL',
+                details: '',
+                color: '#00ff88',
+                intention: 'UNKNOWN'
+            };
+
+            // Emergency squawk codes (highest priority)
+            if (aircraft.squawk) {
+                const squawk = aircraft.squawk.toString();
+                
+                // Emergency codes
+                if (squawk === '7700') {
+                    status.emergency = true;
+                    status.phase = 'EMERGENCY';
+                    status.atc = 'EMERGENCY';
+                    status.priority = 'CRITICAL';
+                    status.details = 'General Emergency';
+                    status.color = '#ff0000';
+                    status.intention = 'EMERGENCY LANDING';
+                    return status;
+                } else if (squawk === '7600') {
+                    status.emergency = true;
+                    status.phase = 'RADIO FAILURE';
+                    status.atc = 'RADIO FAILURE';
+                    status.priority = 'HIGH';
+                    status.details = 'Communication Failure';
+                    status.color = '#ffaa00';
+                    status.intention = 'EMERGENCY LANDING';
+                    return status;
+                } else if (squawk === '7500') {
+                    status.emergency = true;
+                    status.phase = 'HIJACK';
+                    status.atc = 'EMERGENCY';
+                    status.priority = 'CRITICAL';
+                    status.details = 'Unlawful Interference';
+                    status.color = '#ff0000';
+                    status.intention = 'UNKNOWN';
+                    return status;
+                }
+            }
+
+            // Analyze normal operations
+            const altitude = aircraft.alt_baro || 0;
+            const speed = aircraft.gs || 0;
+            const verticalRate = aircraft.baro_rate || 0;
+            const squawk = aircraft.squawk ? aircraft.squawk.toString() : '0000';
+            const airspace = aircraft.airspace;
+
+            // Determine ATC communication from squawk code
+            status.atc = analyzeATCFromSquawk(squawk);
+
+            // Enhanced flight phase analysis using airspace context
+            status.phase = analyzeFlightPhaseWithAirspace(altitude, speed, verticalRate, aircraft, airspace);
+            
+            // Determine intentions from airspace and flight phase
+            status.intention = analyzeIntentions(aircraft, status.phase, airspace);
+
+            // Set color and priority based on phase
+            const phaseInfo = getPhaseInfo(status.phase);
+            status.color = phaseInfo.color;
+            status.priority = phaseInfo.priority;
+            status.details = phaseInfo.details;
+
+            return status;
+        }
+
+        function analyzeATCFromSquawk(squawk) {
+            if (!squawk || squawk === '0000') return 'NO SQUAWK';
+            
+            const code = squawk.padStart(4, '0');
+            
+            // VFR codes
+            if (code === '7000') return 'VFR';
+            if (code === '7004') return 'AEROBATIC';
+            if (code === '7010') return 'VFR ABOVE FL100';
+            
+            // Special codes
+            if (code === '0001') return 'HEIGHT MONITOR';
+            if (code === '0002') return 'GROUND TEST';
+            if (code.startsWith('00')) return 'SPECIAL USE';
+            
+            // UK ATC Centers (based on squawk ranges)
+            if (code >= '0100' && code <= '0777') return 'LONDON CONTROL';
+            if (code >= '1000' && code <= '1777') return 'SCOTTISH CONTROL';
+            if (code >= '2000' && code <= '2777') return 'MANCHESTER CONTROL';
+            if (code >= '3000' && code <= '3777') return 'LONDON TC';
+            if (code >= '4000' && code <= '4777') return 'APPROACH CONTROL';
+            if (code >= '5000' && code <= '5777') return 'AREA CONTROL';
+            if (code >= '6000' && code <= '6777') return 'TERMINAL CONTROL';
+            
+            // Default for assigned codes
+            if (code >= '0100' && code <= '7777') return 'ATC ASSIGNED';
+            
+            return 'UNKNOWN';
+        }
+
+        function analyzeFlightPhaseWithAirspace(altitude, speed, verticalRate, aircraft, airspace) {
+            // Ground operations
+            if (altitude < 100 && speed < 50) {
+                if (speed < 5) return 'PARKED';
+                if (speed < 25) return 'TAXIING';
+                return 'GROUND OPS';
+            }
+
+            // Airspace-aware analysis
+            const airspaceType = airspace ? airspace.type : 'Class G';
+            const airspaceName = airspace ? airspace.name : 'Uncontrolled';
+            
+            // Airport operations (CTR indicates airport control zone)
+            if (airspaceType === 'CTR' || airspaceName.includes('CTR')) {
+                if (altitude < 3000) {
+                    if (verticalRate > 800) return 'DEPARTURE';
+                    if (verticalRate < -800) return 'FINAL APPROACH';
+                    if (speed < 200) return 'AIRPORT PATTERN';
+                    return 'TERMINAL AREA';
+                }
+            }
+
+            // Terminal area operations (TMA/CTA)
+            if (airspaceType === 'TMA' || airspaceType === 'CTA/TMA' || airspaceType === 'CTA') {
+                if (verticalRate > 1000) return 'TERMINAL CLIMB';
+                if (verticalRate < -1000) return 'TERMINAL DESCENT';
+                if (altitude < 10000) return 'TERMINAL AREA';
+            }
+
+            // General flight phases with airspace context
+            if (altitude < 3000) {
+                if (verticalRate > 500) return 'TAKEOFF';
+                if (verticalRate < -500) return 'APPROACH';
+                if (speed < 200) return 'PATTERN';
+                return 'LOW LEVEL';
+            }
+
+            // Climb/Descent phases
+            if (Math.abs(verticalRate) > 300) {
+                if (verticalRate > 1500) return 'RAPID CLIMB';
+                if (verticalRate > 800) return 'CLIMBING';
+                if (verticalRate > 300) return 'SLOW CLIMB';
+                if (verticalRate < -1500) return 'RAPID DESCENT';
+                if (verticalRate < -800) return 'DESCENDING';
+                if (verticalRate < -300) return 'SLOW DESCENT';
+            }
+
+            // High altitude operations
+            if (altitude > 35000) {
+                return 'HIGH CRUISE';
+            } else if (altitude > 20000) {
+                return 'CRUISE';
+            } else if (altitude > 10000) {
+                return 'MEDIUM LEVEL';
+            }
+
+            // Default based on altitude and speed
+            if (speed > 400) return 'HIGH SPEED';
+            if (speed > 250) return 'ENROUTE';
+            if (speed > 150) return 'APPROACH SPEED';
+            
+            return 'IN FLIGHT';
+        }
+
+        function analyzeIntentions(aircraft, phase, airspace) {
+            const altitude = aircraft.alt_baro || 0;
+            const speed = aircraft.gs || 0;
+            const verticalRate = aircraft.baro_rate || 0;
+            const airspaceType = airspace ? airspace.type : 'Class G';
+            const airspaceName = airspace ? airspace.name : 'Uncontrolled';
+
+            // Airport-specific intentions
+            if (airspaceType === 'CTR') {
+                if (phase === 'DEPARTURE' || phase === 'TAKEOFF') {
+                    return `DEPARTING ${extractAirportCode(airspaceName)}`;
+                }
+                if (phase === 'FINAL APPROACH' || phase === 'APPROACH') {
+                    return `LANDING ${extractAirportCode(airspaceName)}`;
+                }
+                if (phase === 'AIRPORT PATTERN') {
+                    return `PATTERN ${extractAirportCode(airspaceName)}`;
+                }
+                if (phase === 'TAXIING' || phase === 'GROUND OPS') {
+                    return `GROUND ${extractAirportCode(airspaceName)}`;
+                }
+            }
+
+            // Terminal area intentions
+            if (airspaceType === 'TMA' || airspaceType === 'CTA/TMA') {
+                if (verticalRate > 1000) {
+                    return `CLIMBING IN ${airspaceName}`;
+                }
+                if (verticalRate < -1000) {
+                    return `DESCENDING TO ${extractAirportFromTMA(airspaceName)}`;
+                }
+                return `TRANSITING ${airspaceName}`;
+            }
+
+            // Controlled airspace intentions
+            if (airspaceType === 'CTA') {
+                if (verticalRate > 500) {
+                    return 'CLIMBING TO CRUISE';
+                }
+                if (verticalRate < -500) {
+                    return 'DESCENDING FOR APPROACH';
+                }
+                return `ENROUTE IN ${airspaceName}`;
+            }
+
+            // VFR intentions
+            if (aircraft.squawk === '7000' || aircraft.squawk === 7000) {
+                if (altitude < 5000) {
+                    return 'VFR LOCAL FLIGHT';
+                }
+                return 'VFR CROSS COUNTRY';
+            }
+
+            // General intentions based on phase
+            switch (phase) {
+                case 'HIGH CRUISE':
+                case 'CRUISE':
+                    return 'ENROUTE CRUISE';
+                case 'CLIMBING':
+                case 'RAPID CLIMB':
+                    return 'CLIMBING TO CRUISE';
+                case 'DESCENDING':
+                case 'RAPID DESCENT':
+                    return 'DESCENDING FOR LANDING';
+                case 'APPROACH':
+                    return 'INBOUND FOR LANDING';
+                case 'PATTERN':
+                    return 'TRAFFIC PATTERN';
+                default:
+                    return 'GENERAL FLIGHT';
+            }
+        }
+
+        function extractAirportCode(airspaceName) {
+            // Extract airport code from airspace name (e.g., "London Heathrow CTR" -> "EGLL")
+            const airportMap = {
+                'heathrow': 'EGLL',
+                'gatwick': 'EGKK',
+                'stansted': 'EGSS',
+                'luton': 'EGGW',
+                'city': 'EGLC',
+                'manchester': 'EGCC',
+                'birmingham': 'EGBB',
+                'glasgow': 'EGPF',
+                'edinburgh': 'EGPH',
+                'bristol': 'EGGD',
+                'prestwick': 'EGPK',
+                'newcastle': 'EGNT',
+                'leeds': 'EGNM'
+            };
+
+            const name = airspaceName.toLowerCase();
+            for (const [key, code] of Object.entries(airportMap)) {
+                if (name.includes(key)) {
+                    return code;
+                }
+            }
+            
+            return airspaceName.split(' ')[0].toUpperCase();
+        }
+
+        function extractAirportFromTMA(tmaName) {
+            // Extract likely destination from TMA name
+            return extractAirportCode(tmaName);
+        }
+
+        function getPhaseInfo(phase) {
+            const phaseMap = {
+                'PARKED': { color: '#666666', priority: 'LOW', details: 'Aircraft on ground, stationary' },
+                'TAXIING': { color: '#888888', priority: 'LOW', details: 'Ground movement' },
+                'GROUND OPS': { color: '#aaaaaa', priority: 'LOW', details: 'Ground operations' },
+                'TAKEOFF': { color: '#00ff00', priority: 'MEDIUM', details: 'Departing, climbing' },
+                'DEPARTURE': { color: '#00ff44', priority: 'MEDIUM', details: 'Airport departure' },
+                'CLIMBING': { color: '#00dd00', priority: 'MEDIUM', details: 'Initial climb' },
+                'RAPID CLIMB': { color: '#00cc00', priority: 'MEDIUM', details: 'Rapid climb' },
+                'TERMINAL CLIMB': { color: '#00bb00', priority: 'MEDIUM', details: 'Climbing in terminal area' },
+                'SLOW CLIMB': { color: '#00aa00', priority: 'MEDIUM', details: 'Gradual climb' },
+                'CRUISE': { color: '#00ffaa', priority: 'NORMAL', details: 'Level flight, cruising' },
+                'HIGH CRUISE': { color: '#00ffcc', priority: 'NORMAL', details: 'High altitude cruise' },
+                'ENROUTE': { color: '#00ff88', priority: 'NORMAL', details: 'En route flight' },
+                'MEDIUM LEVEL': { color: '#00ff66', priority: 'NORMAL', details: 'Medium altitude' },
+                'TERMINAL AREA': { color: '#88ff00', priority: 'MEDIUM', details: 'Terminal area operations' },
+                'DESCENDING': { color: '#ffaa00', priority: 'MEDIUM', details: 'Descending' },
+                'RAPID DESCENT': { color: '#ff8800', priority: 'MEDIUM', details: 'Rapid descent' },
+                'TERMINAL DESCENT': { color: '#ff6600', priority: 'MEDIUM', details: 'Descending in terminal area' },
+                'SLOW DESCENT': { color: '#ff4400', priority: 'MEDIUM', details: 'Gradual descent' },
+                'APPROACH': { color: '#ff3300', priority: 'MEDIUM', details: 'On approach to land' },
+                'FINAL APPROACH': { color: '#ff2200', priority: 'HIGH', details: 'Final approach to land' },
+                'PATTERN': { color: '#ff1100', priority: 'MEDIUM', details: 'In traffic pattern' },
+                'AIRPORT PATTERN': { color: '#ff0000', priority: 'MEDIUM', details: 'Airport traffic pattern' },
+                'LOW LEVEL': { color: '#ff2200', priority: 'MEDIUM', details: 'Low altitude operations' },
+                'HIGH SPEED': { color: '#ff00ff', priority: 'HIGH', details: 'High speed flight' },
+                'APPROACH SPEED': { color: '#ffff00', priority: 'MEDIUM', details: 'Approach speed' },
+                'IN FLIGHT': { color: '#00ff88', priority: 'NORMAL', details: 'General flight operations' },
+                'UNKNOWN': { color: '#666666', priority: 'LOW', details: 'Status unknown' }
+            };
+
+            return phaseMap[phase] || phaseMap['UNKNOWN'];
+        }
+
+        function getStatusIcon(phase) {
+            const iconMap = {
+                'PARKED': '🅿️',
+                'TAXIING': '🚶',
+                'GROUND OPS': '🛬',
+                'TAKEOFF': '🛫',
+                'DEPARTURE': '🛫',
+                'CLIMBING': '↗️',
+                'RAPID CLIMB': '⬆️',
+                'TERMINAL CLIMB': '📈',
+                'SLOW CLIMB': '📈',
+                'CRUISE': '✈️',
+                'HIGH CRUISE': '🚀',
+                'ENROUTE': '➡️',
+                'MEDIUM LEVEL': '📊',
+                'TERMINAL AREA': '🏢',
+                'DESCENDING': '↘️',
+                'RAPID DESCENT': '⬇️',
+                'TERMINAL DESCENT': '📉',
+                'SLOW DESCENT': '📉',
+                'APPROACH': '🛬',
+                'FINAL APPROACH': '🎯',
+                'PATTERN': '🔄',
+                'AIRPORT PATTERN': '🔄',
+                'LOW LEVEL': '⬇️',
+                'HIGH SPEED': '💨',
+                'APPROACH SPEED': '🎯',
+                'IN FLIGHT': '✈️',
+                'EMERGENCY': '🚨',
+                'RADIO FAILURE': '📻',
+                'HIJACK': '🚨',
+                'UNKNOWN': '❓'
+            };
+
+            return iconMap[phase] || '❓';
+        }
+
+        // Aircraft Selection Functions
+        function selectAircraft(hex) {
+            selectedAircraft = hex;
+            updateSelectedAircraftPanel();
+            updateBaseStationInfo();
+            addLogEntry(`✈️ Selected aircraft ${aircraft[hex]?.flight || hex}`);
+        }
+
+        function toggleControlPanel() {
+            const panel = document.getElementById('controlPanel');
+            const toggle = document.getElementById('collapseToggle');
+            const container = document.querySelector('.main-container');
+            
+            controlPanelCollapsed = !controlPanelCollapsed;
+            
+            if (controlPanelCollapsed) {
+                panel.classList.add('collapsed');
+                toggle.textContent = '▶';
+                container.style.gridTemplateColumns = '50px 1fr 200px';
+            } else {
+                panel.classList.remove('collapsed');
+                toggle.textContent = '◀';
+                container.style.gridTemplateColumns = '200px 1fr 200px';
+            }
+            
+            // Redraw radar to adjust to new size
+            setTimeout(() => {
+                resizeCanvas();
+                redrawRadar();
+            }, 100);
+        }
+
+        function clearSelectedAircraft() {
+            selectedAircraft = null;
+            isTracking = false;
+            document.getElementById('selectedAircraftPanel').style.display = 'none';
+            addLogEntry('📍 Aircraft selection cleared');
+        }
+
+        function centerOnAircraft() {
+            if (selectedAircraft && aircraft[selectedAircraft]) {
+                const ac = aircraft[selectedAircraft];
+                if (ac.lat && ac.lon) {
+                    radarCenterLat = ac.lat;
+                    radarCenterLon = ac.lon;
+                    
+                    // Update center display
+                    document.getElementById('centerDisplay').textContent = 
+                        `${radarCenterLat.toFixed(4)}°N, ${Math.abs(radarCenterLon).toFixed(4)}°W`;
+                    document.getElementById('centerLat').value = radarCenterLat.toFixed(4);
+                    document.getElementById('centerLon').value = radarCenterLon.toFixed(4);
+                    
+                    addLogEntry(`🎯 Centered on ${ac.flight || selectedAircraft}`);
+                }
+            }
+        }
+
+        function trackAircraft() {
+            if (selectedAircraft && aircraft[selectedAircraft]) {
+                isTracking = !isTracking;
+                const trackBtn = document.querySelector('button[onclick="trackAircraft()"]');
+                if (isTracking) {
+                    trackBtn.textContent = 'Stop Track';
+                    trackBtn.style.background = '#aa3300';
+                    addLogEntry(`🎯 Now tracking ${aircraft[selectedAircraft].flight || selectedAircraft}`);
+                } else {
+                    trackBtn.textContent = 'Track';
+                    trackBtn.style.background = '#003300';
+                    addLogEntry('🎯 Tracking stopped');
+                }
+            }
+        }
+
+        function updateBaseStationInfo() {
+            // Update BaseStation database information
+            const enhancedCount = Object.values(aircraft).filter(ac => ac.enhanced).length;
+            const totalCount = Object.keys(aircraft).length;
+            
+            document.getElementById('enhancedAircraftCount').textContent = enhancedCount;
+            document.getElementById('totalAircraftCount').textContent = totalCount;
+            
+            // Update status based on enhanced aircraft availability
+            const statusElement = document.getElementById('basestationStatus');
+            if (enhancedCount > 0) {
+                statusElement.textContent = `Enhanced (${enhancedCount})`;
+                statusElement.style.color = '#00ff88';
+            } else {
+                statusElement.textContent = 'No Enhanced Data';
+                statusElement.style.color = '#ff6666';
+            }
+        }
+        
+        function refreshBaseStationInfo() {
+            // Refresh aircraft data to get latest BaseStation information
+            fetchAircraftData();
+            updateBaseStationInfo();
+        }
+        
+        function updateSelectedAircraftPanel() {
+            if (!selectedAircraft || !aircraft[selectedAircraft]) {
+                document.getElementById('selectedAircraftPanel').style.display = 'none';
+                return;
+            }
+
+            const ac = aircraft[selectedAircraft];
+            const panel = document.getElementById('selectedAircraftPanel');
+            const details = document.getElementById('selectedAircraftDetails');
+            
+            // Analyze flight status
+            const status = analyzeFlightStatus(ac);
+            const statusIcon = getStatusIcon(status.phase);
+            
+            // Calculate additional info
+            const lastSeen = ac.seen ? `${ac.seen}s ago` : 'Now';
+            const altitude = ac.alt_baro ? `${ac.alt_baro}ft` : 'Unknown';
+            const speed = ac.gs ? `${Math.round(ac.gs)}kts` : 'Unknown';
+            const heading = ac.track !== undefined ? `${Math.round(ac.track)}°` : 'Unknown';
+            const squawk = ac.squawk || 'None';
+            const verticalRate = ac.baro_rate ? `${ac.baro_rate > 0 ? '+' : ''}${ac.baro_rate}ft/min` : 'Unknown';
+            
+            // Use status-based coloring
+            let squawkColor = status.emergency ? '#ff0000' : '#00ff88';
+            
+            details.innerHTML = `
+                <div style="display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; font-family: 'JetBrains Mono', monospace;">
+                    <span style="color: #888;">Flight:</span>
+                    <span style="color: #00ff88; font-weight: bold;">${ac.flight || 'Unknown'}</span>
+                    
+                    <span style="color: #888;">Hex:</span>
+                    <span style="color: #00ff88;">${selectedAircraft}</span>
+                    
+                    <span style="color: #888;">Altitude:</span>
+                    <span style="color: #00ff88;">${altitude}</span>
+                    
+                    <span style="color: #888;">Speed:</span>
+                    <span style="color: #00ff88;">${speed}</span>
+                    
+                    <span style="color: #888;">Heading:</span>
+                    <span style="color: #00ff88;">${heading}</span>
+                    
+                    <span style="color: #888;">Squawk:</span>
+                    <span style="color: ${squawkColor}; font-weight: bold;">${squawk}</span>
+                    
+                    <span style="color: #888;">Vertical Rate:</span>
+                    <span style="color: #00ff88;">${verticalRate}</span>
+                    
+                    <span style="color: #888;">Flight Status:</span>
+                    <span style="color: ${status.color}; font-weight: bold;">${statusIcon} ${status.phase}</span>
+                    
+                    <span style="color: #888;">ATC Contact:</span>
+                    <span style="color: ${status.atc.includes('VFR') ? '#00aaff' : status.atc.includes('CONTROL') ? '#ffaa00' : '#888888'};">${status.atc}</span>
+                    
+                    <span style="color: #888;">Intention:</span>
+                    <span style="color: #ffcc00; font-weight: bold;">${status.intention}</span>
+                    
+                    <span style="color: #888;">Status Details:</span>
+                    <span style="color: #aaaaaa; font-size: 9px;">${status.details}</span>
+                    
+                    <span style="color: #888;">Position:</span>
+                    <span style="color: #00ff88;">${ac.lat ? `${ac.lat.toFixed(4)}°N, ${Math.abs(ac.lon).toFixed(4)}°W` : 'Unknown'}</span>
+                    
+                    <span style="color: #888;">Last Seen:</span>
+                    <span style="color: #00ff88;">${lastSeen}</span>
+                    
+                    ${ac.airspace ? `
+                    <span style="color: #888;">Airspace:</span>
+                    <span style="color: #aaffaa; font-size: 9px;">${ac.airspace.name} (${ac.airspace.type})</span>
+                    ` : ''}
+                    
+                    ${ac.enhanced ? `
+                    <span style="color: #888;">Registration:</span>
+                    <span style="color: #00aaff; font-weight: bold;">✈️ ${ac.registration || 'Unknown'}</span>
+                    
+                    <span style="color: #888;">Aircraft Type:</span>
+                    <span style="color: #ffaa00; font-weight: bold;">${ac.aircraft_type && ac.aircraft_type !== '``' ? ac.aircraft_type : ac.icao_type || 'Unknown'}</span>
+                    
+                    <span style="color: #888;">Manufacturer:</span>
+                    <span style="color: #ffcc00; font-weight: bold;">${ac.manufacturer && ac.manufacturer !== '``' ? ac.manufacturer : 'Unknown'}</span>
+                    
+                    <span style="color: #888;">Operator:</span>
+                    <span style="color: #aaffaa; font-weight: bold;">${ac.operator && ac.operator !== '``' ? ac.operator : 'Unknown'}</span>
+                    
+                    <span style="color: #888;">Owner:</span>
+                    <span style="color: #aaaaff; font-size: 9px;">${ac.owner && ac.owner !== '``' ? ac.owner : 'Unknown'}</span>
+                    ` : `
+                    <span style="color: #888;">BaseStation:</span>
+                    <span style="color: #ff6666; font-style: italic;">No enhanced data available</span>
+                    `}
+                </div>
+            `;
+            
+            panel.style.display = 'block';
+        }
+
         function drawAircraft(centerX, centerY, maxRadius) {
-            Object.values(aircraft).forEach(ac => {
+            // Auto-track selected aircraft
+            if (isTracking && selectedAircraft && aircraft[selectedAircraft]) {
+                const ac = aircraft[selectedAircraft];
+                if (ac.lat && ac.lon) {
+                    radarCenterLat = ac.lat;
+                    radarCenterLon = ac.lon;
+                    
+                    // Update center display
+                    document.getElementById('centerDisplay').textContent = 
+                        `${radarCenterLat.toFixed(4)}°N, ${Math.abs(radarCenterLon).toFixed(4)}°W`;
+                }
+            }
+            
+            Object.entries(aircraft).forEach(([hex, ac]) => {
                 if (!ac.lat || !ac.lon) return;
+                
+                const isSelected = hex === selectedAircraft;
 
                 const screenPos = getScreenPosition(ac.lat, ac.lon, centerX, centerY, maxRadius);
                 const x = screenPos.x;
@@ -1557,27 +3355,52 @@
                 if (showVectors && ac.gs && ac.track !== undefined) {
                     drawVelocityVector(x, y, ac);
                 }
+                
+                // Draw predicted flight path
+                if (isSelected && ac.gs && ac.track !== undefined) {
+                    drawPredictedPath(x, y, ac, centerX, centerY, maxRadius);
+                }
 
                 // Draw data block
                 drawDataBlock(x, y, ac);
             });
+            
+            // Ensure canvas state is reset
+            ctx.globalAlpha = 1.0;
+            ctx.strokeStyle = '#00ff00';
+            ctx.fillStyle = '#00ff00';
         }
 
         function drawAircraftSymbol(x, y, aircraft) {
-            const size = 6;
+            const isSelected = aircraft.hex === selectedAircraft;
+            const size = isSelected ? 8 : 6;
             
-            // Determine color based on altitude
-            let color = '#00ff00';
-            if (aircraft.alt_baro) {
-                if (aircraft.alt_baro > 30000) color = '#00ffff';
-                else if (aircraft.alt_baro > 20000) color = '#ffff00';
-                else if (aircraft.alt_baro > 10000) color = '#ff8800';
-                else color = '#ff0000';
+            // Selection highlighting
+            if (isSelected) {
+                // Draw selection circle with pulse effect
+                const pulse = Math.sin(Date.now() * 0.005) * 0.3 + 0.7;
+                ctx.strokeStyle = '#ffff00';
+                ctx.lineWidth = 2;
+                ctx.globalAlpha = pulse;
+                ctx.beginPath();
+                ctx.arc(x, y, 15, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.globalAlpha = 1.0;
             }
+            
+            // Analyze flight status for intelligent coloring
+            const status = analyzeFlightStatus(aircraft);
+            let color = status.color;
+            
+            // Override color if selected
+            if (isSelected) color = '#ffff00';
+            
+            // Store status for use in labels
+            aircraft.flightStatus = status;
 
             ctx.fillStyle = color;
             ctx.strokeStyle = color;
-            ctx.lineWidth = 2;
+            ctx.lineWidth = isSelected ? 3 : 2;
 
             // Draw diamond shape
             ctx.beginPath();
@@ -1664,26 +3487,140 @@
             const flight = aircraft.flight ? aircraft.flight.trim() : aircraft.hex;
             const altitude = aircraft.alt_baro ? Math.round(aircraft.alt_baro / 100) : '---';
             const speed = aircraft.gs ? Math.round(aircraft.gs) : '---';
+            
+            // Safely get flight status with fallback
+            let status;
+            try {
+                status = aircraft.flightStatus || analyzeFlightStatus(aircraft);
+            } catch (e) {
+                console.warn('Error analyzing flight status:', e);
+                status = {
+                    phase: 'IN FLIGHT',
+                    atc: 'UNKNOWN',
+                    emergency: false,
+                    color: '#00ff88',
+                    intention: 'GENERAL FLIGHT'
+                };
+            }
+            
+            const statusIcon = getStatusIcon(status.phase);
+            const squawk = aircraft.squawk || '0000';
 
-            ctx.fillStyle = '#00ff00';
             ctx.font = '11px JetBrains Mono';
             ctx.textAlign = 'left';
 
+            // Enhanced data block with BaseStation information
+            const line1 = `${statusIcon} ${flight}`;
+            const line2 = `${altitude} ${speed}kt`;
+            const line3 = `${status.atc || 'UNKNOWN'} ${squawk}`;
+            
+            // Add BaseStation information if available
+            let line4 = '';
+            let line5 = '';
+            if (aircraft.enhanced) {
+                if (aircraft.registration) {
+                    line4 = `✈️ ${aircraft.registration}`;
+                }
+                if (aircraft.aircraft_type && aircraft.aircraft_type !== '``') {
+                    line5 = aircraft.aircraft_type;
+                } else if (aircraft.icao_type) {
+                    line5 = aircraft.icao_type;
+                }
+                if (aircraft.manufacturer && aircraft.manufacturer !== '``') {
+                    line5 = `${aircraft.manufacturer} ${line5}`;
+                }
+            }
+            
+            // Calculate background size safely
+            let maxWidth = 120; // Default minimum width
+            let lineCount = 3; // Default 3 lines
+            try {
+                const widths = [
+                    ctx.measureText(line1).width,
+                    ctx.measureText(line2).width,
+                    ctx.measureText(line3).width
+                ];
+                
+                if (line4) {
+                    widths.push(ctx.measureText(line4).width);
+                    lineCount++;
+                }
+                if (line5) {
+                    widths.push(ctx.measureText(line5).width);
+                    lineCount++;
+                }
+                
+                maxWidth = Math.max(...widths, 120); // Minimum width
+            } catch (e) {
+                console.warn('Error measuring text width:', e);
+            }
+            
+            // Calculate background height based on number of lines
+            const lineHeight = 16;
+            const backgroundHeight = lineCount * lineHeight + 8;
+            
             // Draw background
-            const text = `${flight}`;
-            const textWidth = ctx.measureText(text).width;
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            ctx.fillRect(x + 10, y - 15, textWidth + 8, 30);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(x + 10, y - 18, maxWidth + 8, backgroundHeight);
 
-            // Draw text
-            ctx.fillStyle = '#00ff00';
-            ctx.fillText(flight, x + 12, y - 5);
-            ctx.fillText(`${altitude} ${speed}kt`, x + 12, y + 8);
+            // Draw text with safe colors
+            try {
+                let currentY = y - 8;
+                
+                // Line 1: Flight info
+                ctx.fillStyle = status.emergency ? '#ff0000' : '#00ff88';
+                ctx.fillText(line1, x + 12, currentY);
+                currentY += lineHeight;
+                
+                // Line 2: Altitude and speed
+                ctx.fillStyle = '#00ff88';
+                ctx.fillText(line2, x + 12, currentY);
+                currentY += lineHeight;
+                
+                // Line 3: ATC and squawk
+                let atcColor = '#888888';
+                if (status.emergency) {
+                    atcColor = '#ff0000';
+                } else if (status.atc && status.atc.includes('VFR')) {
+                    atcColor = '#00aaff';
+                } else if (status.atc && (status.atc.includes('CONTROL') || status.atc.includes('APPROACH'))) {
+                    atcColor = '#ffaa00';
+                }
+                
+                ctx.fillStyle = atcColor;
+                ctx.font = '9px JetBrains Mono';
+                ctx.fillText(line3, x + 12, currentY);
+                currentY += lineHeight;
+                
+                // Line 4: Registration (if enhanced)
+                if (line4) {
+                    ctx.fillStyle = '#00aaff';
+                    ctx.font = '10px JetBrains Mono';
+                    ctx.fillText(line4, x + 12, currentY);
+                    currentY += lineHeight;
+                }
+                
+                // Line 5: Aircraft type (if enhanced)
+                if (line5) {
+                    ctx.fillStyle = '#ffaa00';
+                    ctx.font = '9px JetBrains Mono';
+                    ctx.fillText(line5, x + 12, currentY);
+                }
+                
+                // Reset font
+                ctx.font = '11px JetBrains Mono';
+            } catch (e) {
+                console.warn('Error drawing text:', e);
+                // Fallback to simple display
+                ctx.fillStyle = '#00ff88';
+                ctx.fillText(flight, x + 12, y - 5);
+                ctx.fillText(`${altitude} ${speed}kt`, x + 12, y + 8);
+            }
         }
 
         function getScreenPosition(lat, lon, centerX, centerY, maxRadius) {
-            const latDiff = lat - radarCenterLat;
-            const lonDiff = lon - radarCenterLon;
+            const latDiff = (lat ?? 0) - radarCenterLat;
+            const lonDiff = (lon ?? 0) - radarCenterLon;
             
             // Convert to nautical miles (approximate)
             const latNM = latDiff * 60;
@@ -1693,7 +3630,9 @@
             const distance = Math.sqrt(latNM * latNM + lonNM * lonNM);
             const bearing = Math.atan2(lonNM, latNM);
             
-            const screenDistance = (distance / RADAR_RANGE_NM) * maxRadius;
+            // Apply zoom level to the effective range
+            const effectiveRange = RADAR_RANGE_NM / Math.max(0.1, zoomLevel || 1.0);
+            const screenDistance = (distance / effectiveRange) * maxRadius;
             const x = centerX + screenDistance * Math.sin(bearing);
             const y = centerY - screenDistance * Math.cos(bearing);
             
@@ -1724,6 +3663,7 @@
                         updateAircraftDataAndTrails(data.aircraft);
                         updateContactList(data.aircraft);
                         updateStatistics();
+                        updateBaseStationInfo(); // Update BaseStation info after data load
                         document.getElementById('adsb-status').className = 'led green';
                         document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
                     }
@@ -1737,6 +3677,9 @@
 
         function updateAircraftDataAndTrails(aircraftData) {
             const currentTime = Date.now();
+            
+            // Clear previous alerts
+            activeAlerts = [];
             
             aircraftData.forEach(ac => {
                 if (!ac.hex) return;
@@ -1759,14 +3702,31 @@
                         aircraft[ac.hex].trail.shift();
                     }
                 }
+                
+                // Process alerts for this aircraft
+                const aircraftAlerts = processAircraftAlerts(ac);
+                activeAlerts.push(...aircraftAlerts);
             });
             
             // Remove old aircraft
             Object.keys(aircraft).forEach(hex => {
                 if (currentTime - aircraft[hex].lastSeen > 60000) { // 1 minute timeout
+                    // Clear selection if selected aircraft disappeared
+                    if (hex === selectedAircraft) {
+                        clearSelectedAircraft();
+                    }
                     delete aircraft[hex];
                 }
             });
+
+                    // Update selected aircraft panel if aircraft is selected
+        if (selectedAircraft && aircraft[selectedAircraft]) {
+            updateSelectedAircraftPanel();
+            updateBaseStationInfo();
+        }
+            
+            // Update alerts panel
+            updateAlertsPanel();
         }
 
         function updateContactList(aircraftData) {
@@ -1783,26 +3743,34 @@
             
             contactList.innerHTML = aircraftData.map(ac => `
                 <div class="contact-item" data-hex="${ac.hex}">
-                    <div class="contact-flight">${ac.flight ? ac.flight.trim() : ac.hex}</div>
+                    <div class="contact-flight">
+                        ${ac.flight ? ac.flight.trim() : ac.hex}
+                        ${ac.enhanced ? `<span class="enhanced-badge">✈️ ${ac.registration || 'N/A'}</span>` : ''}
+                    </div>
                     <div class="contact-details">
                         <div class="contact-detail">
-                            <span>Alt:</span>
-                            <span>${ac.alt_baro ? Math.round(ac.alt_baro) + 'ft' : 'N/A'}</span>
+                            <span class="label">Alt:</span>
+                            <span class="value">${ac.alt_baro ? Math.round(ac.alt_baro) + 'ft' : 'N/A'}</span>
                         </div>
                         <div class="contact-detail">
-                            <span>Speed:</span>
-                            <span>${ac.gs ? Math.round(ac.gs) + 'kt' : 'N/A'}</span>
+                            <span class="label">Speed:</span>
+                            <span class="value">${ac.gs ? Math.round(ac.gs) + 'kt' : 'N/A'}</span>
                         </div>
                         <div class="contact-detail">
-                            <span>Track:</span>
-                            <span>${ac.track !== undefined ? ac.track.toFixed(0) + '°' : 'N/A'}</span>
+                            <span class="label">Track:</span>
+                            <span class="value">${ac.track !== undefined ? ac.track.toFixed(0) + '°' : 'N/A'}</span>
                         </div>
                         <div class="contact-detail">
-                            <span>Squawk:</span>
-                            <span>${ac.squawk || 'N/A'}</span>
+                            <span class="label">Squawk:</span>
+                            <span class="value">${ac.squawk || 'N/A'}</span>
                         </div>
-                        ${ac.airspace ? `<div class="contact-detail" style="grid-column: 1 / -1; margin-top: 5px; font-size: 9px; color: #aaffaa;">
-                            <span>Airspace: ${ac.airspace.name} (${ac.airspace.type})</span>
+                        ${ac.airspace ? `<div class="contact-detail" style="grid-column: 1 / -1;">
+                            <span class="label">Airspace:</span>
+                            <span class="value">${ac.airspace.name} (${ac.airspace.type})</span>
+                        </div>` : ''}
+                        ${ac.enhanced ? `<div class="contact-detail" style="grid-column: 1 / -1;">
+                            <span class="label">Type:</span>
+                            <span class="value">${ac.aircraft_type && ac.aircraft_type !== '``' ? ac.aircraft_type : ac.icao_type || 'Unknown'} ${ac.manufacturer && ac.manufacturer !== '``' ? `(${ac.manufacturer})` : ''}</span>
                         </div>` : ''}
                     </div>
                 </div>
@@ -1837,6 +3805,7 @@
                 .then(data => {
                     if (data.status === 'success' && data.data && data.data.zones) {
                         airspaceZones = data.data.zones;
+                        console.log(`🛩️ AIRSPACE: Loaded ${airspaceZones.length} zones`);
                         addLogEntry(`🛩️ Loaded ${airspaceZones.length} airspace zones`);
                         
                         // Update statistics
@@ -1867,6 +3836,7 @@
                 .then(data => {
                     if (data.status === 'success' && data.data && data.data.features) {
                         geoFeatures = data.data.features;
+                        console.log(`📍 COASTLINE: Loaded ${geoFeatures.length} features, airspaceZones still has ${airspaceZones.length} zones`);
                         addLogEntry(`📍 Loaded ${geoFeatures.length} geographic features`);
                         document.getElementById('featureCount').textContent = geoFeatures.length;
                         document.getElementById('geo-status').className = 'led green';
@@ -1974,7 +3944,7 @@
         document.getElementById('resetSettings').addEventListener('click', function() {
             // Reset to defaults
             document.getElementById('rangeSlider').value = 100;
-            document.getElementById('updateSlider').value = 2;
+            document.getElementById('updateSlider').value = 5;
             document.getElementById('trailSlider').value = 100;
             
             RADAR_RANGE_NM = 100;
@@ -2067,6 +4037,781 @@
             if (showCoastline) {
                 fetchGeographicData();
             }
+        });
+
+        function drawPredictedPath(x, y, aircraft, centerX, centerY, maxRadius) {
+            if (!aircraft.gs || aircraft.track === undefined || aircraft.gs < 50) return;
+            
+            const speedKts = aircraft.gs;
+            const heading = aircraft.track;
+            const headingRad = heading * Math.PI / 180;
+            
+            // Predict path for next 5 and 10 minutes
+            const predictions = [];
+            const timeIntervals = [2, 5, 10]; // minutes
+            
+            timeIntervals.forEach(minutes => {
+                // Distance in nautical miles
+                const distanceNm = (speedKts * minutes) / 60;
+                
+                // Calculate new position (simple straight-line projection)
+                const deltaLat = distanceNm * Math.cos(headingRad) / 60; // degrees
+                const deltaLon = distanceNm * Math.sin(headingRad) / (60 * Math.cos(aircraft.lat * Math.PI / 180));
+                
+                const predictedLat = aircraft.lat + deltaLat;
+                const predictedLon = aircraft.lon + deltaLon;
+                
+                const screenPos = getScreenPosition(predictedLat, predictedLon, centerX, centerY, maxRadius);
+                
+                if (screenPos.x > 0 && screenPos.y > 0 && screenPos.x < canvas.width && screenPos.y < canvas.height) {
+                    predictions.push({
+                        x: screenPos.x,
+                        y: screenPos.y,
+                        minutes: minutes
+                    });
+                }
+            });
+            
+            if (predictions.length === 0) return;
+            
+            // Draw prediction line
+            ctx.strokeStyle = '#ff8800';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([6, 4]);
+            ctx.globalAlpha = 0.6;
+            
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            predictions.forEach(pred => {
+                ctx.lineTo(pred.x, pred.y);
+            });
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Draw prediction markers
+            predictions.forEach(pred => {
+                // Draw time marker
+                ctx.fillStyle = '#ff8800';
+                ctx.beginPath();
+                ctx.arc(pred.x, pred.y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Draw time label
+                ctx.fillStyle = '#ff8800';
+                ctx.font = '9px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.fillText(`+${pred.minutes}`, pred.x, pred.y - 8);
+            });
+            
+            ctx.globalAlpha = 1.0;
+        }
+
+        // ========== SHIP FUNCTIONS ==========
+
+        function passesShipFilters(ship) {
+            // Check vessel type filter
+            if (shipVesselTypeFilter !== 'all') {
+                const shipType = getShipTypeCategory(ship.vessel_type);
+                if (shipType !== shipVesselTypeFilter) {
+                    return false;
+                }
+            }
+            
+            // Check navigation status filter  
+            if (shipNavStatusFilter !== 'all') {
+                const navStatus = getNavStatusCategory(ship.nav_status);
+                if (navStatus !== shipNavStatusFilter) {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        function getShipTypeCategory(vesselType) {
+            if (!vesselType) return 'other';
+            
+            const type = vesselType.toLowerCase();
+            
+            if (type.includes('cargo') || type.includes('container') || type.includes('bulk')) {
+                return 'cargo';
+            } else if (type.includes('tanker') || type.includes('oil') || type.includes('chemical')) {
+                return 'tanker';
+            } else if (type.includes('passenger') || type.includes('ferry') || type.includes('cruise')) {
+                return 'passenger';
+            } else if (type.includes('fishing') || type.includes('trawler')) {
+                return 'fishing';
+            } else if (type.includes('military') || type.includes('naval') || type.includes('warship')) {
+                return 'military';
+            } else if (type.includes('pilot')) {
+                return 'pilot';
+            } else if (type.includes('sar') || type.includes('search') || type.includes('rescue')) {
+                return 'sar';
+            } else if (type.includes('tug') || type.includes('tugboat')) {
+                return 'tug';
+            } else {
+                return 'other';
+            }
+        }
+
+        function getNavStatusCategory(navStatus) {
+            if (!navStatus) return 'other';
+            
+            const status = navStatus.toLowerCase();
+            
+            if (status.includes('under way') || status.includes('underway')) {
+                return 'underway';
+            } else if (status.includes('anchor')) {
+                return 'anchored';
+            } else if (status.includes('moored')) {
+                return 'moored';
+            } else if (status.includes('aground')) {
+                return 'aground';
+            } else if (status.includes('fishing')) {
+                return 'fishing';
+            } else if (status.includes('sailing')) {
+                return 'sailing';
+            } else {
+                return 'other';
+            }
+        }
+
+        function drawShips(centerX, centerY, maxRadius) {
+            Object.entries(ships).forEach(([mmsi, ship]) => {
+                if (!ship.lat || !ship.lon) return;
+
+                // Apply ship filters
+                if (!passesShipFilters(ship)) return;
+
+                const screenPos = getScreenPosition(ship.lat, ship.lon, centerX, centerY, maxRadius);
+                const x = screenPos.x;
+                const y = screenPos.y;
+
+                if (x < 0 || y < 0 || x > canvas.width || y > canvas.height) return;
+
+                // Draw ship symbol
+                drawShipSymbol(x, y, ship);
+
+                // Draw velocity vector
+                if (showVectors && ship.speed && ship.course !== undefined) {
+                    drawShipVelocityVector(x, y, ship);
+                }
+
+                // Draw data block
+                drawShipDataBlock(x, y, ship);
+            });
+        }
+
+        function drawShipSymbol(x, y, ship) {
+            const size = 4;
+            
+            // Get ship color based on type
+            const color = getShipColor(ship);
+            
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+
+            // Draw ship shape (triangle pointing in direction of travel)
+            if (ship.heading !== undefined) {
+                const headingRad = (ship.heading - 90) * Math.PI / 180;
+                
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(headingRad);
+                
+                // Draw ship triangle
+                ctx.beginPath();
+                ctx.moveTo(0, -size);
+                ctx.lineTo(-size/2, size);
+                ctx.lineTo(size/2, size);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.restore();
+            } else {
+                // Draw circle if no heading
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+            }
+        }
+
+        function drawShipVelocityVector(x, y, ship) {
+            if (!ship.speed || ship.course === undefined) return;
+
+            const vectorLength = Math.min(ship.speed / 5, 30); // Scale speed to reasonable length
+            const headingRad = (ship.course - 90) * Math.PI / 180;
+            const endX = x + vectorLength * Math.cos(headingRad);
+            const endY = y + vectorLength * Math.sin(headingRad);
+
+            ctx.strokeStyle = '#00ffff';
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = 0.8;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            ctx.globalAlpha = 1.0;
+        }
+
+        function drawShipDataBlock(x, y, ship) {
+            const name = ship.name ? ship.name.trim() : ship.mmsi;
+            const speed = ship.speed ? Math.round(ship.speed) + 'kts' : '---';
+
+            ctx.fillStyle = '#00ffff';
+            ctx.font = '10px JetBrains Mono';
+            ctx.textAlign = 'left';
+
+            // Draw background
+            const text = `${name}`;
+            const textWidth = ctx.measureText(text).width;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(x + 8, y - 12, textWidth + 6, 24);
+
+            // Draw text
+            ctx.fillStyle = '#00ffff';
+            ctx.fillText(name, x + 10, y - 2);
+            ctx.fillText(speed, x + 10, y + 10);
+        }
+
+        function getShipColor(ship) {
+            const vesselType = ship.vessel_type ? ship.vessel_type.toLowerCase() : '';
+            const navStatus = ship.nav_status ? ship.nav_status.toLowerCase() : '';
+
+            // Color by navigation status first (overrides type)
+            if (navStatus.includes('anchor')) return '#888888';
+            if (navStatus.includes('aground')) return '#ff4444';
+            if (navStatus.includes('not under command')) return '#ff8844';
+
+            // Color by vessel type
+            if (vesselType.includes('cargo')) return '#00ff88';
+            if (vesselType.includes('tanker')) return '#ff8800';
+            if (vesselType.includes('passenger')) return '#ffaa00';
+            if (vesselType.includes('fishing')) return '#88ff00';
+            if (vesselType.includes('military')) return '#ff00ff';
+            if (vesselType.includes('pilot')) return '#ffff00';
+            if (vesselType.includes('search') || vesselType.includes('rescue')) return '#ff0000';
+            if (vesselType.includes('tug')) return '#00ffff';
+
+            return '#00aaff'; // Default ship color
+        }
+
+        // AIS Connection Functions
+        async function connectAIS() {
+            try {
+                const response = await fetch('http://localhost:8080/api/ais/connect', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    isAISConnected = true;
+                    document.getElementById('aisStatus').textContent = 'Connected';
+                    document.getElementById('aisStatus').style.color = '#00ff00';
+                    addLogEntry('🚢 AIS connection established');
+                    
+                    // Start fetching ship data
+                    startShipDataFetch();
+                } else {
+                    addLogEntry(`❌ AIS connection failed: ${data.message}`);
+                }
+            } catch (error) {
+                addLogEntry(`❌ AIS connection error: ${error.message}`);
+            }
+        }
+
+        async function disconnectAIS() {
+            try {
+                const response = await fetch('http://localhost:8080/api/ais/disconnect', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    isAISConnected = false;
+                    document.getElementById('aisStatus').textContent = 'Disconnected';
+                    document.getElementById('aisStatus').style.color = '#ff8800';
+                    addLogEntry('🚢 AIS connection closed');
+                    
+                    // Clear ship data
+                    ships = {};
+                    updateShipsList();
+                    updateShipStatistics();
+                    
+                    // Stop fetching ship data
+                    if (window.shipDataInterval) {
+                        clearInterval(window.shipDataInterval);
+                    }
+                } else {
+                    addLogEntry(`❌ AIS disconnect failed: ${data.message}`);
+                }
+            } catch (error) {
+                addLogEntry(`❌ AIS disconnect error: ${error.message}`);
+            }
+        }
+
+        function startShipDataFetch() {
+            // Fetch ship data every 10 seconds
+            if (window.shipDataInterval) {
+                clearInterval(window.shipDataInterval);
+            }
+            
+            fetchShipData(); // Initial fetch
+            window.shipDataInterval = setInterval(fetchShipData, 10000);
+        }
+
+        async function fetchShipData() {
+            if (!isAISConnected) return;
+
+            try {
+                const lat = radarCenterLat;
+                const lon = radarCenterLon;
+                const range = RADAR_RANGE_NM;
+                
+                const response = await fetch(`http://localhost:8080/api/ais/vessels?lat=${lat}&lon=${lon}&range=${range}`);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data.vessels) {
+                    // Update ships data
+                    ships = {};
+                    data.data.vessels.forEach(vessel => {
+                        ships[vessel.mmsi] = vessel;
+                    });
+                    
+                    updateShipsList();
+                    updateShipStatistics();
+                    addLogEntry(`🚢 Updated ${data.data.vessels.length} ships`);
+                } else {
+                    addLogEntry('⚠️ No ship data received');
+                }
+            } catch (error) {
+                addLogEntry(`❌ Ship data fetch error: ${error.message}`);
+            }
+        }
+
+        function updateShipsList() {
+            const shipsList = document.getElementById('shipsList');
+            const allShips = Object.values(ships);
+            const filteredShips = allShips.filter(ship => passesShipFilters(ship));
+            
+            if (filteredShips.length === 0) {
+                if (allShips.length === 0) {
+                    shipsList.innerHTML = '<div style="padding: 10px; text-align: center; color: #888;">No ships in range</div>';
+                } else {
+                    shipsList.innerHTML = '<div style="padding: 10px; text-align: center; color: #888;">No ships match current filters</div>';
+                }
+                return;
+            }
+            
+            // Sort by distance
+            filteredShips.sort((a, b) => (a.distance_nm || 999) - (b.distance_nm || 999));
+            
+            shipsList.innerHTML = filteredShips.map(ship => `
+                <div style="padding: 5px; border-bottom: 1px solid #333; cursor: pointer;" onclick="selectShip('${ship.mmsi}')">
+                    <div style="font-weight: bold; color: ${getShipColor(ship)};">${ship.name || ship.mmsi}</div>
+                    <div style="font-size: 9px; color: #888;">
+                        ${ship.vessel_type || 'Unknown'} • ${ship.speed ? Math.round(ship.speed) + 'kts' : 'No speed'}
+                        ${ship.distance_nm ? ' • ' + ship.distance_nm.toFixed(1) + 'nm' : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateShipStatistics() {
+            const allShips = Object.values(ships);
+            const filteredShips = allShips.filter(ship => passesShipFilters(ship));
+            
+            const totalShips = filteredShips.length;
+            const activeShips = filteredShips.filter(ship => ship.speed && ship.speed > 0.5).length;
+            
+            document.getElementById('totalShips').textContent = totalShips;
+            document.getElementById('activeShips').textContent = activeShips;
+        }
+
+        function selectShip(mmsi) {
+            const ship = ships[mmsi];
+            if (ship && ship.lat && ship.lon) {
+                // Center radar on ship
+                radarCenterLat = ship.lat;
+                radarCenterLon = ship.lon;
+                
+                // Update center display
+                document.getElementById('centerDisplay').textContent = 
+                    `${radarCenterLat.toFixed(4)}°N, ${Math.abs(radarCenterLon).toFixed(4)}°W`;
+                document.getElementById('centerLat').value = radarCenterLat.toFixed(4);
+                document.getElementById('centerLon').value = radarCenterLon.toFixed(4);
+                
+                addLogEntry(`🚢 Centered on ${ship.name || mmsi}`);
+            }
+        }
+
+        // NOTAM click handling
+        function showNOTAMDetails(notam, x, y) {
+            const panel = document.getElementById('notamDetailsPanel');
+            const content = document.getElementById('notamDetailsContent');
+            
+            // Format NOTAM details
+            const details = `
+                <div style="margin-bottom: 8px;">
+                    <span style="color: #ff6600; font-weight: bold;">ID:</span> ${notam.id || 'N/A'}<br>
+                    <span style="color: #ff6600; font-weight: bold;">Type:</span> ${notam.type || 'N/A'}<br>
+                    <span style="color: #ff6600; font-weight: bold;">Priority:</span> <span style="color: ${getNOTAMColor(notam.priority)};">${notam.priority}</span><br>
+                    <span style="color: #ff6600; font-weight: bold;">Category:</span> ${notam.category || 'N/A'}<br>
+                    <span style="color: #ff6600; font-weight: bold;">Location:</span> ${notam.location || 'N/A'}<br>
+                    <span style="color: #ff6600; font-weight: bold;">Distance:</span> ${notam.distance_nm ? notam.distance_nm.toFixed(1) + 'nm' : 'N/A'}<br>
+                    <span style="color: #ff6600; font-weight: bold;">Radius:</span> ${notam.radius_nm ? notam.radius_nm + 'nm' : 'N/A'}<br>
+                    <span style="color: #ff6600; font-weight: bold;">Effective:</span> ${notam.effective_from ? new Date(notam.effective_from).toLocaleString() : 'N/A'}<br>
+                    <span style="color: #ff6600; font-weight: bold;">Expires:</span> ${notam.effective_to ? new Date(notam.effective_to).toLocaleString() : 'N/A'}<br>
+                    <span style="color: #ff6600; font-weight: bold;">Altitude:</span> ${notam.altitude_from || 0} - ${notam.altitude_to || 'Unlimited'} ft<br>
+                </div>
+                <div style="border-top: 1px solid #444; padding-top: 8px;">
+                    <span style="color: #ff6600; font-weight: bold;">Description:</span><br>
+                    <div style="color: #cccccc; margin-top: 4px;">${notam.description || 'No description available'}</div>
+                </div>
+            `;
+            
+            content.innerHTML = details;
+            
+            // Position panel near the NOTAM but ensure it's visible
+            const panelWidth = 400;
+            const panelHeight = 200;
+            let left = x + 20;
+            let top = y - panelHeight/2;
+            
+            // Adjust if panel would go off-screen
+            if (left + panelWidth > window.innerWidth) left = x - panelWidth - 20;
+            if (top < 0) top = 10;
+            if (top + panelHeight > window.innerHeight) top = window.innerHeight - panelHeight - 10;
+            
+            panel.style.left = left + 'px';
+            panel.style.top = top + 'px';
+            panel.style.display = 'block';
+        }
+        
+        function hideNOTAMDetails() {
+            document.getElementById('notamDetailsPanel').style.display = 'none';
+        }
+        
+        function getNOTAMColor(priority) {
+            switch(priority) {
+                case 'CRITICAL': return '#ff0000';
+                case 'HIGH': return '#ff6600';
+                case 'MEDIUM': return '#ffaa00';
+                case 'NORMAL': return '#ffff00';
+                default: return '#ffaa00';
+            }
+        }
+        
+        // Add click handler to canvas for NOTAM selection
+        function handleNOTAMClick(event) {
+            if (!window.notamPositions) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const clickY = event.clientY - rect.top;
+            
+            // Check if click is on a NOTAM
+            for (let i = window.notamPositions.length - 1; i >= 0; i--) {
+                const notamPos = window.notamPositions[i];
+                const distance = Math.sqrt(Math.pow(clickX - notamPos.x, 2) + Math.pow(clickY - notamPos.y, 2));
+                
+                if (distance < 20) { // 20 pixel click radius
+                    showNOTAMDetails(notamPos.notam, event.clientX, event.clientY);
+                    return;
+                }
+            }
+            
+            // Click not on NOTAM, hide details
+            hideNOTAMDetails();
+        }
+        
+        // Clear NOTAM positions at start of each frame
+        function clearNOTAMPositions() {
+            if (window.notamPositions) window.notamPositions = [];
+        }
+
+        // Alert system
+        let activeAlerts = [];
+        
+        function processAircraftAlerts(aircraft) {
+            const alerts = [];
+            
+            // Check for emergency squawk codes
+            if (aircraft.squawk) {
+                const squawk = aircraft.squawk.toString();
+                if (squawk === '7700') {
+                    alerts.push({
+                        type: 'EMERGENCY',
+                        priority: 'CRITICAL',
+                        aircraft: aircraft.callsign || aircraft.icao24,
+                        message: `General Emergency - Squawk 7700`,
+                        color: '#ff0000'
+                    });
+                } else if (squawk === '7600') {
+                    alerts.push({
+                        type: 'RADIO_FAILURE',
+                        priority: 'HIGH',
+                        aircraft: aircraft.callsign || aircraft.icao24,
+                        message: `Radio Failure - Squawk 7600`,
+                        color: '#ff6600'
+                    });
+                } else if (squawk === '7500') {
+                    alerts.push({
+                        type: 'HIJACK',
+                        priority: 'CRITICAL',
+                        aircraft: aircraft.callsign || aircraft.icao24,
+                        message: `Aircraft Hijacking - Squawk 7500`,
+                        color: '#ff0000'
+                    });
+                }
+            }
+            
+            // Check for SSR code alerts
+            if (aircraft.ssr && aircraft.ssr.is_alert) {
+                alerts.push({
+                    type: 'SSR_ALERT',
+                    priority: aircraft.ssr.priority || 'HIGH',
+                    aircraft: aircraft.callsign || aircraft.icao24,
+                    message: aircraft.ssr.description || 'Special SSR Code',
+                    color: aircraft.ssr.color || '#ff6600'
+                });
+            }
+            
+            // Check for proximity alerts (if aircraft is very close)
+            if (aircraft.distance_nm && aircraft.distance_nm < 5) {
+                alerts.push({
+                    type: 'PROXIMITY',
+                    priority: 'HIGH',
+                    aircraft: aircraft.callsign || aircraft.icao24,
+                    message: `Close proximity: ${aircraft.distance_nm.toFixed(1)}nm`,
+                    color: '#ffaa00'
+                });
+            }
+            
+            return alerts;
+        }
+        
+        function updateAlertsPanel() {
+            const alertsList = document.getElementById('alertsList');
+            const alertsCount = document.getElementById('alertsCount');
+            
+            if (activeAlerts.length === 0) {
+                alertsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #888;">No active alerts</div>';
+                alertsCount.textContent = '0 alerts';
+                return;
+            }
+            
+            alertsCount.textContent = `${activeAlerts.length} alerts`;
+            
+            alertsList.innerHTML = activeAlerts.map(alert => `
+                <div class="alert-item ${alert.priority.toLowerCase()}" onclick="centerOnAlertAircraft('${alert.aircraft}')">
+                    <div style="font-weight: bold; color: ${alert.color};">${alert.type}</div>
+                    <div style="color: #cccccc;">${alert.aircraft}</div>
+                    <div style="color: #888888; font-size: 9px;">${alert.message}</div>
+                </div>
+            `).join('');
+        }
+        
+        function centerOnAlertAircraft(callsign) {
+            const aircraft = Object.values(aircraftData).find(ac => ac.callsign === callsign);
+            if (aircraft && aircraft.lat && aircraft.lon) {
+                radarCenterLat = aircraft.lat;
+                radarCenterLon = aircraft.lon;
+                
+                // Update center display
+                document.getElementById('centerDisplay').textContent = 
+                    `${radarCenterLat.toFixed(4)}°N, ${Math.abs(radarCenterLon).toFixed(4)}°W`;
+                document.getElementById('centerLat').value = radarCenterLat.toFixed(4);
+                document.getElementById('centerLon').value = radarCenterLon.toFixed(4);
+                
+                addLogEntry(`🎯 Centered on alert aircraft ${callsign}`);
+            }
+        }
+
+        // Event Listeners for Ships Tab
+        document.addEventListener('DOMContentLoaded', function() {
+            // AIS connection buttons
+            document.getElementById('connectAIS').addEventListener('click', connectAIS);
+            document.getElementById('disconnectAIS').addEventListener('click', disconnectAIS);
+            
+            // Display mode selector
+            document.getElementById('displayMode').addEventListener('change', function() {
+                displayMode = this.value;
+                addLogEntry(`🎯 Display mode: ${displayMode}`);
+            });
+            
+            // Ship filters
+            document.getElementById('applyShipFilters').addEventListener('click', function() {
+                const vesselType = document.getElementById('vesselTypeFilter').value;
+                const navStatus = document.getElementById('navStatusFilter').value;
+                
+                // Update filter variables
+                shipVesselTypeFilter = vesselType;
+                shipNavStatusFilter = navStatus;
+                
+                // Update ship statistics display
+                updateShipStatistics();
+                
+                addLogEntry(`🔍 Applied ship filters: Type=${vesselType}, Status=${navStatus}`);
+            });
+        });
+    </script>
+
+    <!-- Floating AI Chat Popup -->
+    <div class="ai-popup" id="aiPopup">
+        <div class="ai-popup-header">
+            <div class="ai-popup-title">🤖 AI Assistant</div>
+            <button class="ai-popup-close" onclick="toggleAIPopup()">✕</button>
+        </div>
+        <div class="ai-popup-messages" id="aiMessages">
+            <div class="ai-message assistant">
+                Hello! I'm your AI assistant. I can help you with questions about aircraft, airspace, weather, and more. What would you like to know?
+            </div>
+        </div>
+        <div class="ai-popup-input">
+            <input type="text" id="aiPopupInput" placeholder="Ask me anything..." onkeypress="handleAIKeyPress(event)">
+            <button class="ai-popup-send" onclick="sendAIMessage()" id="aiSendBtn">Send</button>
+        </div>
+    </div>
+
+    <!-- AI Chat Toggle Button -->
+    <div class="ai-chat-toggle" id="aiToggle" onclick="toggleAIPopup()">
+        🤖
+    </div>
+
+    <script>
+        // AI Popup functionality
+        function toggleAIPopup() {
+            console.log('toggleAIPopup function called!'); // Test if function is called
+            
+            const popup = document.getElementById('aiPopup');
+            const toggle = document.getElementById('aiToggle');
+            
+            if (popup.style.display === 'none' || popup.style.display === '') {
+                popup.style.display = 'flex';
+                toggle.classList.add('active');
+                document.getElementById('aiPopupInput').focus();
+                console.log('Popup opened');
+            } else {
+                popup.style.display = 'none';
+                toggle.classList.remove('active');
+                console.log('Popup closed');
+            }
+        }
+
+        function handleAIKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendAIMessage();
+            }
+        }
+
+        async function sendAIMessage() {
+            console.log('sendAIMessage function called!'); // Test if function is called
+            
+            const input = document.getElementById('aiPopupInput');
+            console.log('Input element found:', input); // Debug log
+            
+            const sendBtn = document.getElementById('aiSendBtn');
+            console.log('Send button found:', sendBtn); // Debug log
+            
+            const messages = document.getElementById('aiMessages');
+            console.log('Messages container found:', messages); // Debug log
+            
+            const message = input.value.trim();
+            console.log('Message text:', `"${message}"`); // Debug log
+            
+            if (!message) {
+                console.log('Message is empty, returning early'); // Debug log
+                return;
+            }
+            
+            console.log('Sending AI message:', message); // Debug log
+            
+            // Disable input and button
+            input.disabled = true;
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Sending...';
+            
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'ai-message user';
+            userMsg.textContent = message;
+            messages.appendChild(userMsg);
+            
+            // Clear input
+            input.value = '';
+            
+            // Scroll to bottom
+            messages.scrollTop = messages.scrollHeight;
+            
+            try {
+                // Send to AI server - use full URL with port
+                const aiUrl = `http://localhost:11435/chat?q=${encodeURIComponent(message)}&max_context=2&threshold=0.4`;
+                console.log('Fetching from:', aiUrl); // Debug log
+                
+                const response = await fetch(aiUrl, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                console.log('Response status:', response.status); // Debug log
+                console.log('Response headers:', response.headers); // Debug log
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const responseTextRaw = await response.text();
+                console.log('Raw response text:', responseTextRaw); // Debug log
+                
+                let data;
+                try {
+                    data = JSON.parse(responseTextRaw);
+                    console.log('Parsed AI response:', data); // Debug log
+                } catch (parseError) {
+                    console.error('JSON parse error:', parseError);
+                    throw new Error('Invalid JSON response from AI server');
+                }
+                
+                // Add AI response
+                console.log('Creating AI message element...'); // Debug log
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'ai-message assistant';
+                const responseText = data.response || 'Sorry, I encountered an error. Please try again.';
+                console.log('Response text to display:', responseText); // Debug log
+                aiMsg.textContent = responseText;
+                console.log('Message element created:', aiMsg); // Debug log
+                messages.appendChild(aiMsg);
+                console.log('Message added to DOM. Total messages:', messages.children.length); // Debug log
+                
+            } catch (error) {
+                console.error('AI request failed:', error); // Debug log
+                // Add error message
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'ai-message assistant';
+                errorMsg.textContent = `Error: ${error.message}. Please check if the AI server is running on port 11435.`;
+                messages.appendChild(errorMsg);
+            }
+            
+            // Re-enable input and button
+            input.disabled = false;
+            sendBtn.disabled = false;
+            sendBtn.textContent = 'Send';
+            input.focus();
+            
+            // Scroll to bottom
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Initialize AI popup
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide popup initially
+            document.getElementById('aiPopup').style.display = 'none';
         });
     </script>
 </body>

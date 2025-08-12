@@ -1,0 +1,23 @@
+# Audio Transcription Requirements
+# Install with: pip install -r requirements_audio.txt
+
+# Core dependencies
+flask>=2.3.0
+flask-cors>=4.0.0
+requests>=2.31.0
+
+# Audio processing
+pyaudio>=0.2.11
+numpy>=1.24.0
+
+# Whisper AI for transcription
+openai-whisper>=20231117
+
+# Optional: GPU acceleration for Whisper (if CUDA available)
+# torch>=2.0.0
+# torchaudio>=2.0.0
+
+# For better audio quality and noise reduction (optional)
+# librosa>=0.10.0
+# noisereduce>=3.0.0
+
