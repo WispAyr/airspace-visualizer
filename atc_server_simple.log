@@ -1,0 +1,19 @@
+2025-08-12 19:41:30,219 - INFO - Starting Simple Live ATC Transcription Server...
+ * Serving Flask app 'atc_server_simple'
+ * Debug mode: off
+2025-08-12 19:41:30,235 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8081
+ * Running on http://10.0.0.3:8081
+2025-08-12 19:41:30,235 - INFO - [33mPress CTRL+C to quit[0m
+2025-08-12 19:41:49,158 - INFO - 127.0.0.1 - - [12/Aug/2025 19:41:49] "GET /health HTTP/1.1" 200 -
+2025-08-12 19:41:55,203 - INFO - Loading Whisper model...
+2025-08-12 19:41:55,635 - INFO - Whisper model loaded successfully
+2025-08-12 19:41:55,635 - INFO - Getting stream info for: https://www.youtube.com/watch?v=vrmJx8jCAjY
+2025-08-12 19:41:58,351 - INFO - Live stream URL obtained: https://manifest.googlevideo.com/api/manifest/hls_playlist/expire/1755045717/ei/9YqbaLzQE6mIgMMPmcrP...
+2025-08-12 19:41:58,352 - INFO - Live stream processing thread started
+2025-08-12 19:41:58,352 - INFO - Live ATC transcription service started for EGPF
+2025-08-12 19:41:58,352 - INFO - Processing live stream segment...
+2025-08-12 19:41:58,352 - INFO - 127.0.0.1 - - [12/Aug/2025 19:41:58] "POST /start HTTP/1.1" 200 -
+2025-08-12 19:41:58,353 - INFO - Downloading live audio segment to /var/folders/qt/3c8p9w350c393vr0g2gdhttc0000gn/T/tmpgigl8lfd.wav...
+2025-08-12 19:41:58,353 - INFO - Running ffmpeg command: ffmpeg -i https://manifest.googlevideo.com/api/manifest/hls_playlist/expire/1755045717/ei/9YqbaLzQE6mIgMMPmcrPYA/ip/145.224.67.150/id/vrmJx8jCAjY.1/itag/234/source/yt_live_broadcast/requiressl/yes/ratebypass/yes/live/1/goi/133/sgoap/gir%3Dyes%3Bitag%3D140/rqh/1/hls_chunk_host/rr2---sn-aigl6nz7.googlevideo.com/xpc/EgVo2aDSNQ%3D%3D/playlist_duration/3600/manifest_duration/3600/bui/AY1jyLNXrGvlIvgfOfDzoIRxWpVW64FvdBOaWwHc7NUUTGqoqjFIqQiYYqqSIfAm2Xrf2NgdBYA7kU7e/spc/l3OVKW_Kw5dU-x0nO5VyqX7y937hxc9J76OWsdoVq6Y-QjTcXqB0c-Qzwo0/vprv/1/playlist_type/DVR/initcwndbps/2131250/met/1755024117,/mh/pi/mm/44/mn/sn-aigl6nz7/ms/lva/mv/m/mvi/2/pl/21/rms/lva,lva/dover/13/pacing/0/short_key/1/keepalive/yes/fexp/51548755/mt/1755023794/sparams/expire,ei,ip,id,itag,source,requiressl,ratebypass,live,goi,sgoap,rqh,xpc,playlist_duration,manifest_duration,bui,spc,vprv,playlist_type/sig/AJfQdSswRAIgHZN0UN7AVNFu-wCSDM40qdnEyQHk8f-MK5ukUo_047ICIAwcr5x4F5Hl6RalAfvRS2F29ApK4O7fQEwkqNhRRBoJ/lsparams/hls_chunk_host,initcwndbps,met,mh,mm,mn,ms,mv,mvi,pl,rms/lsig/APaTxxMwRQIgf7cHqz-OXsaqF2wRm4F_RF-vHXZMTKCoesaUT6TP6CgCIQCv5ihvVRKOpKuF7tJEqhe8nz5GU8hVDaWTCfIm65AvJw%3D%3D/playlist/index.m3u8 -t 15 -c:a pcm_s16le -ar 16000 -ac 1 -y /var/folders/qt/3c8p9w350c393vr0g2gdhttc0000gn/T/tmpgigl8lfd.wav

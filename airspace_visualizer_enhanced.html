@@ -397,6 +397,40 @@
             max-height: 60px;
             padding: 4px;
         }
+        
+        /* Collapsible section styles */
+        .info-section.collapsible .info-header {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .info-section.collapsible .info-header:hover {
+            background: linear-gradient(90deg, #003300 0%, #004400 100%);
+        }
+        
+        .collapse-icon {
+            float: right;
+            color: #00ff88;
+            font-size: 10px;
+            transition: transform 0.2s ease;
+            margin-left: 8px;
+        }
+        
+        .info-section.collapsed .collapse-icon {
+            transform: rotate(-90deg);
+        }
+        
+        .info-section.collapsed .info-content {
+            display: none;
+        }
+        
+        .info-section.collapsed {
+            margin-bottom: 4px;
+        }
+        
+        .info-section.collapsed .info-header {
+            padding: 2px 6px;
+        }
 
         .contact-item {
             padding: 4px 6px;
@@ -1423,11 +1457,19 @@
 
         <!-- Combined Information Panel -->
         <div class="info-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 4px 8px; background: rgba(0, 30, 0, 0.8); border-radius: 4px;">
+                <div style="color: #00ff88; font-size: 10px; font-weight: bold;">📊 Information Panel</div>
+                <div style="display: flex; gap: 4px;">
+                    <button onclick="collapseAllSections()" style="padding: 2px 6px; font-size: 8px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 2px; cursor: pointer;">Collapse All</button>
+                    <button onclick="expandAllSections()" style="padding: 2px 6px; font-size: 8px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 2px; cursor: pointer;">Expand All</button>
+                </div>
+            </div>
             <!-- Aircraft Contacts Section -->
-            <div class="info-section">
-                <div class="info-header">
+            <div class="info-section collapsible">
+                <div class="info-header" onclick="toggleSection('aircraftSection')">
                     <div class="info-title">✈️ Aircraft Contacts</div>
                     <div class="info-count" id="contactCount">0 aircraft</div>
+                    <div class="collapse-icon">▼</div>
                 </div>
                 <div class="info-content" id="contactList">
                     <div style="padding: 15px; text-align: center; color: #888; font-size: 11px;">
@@ -1451,28 +1493,61 @@
                 </div>
             </div>
 
-            <!-- Alerts Section -->
-            <div class="info-section">
-                <div class="info-header">
-                    <div class="info-title">🚨 Active Alerts</div>
-                    <div class="info-count" id="alertsCount">0 alerts</div>
-                </div>
-                <div class="info-content" id="alertsList">
-                    <div style="padding: 15px; text-align: center; color: #888; font-size: 11px;">
-                        No active alerts
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Communications Section -->
-            <div class="info-section">
-                <div class="info-header">
+            <div class="info-section collapsible">
+                <div class="info-header" onclick="toggleSection('commsSection')">
                     <div class="info-title">📡 Communications</div>
                     <div class="info-count" id="msgCount">0 messages</div>
+                    <div class="collapse-icon">▼</div>
                 </div>
                 <div class="info-content" id="commsLog">
                     <div class="log-entry">System initialized - Ready for live ADS-B and VDL2 data</div>
                 </div>
+            </div>
+
+            <!-- ATC Transcription Section -->
+            <div class="info-section collapsible">
+                <div class="info-header" onclick="toggleSection('atcSection')">
+                    <div class="info-title">🎧 Live ATC</div>
+                    <div class="info-count" id="atcCount">0 transcriptions</div>
+                    <div class="collapse-icon">▼</div>
+                </div>
+            
+            <!-- Live Video Window -->
+            <div id="atcVideoContainer" style="margin: 8px 0; display: none;">
+                <div style="font-size: 9px; color: #00ff88; margin-bottom: 4px; text-align: center;">📺 Live Glasgow ATC Stream</div>
+                <div style="position: relative; background: #000; border-radius: 4px; overflow: hidden;">
+                    <iframe id="atcVideoPlayer" 
+                            width="100%" 
+                            height="120" 
+                            src="about:blank"
+                            frameborder="0" 
+                            allowfullscreen
+                            style="background: #000; display: block;">
+                    </iframe>
+                    <div id="atcVideoOverlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; color: #00ff88; font-size: 10px; cursor: pointer;" onclick="toggleATCVideo()">
+                        🎥 Click to Show/Hide Video
+                    </div>
+                </div>
+                <div style="font-size: 8px; color: #888; text-align: center; margin-top: 4px;">
+                    Live audio processing every 30s
+                </div>
+            </div>
+            
+            <div class="info-content" id="atcTranscriptions">
+                <div style="padding: 15px; text-align: center; color: #888; font-size: 11px;">
+                    ATC transcription system ready
+                </div>
+            </div>
+            
+            <div style="margin-top: 8px; padding: 4px; display: flex: gap: 4px;">
+                <button onclick="startATCTranscription()" id="atcStartBtn" style="flex: 1; padding: 3px; font-size: 8px; background: #003300; color: #00ff88; border: 1px solid #00aa44; border-radius: 2px; cursor: pointer;">Start ATC</button>
+                <button onclick="stopATCTranscription()" id="atcStopBtn" style="flex: 1; padding: 3px; font-size: 8px; background: #330000; color: #ff8888; border: 1px solid #aa4444; border-radius: 2px; cursor: pointer; display: none;">Stop ATC</button>
+                <button onclick="refreshATCData()" style="flex: 1; padding: 3px; font-size: 8px; background: #003333; color: #00ffff; border: 1px solid #00aaaa; border-radius: 2px; cursor: pointer;">Refresh</button>
+                <button onclick="toggleATCVideo()" id="atcVideoBtn" style="flex: 1; padding: 3px; font-size: 8px; background: #330033; color: #ff88ff; border: 1px solid #aa44aa; border-radius: 2px; cursor: pointer;">Show Video</button>
+                <button onclick="popoutATCVideo()" style="flex: 1; padding: 3px; font-size: 8px; background: #333300; color: #ffff88; border: 1px solid #aaaa44; border-radius: 2px; cursor: pointer;">Popout</button>
             </div>
         </div>
 
@@ -1487,13 +1562,7 @@
             </div>
         </div>
 
-        <!-- AI Assistant -->
-        <div class="ai-panel">
-            <div class="ai-icon">🤖</div>
-            <input type="text" class="ai-input" id="aiInput" placeholder="Ask AI about radar contacts, routes, ACARS messages...">
-            <button class="ai-send" id="aiSend">SEND</button>
-            <div class="ai-status">💡 AI Assistant ready to analyze radar data</div>
-        </div>
+
     </div>
 
     <script>
@@ -3705,7 +3774,7 @@
                 
                 // Process alerts for this aircraft
                 const aircraftAlerts = processAircraftAlerts(ac);
-                activeAlerts.push(...aircraftAlerts);
+                // Alerts functionality removed
             });
             
             // Remove old aircraft
@@ -3725,8 +3794,7 @@
             updateBaseStationInfo();
         }
             
-            // Update alerts panel
-            updateAlertsPanel();
+            // Alerts functionality removed
         }
 
         function updateContactList(aircraftData) {
@@ -4536,7 +4604,7 @@
         }
 
         // Alert system
-        let activeAlerts = [];
+        // Removed alerts functionality - section was removed from GUI
         
         function processAircraftAlerts(aircraft) {
             const alerts = [];
@@ -4596,42 +4664,7 @@
             return alerts;
         }
         
-        function updateAlertsPanel() {
-            const alertsList = document.getElementById('alertsList');
-            const alertsCount = document.getElementById('alertsCount');
-            
-            if (activeAlerts.length === 0) {
-                alertsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #888;">No active alerts</div>';
-                alertsCount.textContent = '0 alerts';
-                return;
-            }
-            
-            alertsCount.textContent = `${activeAlerts.length} alerts`;
-            
-            alertsList.innerHTML = activeAlerts.map(alert => `
-                <div class="alert-item ${alert.priority.toLowerCase()}" onclick="centerOnAlertAircraft('${alert.aircraft}')">
-                    <div style="font-weight: bold; color: ${alert.color};">${alert.type}</div>
-                    <div style="color: #cccccc;">${alert.aircraft}</div>
-                    <div style="color: #888888; font-size: 9px;">${alert.message}</div>
-                </div>
-            `).join('');
-        }
-        
-        function centerOnAlertAircraft(callsign) {
-            const aircraft = Object.values(aircraftData).find(ac => ac.callsign === callsign);
-            if (aircraft && aircraft.lat && aircraft.lon) {
-                radarCenterLat = aircraft.lat;
-                radarCenterLon = aircraft.lon;
-                
-                // Update center display
-                document.getElementById('centerDisplay').textContent = 
-                    `${radarCenterLat.toFixed(4)}°N, ${Math.abs(radarCenterLon).toFixed(4)}°W`;
-                document.getElementById('centerLat').value = radarCenterLat.toFixed(4);
-                document.getElementById('centerLon').value = radarCenterLon.toFixed(4);
-                
-                addLogEntry(`🎯 Centered on alert aircraft ${callsign}`);
-            }
-        }
+        // Alerts functionality removed - section was removed from GUI
 
         // Event Listeners for Ships Tab
         document.addEventListener('DOMContentLoaded', function() {
@@ -4812,7 +4845,346 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Hide popup initially
             document.getElementById('aiPopup').style.display = 'none';
+            
+            // Initialize ATC transcription system
+            refreshATCData();
         });
+
+        // ATC Transcription Functions
+        let atcTranscriptionInterval = null;
+        let atcTranscriptionCount = 0;
+
+        async function startATCTranscription() {
+            try {
+                const response = await fetch('http://localhost:8081/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        youtube_url: 'https://www.youtube.com/watch?v=vrmJx8jCAjY',
+                        airport_code: 'EGPF'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Update UI
+                    document.getElementById('atcStartBtn').style.display = 'none';
+                    document.getElementById('atcStopBtn').style.display = 'block';
+                    
+                    // Start polling for transcriptions
+                    atcTranscriptionInterval = setInterval(refreshATCData, 5000); // Refresh every 5 seconds
+                    
+                    addLogEntry(`🎧 Live ATC transcription started for ${data.airport_code}`);
+                    updateATCStatus('running');
+                    
+                    // Show video container when starting
+                    document.getElementById('atcVideoContainer').style.display = 'block';
+                } else {
+                    addLogEntry(`❌ Failed to start ATC: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error starting ATC transcription:', error);
+                addLogEntry(`❌ ATC start error: ${error.message}`);
+            }
+        }
+
+        async function stopATCTranscription() {
+            try {
+                const response = await fetch('http://localhost:8081/stop', {
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Update UI
+                    document.getElementById('atcStartBtn').style.display = 'block';
+                    document.getElementById('atcStopBtn').style.display = 'none';
+                    
+                    // Stop polling
+                    if (atcTranscriptionInterval) {
+                        clearInterval(atcTranscriptionInterval);
+                        atcTranscriptionInterval = null;
+                    }
+                    
+                    addLogEntry('🎧 Live ATC transcription stopped');
+                    updateATCStatus('stopped');
+                    
+                    // Hide video container when stopping
+                    document.getElementById('atcVideoContainer').style.display = 'none';
+                } else {
+                    addLogEntry(`❌ Failed to stop ATC: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error stopping ATC transcription:', error);
+                addLogEntry(`❌ ATC stop error: ${error.message}`);
+            }
+        }
+
+        async function refreshATCData() {
+            try {
+                // Get latest transcriptions
+                const transcriptionsResponse = await fetch('http://localhost:8081/transcriptions?limit=5');
+                const transcriptionsData = await transcriptionsResponse.json();
+                
+                // Get system status
+                const statusResponse = await fetch('http://localhost:8081/status');
+                const statusData = await statusResponse.json();
+                
+                if (transcriptionsData.status === 'success') {
+                    displayATCTranscriptions(transcriptionsData.transcriptions);
+                    updateATCCount(transcriptionsData.count);
+                }
+                
+                if (statusData.is_running) {
+                    updateATCStatus('running');
+                    document.getElementById('atcStartBtn').style.display = 'none';
+                    document.getElementById('atcStopBtn').style.display = 'block';
+                } else {
+                    updateATCStatus('stopped');
+                    document.getElementById('atcStartBtn').style.display = 'block';
+                    document.getElementById('atcStopBtn').style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Error refreshing ATC data:', error);
+                updateATCStatus('error');
+                document.getElementById('atcTranscriptions').innerHTML = 
+                    '<div style="padding: 15px; text-align: center; color: #ff4444; font-size: 11px;">ATC server connection error</div>';
+            }
+        }
+
+        function displayATCTranscriptions(transcriptions) {
+            const container = document.getElementById('atcTranscriptions');
+            
+            if (!transcriptions || transcriptions.length === 0) {
+                container.innerHTML = '<div style="padding: 15px; text-align: center; color: #888; font-size: 11px;">No transcriptions yet</div>';
+                return;
+            }
+            
+            let html = '';
+            transcriptions.forEach((transcription, index) => {
+                const timestamp = new Date(transcription.timestamp).toLocaleTimeString();
+                const confidence = Math.round(transcription.confidence * 100);
+                const runway = transcription.extracted_info?.runway || 'N/A';
+                const callsigns = transcription.extracted_info?.callsigns?.join(', ') || 'N/A';
+                
+                html += `
+                    <div style="padding: 8px; margin: 4px 0; background: rgba(0, 40, 0, 0.6); border-left: 3px solid #00ff88; border-radius: 2px; font-size: 9px;">
+                        <div style="color: #00ff88; font-weight: bold; margin-bottom: 2px;">${timestamp} (${confidence}%)</div>
+                        <div style="color: #ffffff; margin-bottom: 2px;">${transcription.raw_text}</div>
+                        <div style="color: #88cc88; font-size: 8px;">
+                            Runway: ${runway} | Callsigns: ${callsigns}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function updateATCCount(count) {
+            document.getElementById('atcCount').textContent = `${count} transcriptions`;
+        }
+
+        function updateATCStatus(status) {
+            const container = document.getElementById('atcTranscriptions');
+            const statusDiv = container.querySelector('.atc-status') || document.createElement('div');
+            
+            if (!container.querySelector('.atc-status')) {
+                statusDiv.className = 'atc-status';
+                statusDiv.style.cssText = 'padding: 4px 8px; margin-bottom: 8px; border-radius: 2px; font-size: 8px; text-align: center;';
+                container.insertBefore(statusDiv, container.firstChild);
+            }
+            
+            switch (status) {
+                case 'running':
+                    statusDiv.style.cssText = 'padding: 4px 8px; margin-bottom: 8px; border-radius: 2px; font-size: 8px; text-align: center; background: #003300; color: #00ff88; border: 1px solid #00aa44;';
+                    statusDiv.textContent = '🟢 ATC Transcription Active';
+                    break;
+                case 'stopped':
+                    statusDiv.style.cssText = 'padding: 4px 8px; margin-bottom: 8px; border-radius: 2px; font-size: 8px; text-align: center; background: #330000; color: #ff8888; border: 1px solid #aa4444;';
+                    statusDiv.textContent = '🔴 ATC Transcription Stopped';
+                    break;
+                case 'error':
+                    statusDiv.style.cssText = 'padding: 4px 8px; margin-bottom: 8px; border-radius: 2px; font-size: 8px; text-align: center; background: #330000; color: #ff4444; border: 1px solid #aa4444;';
+                    statusDiv.textContent = '❌ ATC Connection Error';
+                    break;
+            }
+        }
+
+        // Video toggle function
+        function toggleATCVideo() {
+            const videoContainer = document.getElementById('atcVideoContainer');
+            const videoBtn = document.getElementById('atcVideoBtn');
+            const videoPlayer = document.getElementById('atcVideoPlayer');
+            const videoOverlay = document.getElementById('atcVideoOverlay');
+            
+            if (videoContainer.style.display === 'none') {
+                // Show video
+                videoContainer.style.display = 'block';
+                videoBtn.textContent = 'Hide Video';
+                videoBtn.style.background = '#003333';
+                videoBtn.style.color = '#00ffff';
+                videoBtn.style.borderColor = '#00aaaa';
+                
+                // Load Glasgow ATC stream
+                const glasgowStreamUrl = 'https://www.youtube.com/embed/vrmJx8jCAjY?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1';
+                videoPlayer.src = glasgowStreamUrl;
+                videoOverlay.style.display = 'none';
+                
+                addLogEntry('🎥 Live ATC video stream activated');
+            } else {
+                // Hide video
+                videoContainer.style.display = 'none';
+                videoBtn.textContent = 'Show Video';
+                videoBtn.style.background = '#330033';
+                videoBtn.style.color = '#ff88ff';
+                videoBtn.style.borderColor = '#aa44aa';
+                
+                // Stop video
+                videoPlayer.src = 'about:blank';
+                videoOverlay.style.display = 'flex';
+                
+                addLogEntry('🎥 ATC video stream hidden');
+            }
+        }
+
+        // Section toggle function
+        function toggleSection(sectionId) {
+            const section = event.target.closest('.info-section');
+            if (section) {
+                section.classList.toggle('collapsed');
+                
+                // Update the icon
+                const icon = section.querySelector('.collapse-icon');
+                if (icon) {
+                    icon.textContent = section.classList.contains('collapsed') ? '▶' : '▼';
+                }
+                
+                // Log the action
+                const sectionName = section.querySelector('.info-title').textContent.trim();
+                addLogEntry(`${section.classList.contains('collapsed') ? '🔽' : '🔼'} ${sectionName} section ${section.classList.contains('collapsed') ? 'collapsed' : 'expanded'}`);
+            }
+        }
+
+        // Collapse all sections
+        function collapseAllSections() {
+            const sections = document.querySelectorAll('.info-section.collapsible');
+            sections.forEach(section => {
+                section.classList.add('collapsed');
+                const icon = section.querySelector('.collapse-icon');
+                if (icon) {
+                    icon.textContent = '▶';
+                }
+            });
+            addLogEntry('🔽 All information sections collapsed');
+        }
+
+        // Expand all sections
+        function expandAllSections() {
+            const sections = document.querySelectorAll('.info-section.collapsible');
+            sections.forEach(section => {
+                section.classList.remove('collapsed');
+                const icon = section.querySelector('.collapse-icon');
+                if (icon) {
+                    icon.textContent = '▼';
+                }
+            });
+            addLogEntry('🔼 All information sections expanded');
+        }
+
+        // ATC Video Popout function
+        function popoutATCVideo() {
+            const glasgowStreamUrl = 'https://www.youtube.com/embed/vrmJx8jCAjY?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1';
+            
+            // Create popout window
+            const popoutWindow = window.open(
+                '',
+                'ATCVideo',
+                'width=800,height=600,scrollbars=no,resizable=yes,status=no,location=no,toolbar=no,menubar=no'
+            );
+            
+            if (popoutWindow) {
+                // Set the popout window content
+                popoutWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Glasgow ATC Live Stream</title>
+                        <style>
+                            body {
+                                margin: 0;
+                                padding: 0;
+                                background: #000;
+                                font-family: Arial, sans-serif;
+                                color: #00ff88;
+                            }
+                            .header {
+                                background: #002200;
+                                padding: 10px;
+                                text-align: center;
+                                border-bottom: 2px solid #00aa44;
+                            }
+                            .video-container {
+                                width: 100%;
+                                height: calc(100vh - 80px);
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                background: #000;
+                            }
+                            iframe {
+                                width: 100%;
+                                height: 100%;
+                                border: none;
+                            }
+                            .controls {
+                                position: absolute;
+                                bottom: 10px;
+                                right: 10px;
+                                display: flex;
+                                gap: 10px;
+                            }
+                            .control-btn {
+                                padding: 8px 16px;
+                                background: #003300;
+                                color: #00ff88;
+                                border: 1px solid #00aa44;
+                                border-radius: 4px;
+                                cursor: pointer;
+                                font-size: 12px;
+                            }
+                            .control-btn:hover {
+                                background: #004400;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <h2>🎧 Glasgow Airport ATC Live Stream</h2>
+                            <p>Live air traffic control communications from Glasgow Airport (EGPF)</p>
+                        </div>
+                        <div class="video-container">
+                            <iframe src="${glasgowStreamUrl}" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        <div class="controls">
+                            <button class="control-btn" onclick="window.close()">Close</button>
+                            <button class="control-btn" onclick="window.location.reload()">Refresh</button>
+                        </div>
+                    </body>
+                    </html>
+                `);
+                
+                popoutWindow.document.close();
+                addLogEntry('🖥️ ATC video popped out to separate window');
+            } else {
+                addLogEntry('❌ Popup blocked - please allow popups for this site');
+            }
+        }
     </script>
 </body>
 </html>

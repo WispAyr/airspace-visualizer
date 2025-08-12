@@ -1,0 +1,24 @@
+# ATC Transcription System Dependencies
+
+# Core transcription
+openai-whisper>=20231117
+torch>=2.0.0
+numpy>=1.24.0
+
+# Audio processing
+pydub>=0.25.1
+ffmpeg-python>=0.2.0
+
+# Web framework
+flask>=2.3.0
+flask-cors>=4.0.0
+
+# YouTube audio extraction
+yt-dlp>=2023.12.30
+
+# Utilities
+requests>=2.31.0
+python-dateutil>=2.8.2
+
+# Optional: GPU acceleration for Whisper
+# torchaudio>=2.0.0  # Uncomment if using GPU acceleration

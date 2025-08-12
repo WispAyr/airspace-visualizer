@@ -1,0 +1,75 @@
+INFO:__main__:Starting Robust ATC Transcription Server...
+ * Serving Flask app 'atc_server_robust'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8081
+ * Running on http://10.0.0.3:8081
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:28:18] "GET /health HTTP/1.1" 200 -
+INFO:__main__:Loading Whisper model...
+INFO:__main__:Whisper model loaded successfully
+INFO:__main__:Generated transcription 1: Glasgow Ground, EZY5678, request taxi to runway 23...
+INFO:__main__:Robust ATC transcription service started for EGPF
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:28:28] "POST /start HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:28:34] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:28:43] "GET /transcriptions HTTP/1.1" 200 -
+INFO:__main__:Generated transcription 2: Glasgow Tower, EZY1234, cleared for takeoff runway...
+INFO:__main__:Generated transcription 3: EZY9999, cleared for takeoff runway 23, wind 250 a...
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:29:08] "GET /transcriptions HTTP/1.1" 200 -
+INFO:__main__:Generated transcription 4: EZY9999, pushback approved, contact tower on 118.1...
+INFO:__main__:Generated transcription 5: Glasgow Tower, EZY1234, runway 23 clear for landin...
+INFO:__main__:Generated transcription 6: EZY5678, taxi to runway 23 via Alpha, hold short r...
+INFO:__main__:Generated transcription 7: Glasgow Approach, EZY9999, request radar vectors...
+INFO:__main__:Generated transcription 8: BA1234, contact Glasgow Tower on 118.1, good day r...
+INFO:__main__:Generated transcription 9: Glasgow Ground, EZY9999, request pushback...
+INFO:__main__:Generated transcription 10: Glasgow Tower, EZY1234, cleared for takeoff runway...
+INFO:__main__:Generated transcription 11: BA1234, descend to flight level 30, expect runway ...
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:10] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:10] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:13] "OPTIONS /start HTTP/1.1" 200 -
+INFO:__main__:Robust ATC transcription service stopped
+INFO:__main__:Loading Whisper model...
+INFO:__main__:Whisper model loaded successfully
+INFO:__main__:Generated transcription 1: BA1234, wind check, 250 at 12 knots over...
+INFO:__main__:Robust ATC transcription service started for EGPF
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:13] "POST /start HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:18] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:18] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:24] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:24] "GET /status HTTP/1.1" 200 -
+INFO:__main__:Generated transcription 2: Glasgow Ground, EZY5678, request taxi to runway 23...
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:29] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:29] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:34] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:34] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:39] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:39] "GET /status HTTP/1.1" 200 -
+INFO:__main__:Generated transcription 3: EZY9999, maintain 2000 feet, expect approach runwa...
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:44] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:44] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:49] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:49] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:54] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:54] "GET /status HTTP/1.1" 200 -
+INFO:__main__:Generated transcription 4: Glasgow Ground, EZY5678, request taxi to runway 23...
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:59] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:31:59] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:04] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:04] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:09] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:09] "GET /status HTTP/1.1" 200 -
+INFO:__main__:Generated transcription 5: EZY1234, climb to flight level 60, turn right head...
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:14] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:14] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:19] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:19] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:24] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:24] "GET /status HTTP/1.1" 200 -
+INFO:__main__:Generated transcription 6: Glasgow Approach, EZY9999, request radar vectors o...
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:29] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:29] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:33] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:33] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:38] "GET /transcriptions?limit=5 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:32:38] "GET /status HTTP/1.1" 200 -

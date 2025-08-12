@@ -1,0 +1,19 @@
+INFO:__main__:Starting Real ATC Transcription Server...
+ * Serving Flask app 'atc_server_real'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8081
+ * Running on http://10.0.0.3:8081
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:24:23] "GET /status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:24:23] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:24:36] "GET /health HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:24:36] "GET /status HTTP/1.1" 200 -
+INFO:__main__:Loading Whisper model...
+INFO:__main__:Whisper model loaded successfully
+INFO:__main__:Getting stream info for: https://www.youtube.com/watch?v=vrmJx8jCAjY
+INFO:__main__:Stream URL obtained: https://manifest.googlevideo.com/api/manifest/hls_playlist/expire/1755044683/ei/64abaNLcDKWRzPsP4abr...
+INFO:__main__:Starting live stream processing...
+INFO:__main__:Real ATC transcription service started for EGPF
+INFO:werkzeug:127.0.0.1 - - [12/Aug/2025 19:24:44] "POST /start HTTP/1.1" 200 -
